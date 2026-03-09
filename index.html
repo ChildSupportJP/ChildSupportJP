@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>債権差押命令申立書（一般先取特権用）自動生成システム</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+:root {
+  --ink: #1a1a2e;
+  --ink2: #2d2d44;
+  --mid: #5a6478;
+  --light: #e4e9f2;
+  --bg: #f4f6fb;
+  --white: #ffffff;
+  --red: #b83232;
+  --red-light: #fdf2f2;
+  --blue: #1e5fa8;
+  --blue-light: #eff5ff;
+  --green: #0e7c5b;
+  --green-light: #f0fdf8;
+  --gold: #9a7c10;
+  --gold-light: #fffbea;
+  --r: 8px;
+  --shadow: 0 2px 8px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── ヘッダー ── */
+.site-header {
+  background: var(--ink);
+  color: #fff;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 3px solid var(--red);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+.header-icon { font-size: 30px; flex-shrink: 0; }
+.header-text h1 { font-size: 16px; font-weight: 700; font-family: 'Noto Serif JP', serif; letter-spacing: .03em; line-height: 1.4; }
+.header-text p { font-size: 11px; color: #99a; margin-top: 2px; }
+.header-badge {
+  margin-left: auto;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 11px;
+  color: #bbc;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── 通知バー ── */
+.notice {
+  background: var(--gold-light);
+  border-bottom: 1px solid #e8d98a;
+  padding: 8px 28px;
+  font-size: 12px;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── レイアウト ── */
+.layout { display: flex; min-height: calc(100vh - 82px); }
+
+/* ── サイドバー ── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--ink2);
+  padding: 32px 0;
+  position: sticky;
+  top: 82px;
+  height: calc(100vh - 82px);
+  overflow-y: auto;
+}
+.sidebar-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: #556;
+  padding: 0 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  margin-bottom: 8px;
+}
+.sidebar-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  color: #4a5570;
+  font-size: 13px;
+  cursor: default;
+  transition: all .15s;
+  border-left: 3px solid transparent;
+}
+.sidebar-step.active {
+  background: rgba(255,255,255,.07);
+  color: #e0e4f0;
+  border-left-color: var(--blue);
+}
+.sidebar-step.done { color: #5a9e7a; }
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.sidebar-step.done .step-num { background: #5a9e7a; border-color: #5a9e7a; color: #fff; }
+.sidebar-step.active .step-num { border-color: var(--blue); color: var(--blue); }
+
+/* ── メインコンテンツ ── */
+.main { flex: 1; padding: 28px 36px 60px; max-width: 860px; }
+
+/* ── カード ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--light);
+  border-radius: var(--r);
+  padding: 26px 30px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Noto Serif JP', serif;
+  color: var(--ink);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.badge {
+  background: var(--ink);
+  color: #fff;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.badge-blue { background: var(--blue); }
+.badge-green { background: var(--green); }
+.badge-red { background: var(--red); }
+
+/* ── セクション区切り ── */
+.sec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mid);
+  letter-spacing: .06em;
+  margin: 24px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--light);
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: var(--blue);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── フォームグループ ── */
+.fg { margin-bottom: 14px; }
+.fg label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--mid);
+}
+.fg label .req {
+  color: var(--red);
+  margin-left: 3px;
+  font-size: 11px;
+}
+.fg input[type=text],
+.fg input[type=number],
+.fg input[type=date],
+.fg select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #d4dae8;
+  border-radius: var(--r);
+  font-size: 13px;
+  color: var(--ink);
+  background: #fafbfd;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.fg select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6478' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.fg input:focus, .fg select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30,95,168,.12);
+  background: #fff;
+}
+.fg input[disabled], .fg select[disabled] {
+  background: #f0f1f4;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* ── グリッド ── */
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row .fg { flex: 1; min-width: 0; margin-bottom: 0; }
+.row .fg.zip { flex: 0 0 150px; min-width: 0; }
+.row .fg.narrow { flex: 0 0 120px; min-width: 0; }
+.row .fg.w2 { flex: 0 0 200px; min-width: 0; }
+.row + .fg, .row + .row { margin-top: 12px; }
+
+/* ── ラジオカード ── */
+.radios { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.radio-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 12px 16px;
+  border: 1.5px solid #d4dae8;
+  border-radius: var(--r);
+  flex: 1;
+  min-width: 200px;
+  transition: all .15s;
+  background: #fafbfd;
+}
+.radio-card:has(input:checked) {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.radio-card.green-radio:has(input:checked) {
+  border-color: var(--green);
+  background: var(--green-light);
+  box-shadow: 0 0 0 1px var(--green);
+}
+.radio-card input[type=radio] {
+  accent-color: var(--blue);
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ── アラートボックス ── */
+.warn {
+  background: var(--red-light);
+  border-left: 3px solid var(--red);
+  padding: 10px 14px;
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 13px;
+  color: #6b1f1f;
+  margin-top: 10px;
+}
+.info {
+  background: var(--blue-light);
+  border-left: 3px solid var(--blue);
+  padding: 10px 14px;
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 13px;
+  color: #1a3f6a;
+  margin-top: 10px;
+}
+.info-green {
+  background: var(--green-light);
+  border-left: 3px solid var(--green);
+  padding: 10px 14px;
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 13px;
+  color: #065f46;
+  margin-top: 10px;
+}
+.note { font-size: 11px; color: #888; margin-top: 5px; line-height: 1.6; }
+
+/* ── 種別セクション境界 ── */
+.agmt-section {
+  border: 1.5px solid var(--light);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  margin-top: 18px;
+  background: #fafbfd;
+}
+.agmt-section.agmt-yes { border-color: #93c0ee; background: #f7fbff; }
+.agmt-section.agmt-no  { border-color: #7ec8aa; background: #f5fdf9; }
+.agmt-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  padding: 3px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 16px;
+}
+.agmt-yes .agmt-label { background: #dbeafe; color: #1d4ed8; }
+.agmt-no  .agmt-label { background: #d1fae5; color: #065f46; }
+
+/* ── 費用テーブル ── */
+.cost-box {
+  background: #f9fafc;
+  border: 1px solid #e4e9f2;
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin-top: 10px;
+}
+.cost-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cost-table td { padding: 6px 8px; vertical-align: middle; }
+.cost-table td:last-child { text-align: right; white-space: nowrap; }
+.cost-table input {
+  width: 130px;
+  padding: 5px 10px;
+  text-align: right;
+  border: 1.5px solid #d4dae8;
+  border-radius: var(--r);
+  font-size: 13px;
+  font-family: inherit;
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+.cost-table input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30,95,168,.1);
+}
+.cost-total-row td { font-weight: 700; border-top: 1.5px solid var(--light); padding-top: 10px; }
+
+/* ── 子供フォーム ── */
+.children-container { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+.child-card {
+  background: #fff;
+  border: 1.5px solid var(--light);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  position: relative;
+}
+.child-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.child-num {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  background: var(--blue-light);
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+.btn-remove-child {
+  background: none;
+  border: 1.5px solid #e0e0e0;
+  border-radius: var(--r);
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #999;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+.btn-remove-child:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+.btn-add-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1.5px dashed #a0aec0;
+  border-radius: var(--r);
+  padding: 10px 18px;
+  font-size: 13px;
+  color: var(--mid);
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  justify-content: center;
+  transition: all .15s;
+  margin-top: 4px;
+}
+.btn-add-child:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.btn-add-child:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── 動的リスト（未払い分） ── */
+.claims-container { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.claim-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--light);
+  border-radius: var(--r);
+  padding: 12px 14px;
+}
+.claim-row .fg { margin-bottom: 0; }
+.btn-remove-claim {
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--r);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #bbb;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+  flex-shrink: 0;
+  height: 36px;
+  align-self: flex-end;
+}
+.btn-remove-claim:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+.btn-add-claim {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1.5px dashed #a0aec0;
+  border-radius: var(--r);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--mid);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+  margin-top: 4px;
+}
+.btn-add-claim:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.btn-add-claim:disabled { opacity: 0.4; cursor: not-allowed; }
+.claims-count {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+.claims-count.at-limit { color: var(--red); font-weight: 700; }
+
+/* ── 将来分フォーム ── */
+.future-container { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+.future-card {
+  background: #fff;
+  border: 1.5px solid var(--light);
+  border-radius: var(--r);
+  padding: 16px 18px;
+}
+.future-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.future-child-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mid);
+  background: #f0f2f8;
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+.future-sub-radios {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.sub-radio-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border: 1.5px solid #d4dae8;
+  border-radius: var(--r);
+  transition: all .15s;
+  background: #fafbfd;
+}
+.sub-radio-card:has(input:checked) {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  font-weight: 700;
+}
+.sub-radio-card input[type=radio] {
+  accent-color: var(--blue);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ── 送信エリア ── */
+.submit-area {
+  text-align: center;
+  padding: 12px 0 4px;
+  margin-top: 28px;
+}
+.submit-note { font-size: 12px; color: #999; margin-bottom: 16px; }
+.btn-gen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  padding: 16px 40px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  transition: all .2s;
+  box-shadow: 0 3px 12px rgba(184,50,50,.3);
+}
+.btn-gen:hover:not(:disabled) { background: #9e2424; transform: translateY(-1px); box-shadow: 0 5px 18px rgba(184,50,50,.35); }
+.btn-gen:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* ── ユーティリティ ── */
+.hidden { display: none !important; }
+.mt8 { margin-top: 8px; }
+.mt12 { margin-top: 12px; }
+.mt16 { margin-top: 16px; }
+.inline-flex { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ── 入力制限エラー表示 ── */
+.date-error {
+  font-size: 11px;
+  color: var(--red);
+  margin-top: 4px;
+  display: none;
+}
+.date-error.show { display: block; }
+
+/* ── プログレスインジケーター ── */
+.progress-bar {
+  height: 3px;
+  background: rgba(255,255,255,.15);
+  position: relative;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--blue);
+  transition: width .4s ease;
+}
+
+@media (max-width: 700px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; display: flex; overflow-x: auto; padding: 12px 0; }
+  .sidebar-title { display: none; }
+  .sidebar-step { flex-direction: column; gap: 4px; font-size: 11px; padding: 8px 14px; text-align: center; flex-shrink: 0; }
+  .main { padding: 16px; }
+  .row .fg.zip { flex: 0 0 130px; }
+  .row .fg.narrow { flex: 0 0 100px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── サイトヘッダー ── -->
+<header class="site-header">
+  <div class="header-icon">⚖️</div>
+  <div class="header-text">
+    <h1>債権差押命令申立書（一般先取特権用）自動生成システム</h1>
+    <p>養育費先取特権用・債務名義不要版　／　ブラウザ完結・サーバー送信なし</p>
+  </div>
+  <div class="header-badge">🔒 ローカル処理</div>
+</header>
+
+<!-- ── 通知バー ── -->
+<div class="notice">
+  🔒 入力した情報はブラウザ内のみで処理されます。外部サーバーへの送信は一切ありません。
+</div>
+
+<!-- ── メインレイアウト ── -->
+<div class="layout">
+
+  <!-- ── サイドバーナビ ── -->
+  <nav class="sidebar">
+    <div class="sidebar-title">STEP</div>
+    <div class="sidebar-step active" id="nav1"><span class="step-num">1</span><span>事前確認</span></div>
+    <div class="sidebar-step" id="nav2"><span class="step-num">2</span><span>養育費の種別</span></div>
+    <div class="sidebar-step" id="nav3"><span class="step-num">3</span><span>基本情報</span></div>
+    <div class="sidebar-step" id="nav4"><span class="step-num">4</span><span>当事者情報</span></div>
+    <div class="sidebar-step" id="nav5"><span class="step-num">5</span><span>子・債権情報</span></div>
+  </nav>
+
+  <!-- ── コンテンツ ── -->
+  <div class="main">
+
+    <!-- ══════════════════════════════════════
+         STEP 1: 事前確認
+    ══════════════════════════════════════ -->
+    <div class="card" id="step1">
+      <div class="card-title">
+        <span>事前確認</span>
+        <span class="badge">STEP 1</span>
+      </div>
+
+      <div class="info" style="margin-top:0">
+        このシステムは<strong>債務名義（判決・公正証書・調停調書等）を持たない方</strong>向けに、民法の一般先取特権に基づく債権差押命令申立書を作成します。
+      </div>
+
+      <div class="fg mt16">
+        <label>相手方（債務者）の現在の勤務先・所在地など、差し押さえるべき給与債権を特定できていますか？</label>
+        <div class="radios">
+          <label class="radio-card">
+            <input type="radio" name="q_emp" value="yes">
+            <span><strong>はい</strong>（勤務先・所在地を特定できている）</span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="q_emp" value="no">
+            <span><strong>いいえ</strong>（不明・調査が必要）</span>
+          </label>
+        </div>
+        <div id="warn_emp" class="warn hidden">
+          ⚠️ 勤務先が不明な場合は、まず裁判所の<strong>財産開示手続</strong>（民執§197）または<strong>第三者からの情報取得手続</strong>（民執§204）をご利用ください。勤務先を特定してから本申立てを行ってください。
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 2: 養育費の合意有無
+    ══════════════════════════════════════ -->
+    <div class="card hidden" id="step2">
+      <div class="card-title">
+        <span>養育費の合意の有無</span>
+        <span class="badge badge-blue">STEP 2</span>
+      </div>
+
+      <div class="fg">
+        <label>養育費について離婚時等に合意（口頭・書面問わず）はありましたか？</label>
+        <div class="radios">
+          <label class="radio-card">
+            <input type="radio" name="q_agmt" value="yes">
+            <span>
+              <strong>合意あり（形成養育費）</strong><br>
+              <small style="font-weight:400;color:#666">離婚協議書・誓約書等で金額を取り決めた場合</small>
+            </span>
+          </label>
+          <label class="radio-card green-radio">
+            <input type="radio" name="q_agmt" value="no">
+            <span>
+              <strong>合意なし（法定養育費）</strong><br>
+              <small style="font-weight:400;color:#666">取り決めなし・月２万円の法定養育費（民法766条の3）を請求する場合</small>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 3: 基本情報・申立情報
+    ══════════════════════════════════════ -->
+    <div class="card hidden" id="step3">
+      <div class="card-title">
+        <span>基本情報</span>
+        <span class="badge badge-blue">STEP 3</span>
+      </div>
+
+      <div class="sec">申立先裁判所・申立日</div>
+      <div class="row">
+        <div class="fg">
+          <label>申立先裁判所名<span class="req">*</span></label>
+          <input type="text" id="court_name" placeholder="例：東京地方裁判所">
+        </div>
+      </div>
+      <div class="row mt12">
+        <div class="fg narrow">
+          <label>申立年（西暦）</label>
+          <input type="number" id="app_year" placeholder="2026" min="2026">
+        </div>
+        <div class="fg narrow">
+          <label>月</label>
+          <input type="number" id="app_month" placeholder="4" min="1" max="12">
+        </div>
+        <div class="fg narrow">
+          <label>日</label>
+          <input type="number" id="app_day" placeholder="1" min="1" max="31">
+        </div>
+      </div>
+
+      <div class="sec">執行費用</div>
+      <div class="cost-box">
+        <table class="cost-table">
+          <tr><td>本申立手数料</td><td><strong>4,000円</strong>（固定）</td></tr>
+          <tr><td>資格証明書交付手数料（円）</td><td><input type="number" id="cert_fee" value="600"></td></tr>
+          <tr id="koseki_row" class="hidden"><td>戸籍全部事項証明書交付手数料（円）</td><td><input type="number" id="koseki_fee" value="450"></td></tr>
+          <tr id="jumin_row" class="hidden"><td>住民票の写し交付手数料（円）</td><td><input type="number" id="jumin_fee" value="300"></td></tr>
+          <tr><td>連絡用郵便切手代（円）</td><td><input type="number" id="postage" value="3000"></td></tr>
+          <tr class="cost-total-row"><td>執行費用合計</td><td><strong id="exec_cost_disp">7,600円</strong></td></tr>
+        </table>
+      </div>
+      <p class="note">※切手代は管轄裁判所の指定額に合わせて修正してください。合計額は自動計算されます。</p>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 4: 当事者情報
+    ══════════════════════════════════════ -->
+    <div class="card hidden" id="step4">
+      <div class="card-title">
+        <span>当事者情報</span>
+        <span class="badge badge-blue">STEP 4</span>
+      </div>
+
+      <!-- 申立人 -->
+      <div class="sec">申立人（債権者）</div>
+      <div class="row">
+        <div class="fg zip">
+          <label>郵便番号</label>
+          <input type="text" id="cr_zip" placeholder="100-0001" maxlength="8">
+        </div>
+        <div class="fg">
+          <label>住所（送達場所）<span class="req">*</span></label>
+          <input type="text" id="cr_addr" placeholder="東京都千代田区〇〇〇丁目〇番〇号">
+        </div>
+      </div>
+      <div class="row mt12">
+        <div class="fg">
+          <label>氏名<span class="req">*</span></label>
+          <input type="text" id="cr_name" placeholder="山田 花子">
+        </div>
+        <div class="fg">
+          <label>電話番号</label>
+          <input type="text" id="cr_tel" placeholder="090-0000-0000">
+        </div>
+        <div class="fg">
+          <label>FAX番号</label>
+          <input type="text" id="cr_fax" placeholder="03-0000-0000">
+        </div>
+      </div>
+
+      <!-- 債務者 -->
+      <div class="sec">債務者（相手方）</div>
+      <div class="row">
+        <div class="fg zip">
+          <label>郵便番号</label>
+          <input type="text" id="dr_zip" placeholder="150-0001" maxlength="8">
+        </div>
+        <div class="fg">
+          <label>住所（送達場所）<span class="req">*</span></label>
+          <input type="text" id="dr_addr" placeholder="東京都渋谷区〇〇〇丁目〇番〇号">
+        </div>
+      </div>
+      <div class="fg mt12">
+        <label>氏名<span class="req">*</span></label>
+        <input type="text" id="dr_name" placeholder="山田 太郎">
+      </div>
+
+      <!-- 第三債務者 -->
+      <div class="sec">第三債務者（勤務先）</div>
+      <div class="row">
+        <div class="fg zip">
+          <label>郵便番号</label>
+          <input type="text" id="td_zip" placeholder="160-0001" maxlength="8">
+        </div>
+        <div class="fg">
+          <label>所在地（送達場所）<span class="req">*</span></label>
+          <input type="text" id="td_addr" placeholder="東京都新宿区〇〇〇丁目〇番〇号">
+        </div>
+      </div>
+      <div class="row mt12">
+        <div class="fg">
+          <label>法人名（名称）<span class="req">*</span></label>
+          <input type="text" id="td_corp" placeholder="株式会社〇〇">
+        </div>
+        <div class="fg">
+          <label>代表者肩書・氏名</label>
+          <input type="text" id="td_rep" placeholder="代表取締役 鈴木 一郎">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STEP 5: 子・債権情報
+    ══════════════════════════════════════ -->
+    <div class="card hidden" id="step5">
+      <div class="card-title">
+        <span>子の情報・債権情報</span>
+        <span class="badge badge-blue">STEP 5</span>
+      </div>
+
+      <!-- ── 子供の情報 ── -->
+      <div class="sec">子の情報（最大4人）</div>
+      <div class="children-container" id="children_container"></div>
+      <button class="btn-add-child" id="btn_add_child" onclick="addChild()" type="button">
+        ＋ 子を追加する
+      </button>
+      <p class="note mt8">※最大4人まで登録できます。生年月日は任意の日付を入力できます。</p>
+
+      <!-- ── 確定期限が到来している債権（過去の未払分） ── -->
+      <div class="sec">確定期限が到来している債権（過去の未払分）</div>
+      <div class="info" style="margin-top:0">
+        発生月ごとに1件の債権として追加します。<strong>2026年4月1日以降</strong>に発生した月分のみ対象です。<br>
+        <span id="claim_limit_note"></span>
+      </div>
+
+      <!-- 合意あり専用：過去未払い -->
+      <div id="past_yes_area" class="agmt-section agmt-yes hidden">
+        <span class="agmt-label">✦ 合意あり（形成養育費）</span>
+
+        <div class="claims-container" id="claims_yes_container"></div>
+        <button class="btn-add-claim" id="btn_add_claim_yes" onclick="addClaim('yes')" type="button">
+          ＋ 未払月を追加する
+        </button>
+        <p class="claims-count" id="claims_yes_count">0 / 360 月分</p>
+      </div>
+
+      <!-- 合意なし専用：過去未払い -->
+      <div id="past_no_area" class="agmt-section agmt-no hidden">
+        <span class="agmt-label">✦ 合意なし（法定養育費）</span>
+        <div class="info-green" style="margin-top:0">
+          法定養育費は月2万円（民法766条の3）。離婚日〜請求対象最終月まで月ごとに自動計算も可能です。
+        </div>
+        <div class="fg mt12">
+          <label>離婚年月日<span class="req">*</span></label>
+          <input type="date" id="divorce_date" min="2026-04-01" onchange="validateMinDate(this)">
+          <p class="date-error" id="err_divorce_date">2026年4月1日以降の日付を入力してください</p>
+        </div>
+
+        <div class="claims-container" id="claims_no_container"></div>
+        <button class="btn-add-claim" id="btn_add_claim_no" onclick="addClaim('no')" type="button">
+          ＋ 未払月を追加する（月2万円）
+        </button>
+        <p class="claims-count" id="claims_no_count">0 / 216 月分</p>
+        <p class="note">法定養育費は最大216月分（18年分）です。</p>
+      </div>
+
+      <!-- ── 将来分定期金債権 ── -->
+      <div class="sec">確定期限が到来していない各定期金債権（将来分）</div>
+      <div class="info" style="margin-top:0">
+        登録した子1人につき1つの設定枠が表示されます。未到来最終年月の指定方法を選択してください。
+      </div>
+
+      <div class="future-container" id="future_container">
+        <p class="note" style="color:#aaa;text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>
+      </div>
+    </div>
+
+    <!-- ── 生成ボタン ── -->
+    <div class="card hidden" id="step_submit">
+      <div class="submit-area">
+        <p class="submit-note">内容をよく確認のうえ、専門家（弁護士・司法書士等）へのご相談をお勧めします</p>
+        <button class="btn-gen" id="btn_gen" type="button" disabled onclick="generate()">
+          <span>📄</span>
+          <span id="btn_txt">申立書 PDF を作成する（全４書類）</span>
+        </button>
+        <div id="status" style="margin-top:14px;font-size:14px;font-weight:700;min-height:20px;text-align:center"></div>
+      </div>
+    </div>
+
+  </div><!-- /.main -->
+</div><!-- /.layout -->
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════════════
+   グローバル状態
+══════════════════════════════════════════════════ */
+let agmtType = null;          // 'yes' | 'no'
+let childCount = 0;           // 現在の子供数
+let claimsYes = [];           // 合意あり未払リスト
+let claimsNo  = [];           // 合意なし未払リスト
+const MAX_CHILDREN    = 4;
+const MAX_CLAIMS_YES  = 360;
+const MAX_CLAIMS_NO   = 216;
+const MIN_DATE_STR    = '2026-04-01';  // 改正法施行日
+
+/* ══════════════════════════════════════════════════
+   ユーティリティ
+══════════════════════════════════════════════════ */
+function $(id){ return document.getElementById(id); }
+function show(id){ $(id).classList.remove('hidden'); }
+function hide(id){ $(id).classList.add('hidden'); }
+function isHidden(id){ return $(id).classList.contains('hidden'); }
+
+/** 西暦 → 令和 変換 */
+function toReiwa(year){ return year - 2018; }
+
+/** 執行費用計算 */
+function calcExecCost(){
+  const base = 4000 + (parseInt($('cert_fee').value)||0) + (parseInt($('postage').value)||0);
+  if(agmtType === 'no'){
+    return base + (parseInt($('koseki_fee').value)||0) + (parseInt($('jumin_fee').value)||0);
+  }
+  return base;
+}
+
+/** 執行費用表示更新 */
+function updateExecCostDisplay(){
+  const el = $('exec_cost_disp');
+  if(el) el.textContent = calcExecCost().toLocaleString() + '円';
+}
+
+/** 日付 min バリデーション */
+function validateMinDate(input){
+  const errId = 'err_' + input.id;
+  const errEl = $(errId);
+  if(!errEl) return;
+  if(input.value && input.value < MIN_DATE_STR){
+    errEl.classList.add('show');
+    input.style.borderColor = 'var(--red)';
+  } else {
+    errEl.classList.remove('show');
+    input.style.borderColor = '';
+  }
+}
+
+/** 年・月入力 min バリデーション（西暦年・月ペア） */
+function validateYearMonth(yearId, monthId){
+  const y = parseInt($(yearId)?.value) || 0;
+  const m = parseInt($(monthId)?.value) || 0;
+  // 2026年4月以降
+  if(y === 0 || m === 0) return;
+  if(y < 2026 || (y === 2026 && m < 4)){
+    $(yearId).style.borderColor = 'var(--red)';
+    $(monthId).style.borderColor = 'var(--red)';
+  } else {
+    $(yearId).style.borderColor = '';
+    $(monthId).style.borderColor = '';
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   STEP 制御
+══════════════════════════════════════════════════ */
+function updateNav(){
+  const steps = [
+    { navId:'nav1', stepId:'step1', condition: true },
+    { navId:'nav2', stepId:'step2', condition: true },
+    { navId:'nav3', stepId:'step3', condition: agmtType !== null },
+    { navId:'nav4', stepId:'step4', condition: agmtType !== null },
+    { navId:'nav5', stepId:'step5', condition: agmtType !== null },
+  ];
+  steps.forEach(s => {
+    const nav = $(s.navId);
+    if(!isHidden(s.stepId)){
+      nav.classList.add('active');
+      nav.classList.remove('done');
+    } else if(s.condition){
+      nav.classList.remove('active');
+      nav.classList.add('done');
+    } else {
+      nav.classList.remove('active','done');
+    }
+  });
+}
+
+/** STEP 1: 勤務先確認 */
+function onStep1(){
+  const val = document.querySelector('input[name="q_emp"]:checked')?.value;
+  if(val === 'no'){
+    show('warn_emp');
+    hide('step2');
+    hideStepsFrom3();
+  } else if(val === 'yes'){
+    hide('warn_emp');
+    show('step2');
+  }
+  updateNav();
+}
+
+/** STEP 2: 合意有無 */
+function onStep2(){
+  const val = document.querySelector('input[name="q_agmt"]:checked')?.value;
+  agmtType = val;
+
+  // 費用行の表示切り替え
+  if(val === 'no'){
+    show('koseki_row');
+    show('jumin_row');
+  } else {
+    hide('koseki_row');
+    hide('jumin_row');
+  }
+  updateExecCostDisplay();
+
+  // STEP 3〜5 表示
+  show('step3');
+  show('step4');
+  show('step5');
+  show('step_submit');
+  $('btn_gen').disabled = false;
+
+  // 種別別フォーム表示
+  if(val === 'yes'){
+    show('past_yes_area');
+    hide('past_no_area');
+    $('claim_limit_note').textContent = '形成養育費：最大360月分（30年分）';
+  } else {
+    hide('past_yes_area');
+    show('past_no_area');
+    $('claim_limit_note').textContent = '法定養育費：最大216月分（18年分）';
+  }
+
+  // 将来分フォームを再描画
+  rebuildFutureCards();
+  updateNav();
+}
+
+function hideStepsFrom3(){
+  hide('step3'); hide('step4'); hide('step5'); hide('step_submit');
+  agmtType = null;
+}
+
+/* ══════════════════════════════════════════════════
+   子供フォーム
+══════════════════════════════════════════════════ */
+function addChild(){
+  if(childCount >= MAX_CHILDREN) return;
+  childCount++;
+  const idx = childCount;
+
+  const container = $('children_container');
+  const div = document.createElement('div');
+  div.className = 'child-card';
+  div.id = 'child_card_' + idx;
+  div.innerHTML = `
+    <div class="child-card-header">
+      <span class="child-num">第${idx}子</span>
+      ${idx > 1 ? `<button class="btn-remove-child" type="button" onclick="removeChild(${idx})">✕ 削除</button>` : ''}
+    </div>
+    <div class="row">
+      <div class="fg">
+        <label>子の氏名</label>
+        <input type="text" id="child_name_${idx}" placeholder="山田 七子" oninput="onChildNameChange(${idx})">
+      </div>
+      <div class="fg w2">
+        <label>生年月日</label>
+        <input type="date" id="child_birth_${idx}">
+      </div>
+    </div>
+  `;
+  container.appendChild(div);
+
+  // 最大数チェック
+  if(childCount >= MAX_CHILDREN){
+    $('btn_add_child').disabled = true;
+    $('btn_add_child').textContent = '（最大4人まで）';
+  }
+
+  // 将来分フォームに枠を追加
+  rebuildFutureCards();
+}
+
+function removeChild(idx){
+  const card = $('child_card_' + idx);
+  if(card) card.remove();
+  childCount--;
+  renumberChildren();
+  $('btn_add_child').disabled = false;
+  $('btn_add_child').textContent = '＋ 子を追加する';
+  rebuildFutureCards();
+}
+
+function renumberChildren(){
+  const container = $('children_container');
+  const cards = container.querySelectorAll('.child-card');
+  childCount = cards.length;
+  cards.forEach((card, i) => {
+    const n = i + 1;
+    card.id = 'child_card_' + n;
+    card.querySelector('.child-num').textContent = `第${n}子`;
+    const btn = card.querySelector('.btn-remove-child');
+    if(btn) btn.setAttribute('onclick', `removeChild(${n})`);
+
+    const nameIn = card.querySelector('input[type=text]');
+    if(nameIn){ nameIn.id = 'child_name_' + n; nameIn.setAttribute('oninput', `onChildNameChange(${n})`); }
+    const dateIn = card.querySelector('input[type=date]');
+    if(dateIn) dateIn.id = 'child_birth_' + n;
+  });
+}
+
+function onChildNameChange(idx){
+  // 将来分カードのラベルも更新
+  const futureLbl = $('future_child_label_' + idx);
+  const val = $('child_name_' + idx)?.value;
+  if(futureLbl) futureLbl.textContent = val ? `${val}（第${idx}子）` : `第${idx}子`;
+}
+
+/* ══════════════════════════════════════════════════
+   未払い分（確定期限到来済）動的リスト
+══════════════════════════════════════════════════ */
+function addClaim(type){
+  const isYes = type === 'yes';
+  const arr   = isYes ? claimsYes : claimsNo;
+  const limit = isYes ? MAX_CLAIMS_YES : MAX_CLAIMS_NO;
+  if(arr.length >= limit) return;
+
+  const id = Date.now();
+  arr.push(id);
+
+  const container = $(isYes ? 'claims_yes_container' : 'claims_no_container');
+  const div = document.createElement('div');
+  div.className = 'claim-row';
+  div.id = 'claim_' + type + '_' + id;
+
+  if(isYes){
+    div.innerHTML = `
+      <div class="fg narrow">
+        <label>発生年（西暦）</label>
+        <input type="number" id="cy_year_${id}" placeholder="2026" min="2026" style="width:100%"
+          onchange="validateClaimYear(this)">
+      </div>
+      <div class="fg narrow">
+        <label>発生月</label>
+        <input type="number" id="cy_month_${id}" placeholder="4" min="1" max="12" style="width:100%">
+      </div>
+      <div class="fg">
+        <label>未払額（円）</label>
+        <input type="number" id="cy_amt_${id}" placeholder="50000" min="1" style="width:100%">
+      </div>
+      <button class="btn-remove-claim" type="button" onclick="removeClaim('yes', ${id})">✕</button>
+    `;
+  } else {
+    // 合意なしは月2万円固定、月だけ入力
+    div.innerHTML = `
+      <div class="fg narrow">
+        <label>発生年（西暦）</label>
+        <input type="number" id="cn_year_${id}" placeholder="2026" min="2026" style="width:100%"
+          onchange="validateClaimYear(this)">
+      </div>
+      <div class="fg narrow">
+        <label>発生月</label>
+        <input type="number" id="cn_month_${id}" placeholder="4" min="1" max="12" style="width:100%">
+      </div>
+      <div class="fg" style="flex:0 0 120px">
+        <label>月額</label>
+        <input type="text" value="20,000円" disabled style="width:100%;background:#f0f2f8;color:#888">
+      </div>
+      <div class="fg narrow">
+        <label>備考（日割等）</label>
+        <input type="text" id="cn_note_${id}" placeholder="初月日割" style="width:100%">
+      </div>
+      <button class="btn-remove-claim" type="button" onclick="removeClaim('no', ${id})">✕</button>
+    `;
+  }
+
+  container.appendChild(div);
+  updateClaimsCount(type);
+}
+
+function removeClaim(type, id){
+  const arr = type === 'yes' ? claimsYes : claimsNo;
+  const idx = arr.indexOf(id);
+  if(idx > -1) arr.splice(idx, 1);
+  const el = $('claim_' + type + '_' + id);
+  if(el) el.remove();
+  updateClaimsCount(type);
+}
+
+function updateClaimsCount(type){
+  const isYes = type === 'yes';
+  const arr   = isYes ? claimsYes : claimsNo;
+  const limit = isYes ? MAX_CLAIMS_YES : MAX_CLAIMS_NO;
+  const countEl = $(isYes ? 'claims_yes_count' : 'claims_no_count');
+  const btn     = $(isYes ? 'btn_add_claim_yes' : 'btn_add_claim_no');
+
+  if(countEl){
+    countEl.textContent = `${arr.length} / ${limit} 月分`;
+    countEl.classList.toggle('at-limit', arr.length >= limit);
+  }
+  if(btn) btn.disabled = arr.length >= limit;
+}
+
+/** 発生年の2026年4月以降バリデーション */
+function validateClaimYear(input){
+  const y = parseInt(input.value)||0;
+  if(y > 0 && y < 2026){
+    input.style.borderColor = 'var(--red)';
+    input.title = '2026年以降を入力してください';
+  } else {
+    input.style.borderColor = '';
+    input.title = '';
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   将来分定期金債権フォーム
+══════════════════════════════════════════════════ */
+function rebuildFutureCards(){
+  const container = $('future_container');
+  container.innerHTML = '';
+
+  if(childCount === 0){
+    container.innerHTML = '<p class="note" style="color:#aaa;text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>';
+    return;
+  }
+
+  for(let i = 1; i <= childCount; i++){
+    const card = buildFutureCard(i);
+    container.appendChild(card);
+  }
+}
+
+function buildFutureCard(idx){
+  const childName = $('child_name_' + idx)?.value || '';
+  const labelText = childName ? `${childName}（第${idx}子）` : `第${idx}子`;
+  const isYes = agmtType === 'yes';
+
+  const div = document.createElement('div');
+  div.className = 'future-card';
+  div.id = 'future_card_' + idx;
+
+  // 支払い期日・月額（合意あり専用）
+  const payInfo = isYes ? `
+    <div class="row mt12">
+      <div class="fg narrow">
+        <label>支払期日（毎月〇日）<span class="req">*</span></label>
+        <input type="number" id="pay_day_${idx}" placeholder="25" min="1" max="31">
+      </div>
+      <div class="fg">
+        <label>月額（円）<span class="req">*</span></label>
+        <input type="number" id="monthly_amt_${idx}" placeholder="50000" min="1">
+      </div>
+    </div>
+  ` : `
+    <div class="info-green" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>
+  `;
+
+  // 開始年月
+  const startLabel = isYes ? '未到来開始年月' : '未到来開始年月';
+
+  div.innerHTML = `
+    <div class="future-card-header">
+      <span class="future-child-label" id="future_child_label_${idx}">${labelText}</span>
+    </div>
+
+    <!-- 開始年月 -->
+    <div class="row">
+      <div class="fg narrow">
+        <label>${startLabel}（西暦・年）<span class="req">*</span></label>
+        <input type="number" id="fs_year_${idx}" placeholder="2026" min="2026"
+          onchange="validateFutureYear(this)">
+      </div>
+      <div class="fg narrow">
+        <label>月<span class="req">*</span></label>
+        <input type="number" id="fs_month_${idx}" placeholder="4" min="1" max="12">
+      </div>
+    </div>
+
+    ${payInfo}
+
+    <!-- 未到来最終年月の指定方法 -->
+    <div style="margin-top:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">未到来最終年月の指定方法</div>
+      <div class="future-sub-radios">
+        <label class="sub-radio-card">
+          <input type="radio" name="fe_type_${idx}" value="specific" checked
+            onchange="onFutureEndTypeChange(${idx})">
+          <span>A: 特定の年月を直接入力</span>
+        </label>
+        <label class="sub-radio-card">
+          <input type="radio" name="fe_type_${idx}" value="age"
+            onchange="onFutureEndTypeChange(${idx})">
+          <span>B: 子が満〇歳に達する日まで</span>
+        </label>
+      </div>
+
+      <!-- A: 特定年月 -->
+      <div id="fe_specific_${idx}" style="margin-top:8px">
+        <div class="row">
+          <div class="fg narrow">
+            <label>最終年（西暦）<span class="req">*</span></label>
+            <input type="number" id="fe_year_${idx}" placeholder="2044" min="2026"
+              onchange="validateFutureYear(this)">
+          </div>
+          <div class="fg narrow">
+            <label>月<span class="req">*</span></label>
+            <input type="number" id="fe_month_${idx}" placeholder="3" min="1" max="12">
+          </div>
+        </div>
+      </div>
+
+      <!-- B: 年齢指定 -->
+      <div id="fe_age_${idx}" class="hidden" style="margin-top:8px">
+        <div class="row">
+          <div class="fg narrow">
+            <label>満年齢（歳）<span class="req">*</span></label>
+            <select id="fe_age_val_${idx}">
+              ${Array.from({length:22},(_,k)=>k+1).map(a =>
+                `<option value="${a}" ${a===18?'selected':''}>${a}歳</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div class="fg">
+            <label>子の生年月日<span class="req">*</span></label>
+            <input type="date" id="fe_birth_${idx}">
+            <p class="note">※子の生年月日から満〇歳に達する日の前日を自動算出します</p>
+          </div>
+        </div>
+        <div id="fe_age_calc_${idx}" class="info" style="margin-top:8px;display:none">
+          計算結果：
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 年齢指定時の自動計算バインド
+  setTimeout(()=>{
+    const ageSelect = $(`fe_age_val_${idx}`);
+    const birthInput = $(`fe_birth_${idx}`);
+    if(ageSelect) ageSelect.addEventListener('change', ()=>calcAgeEnd(idx));
+    if(birthInput) birthInput.addEventListener('change', ()=>calcAgeEnd(idx));
+  }, 0);
+
+  return div;
+}
+
+function onFutureEndTypeChange(idx){
+  const val = document.querySelector(`input[name="fe_type_${idx}"]:checked`)?.value;
+  if(val === 'specific'){
+    show(`fe_specific_${idx}`);
+    hide(`fe_age_${idx}`);
+  } else {
+    hide(`fe_specific_${idx}`);
+    show(`fe_age_${idx}`);
+  }
+}
+
+/** 将来分の開始・終了年バリデーション */
+function validateFutureYear(input){
+  const y = parseInt(input.value)||0;
+  if(y > 0 && y < 2026){
+    input.style.borderColor = 'var(--red)';
+    input.title = '2026年以降を入力してください';
+  } else {
+    input.style.borderColor = '';
+    input.title = '';
+  }
+}
+
+/** 年齢指定の終了日自動計算 */
+function calcAgeEnd(idx){
+  const age   = parseInt($(`fe_age_val_${idx}`)?.value)||0;
+  const birth = $(`fe_birth_${idx}`)?.value;
+  const calcEl = $(`fe_age_calc_${idx}`);
+  if(!birth || !age || !calcEl){ if(calcEl) calcEl.style.display='none'; return; }
+
+  const d = new Date(birth);
+  d.setFullYear(d.getFullYear() + age);
+  d.setDate(d.getDate() - 1); // 満〇歳に達する日の前日
+
+  const y = d.getFullYear(), m = d.getMonth()+1, day = d.getDate();
+  const reiwa = toReiwa(y);
+
+  calcEl.style.display = 'block';
+  calcEl.textContent = `計算結果：令和${reiwa}年${m}月${day}日（${y}年${m}月${day}日）まで`;
+}
+
+/* ══════════════════════════════════════════════════
+   費用フォームのイベントバインド
+══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   初期化
+══════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', ()=>{
+  // ── STEP1 ラジオ：勤務先確認
+  document.querySelectorAll('input[name="q_emp"]').forEach(el => {
+    el.addEventListener('change', onStep1);
+  });
+
+  // ── STEP2 ラジオ：合意有無
+  document.querySelectorAll('input[name="q_agmt"]').forEach(el => {
+    el.addEventListener('change', onStep2);
+  });
+
+  // 費用フィールドのリスナー
+  ['cert_fee','koseki_fee','jumin_fee','postage'].forEach(id => {
+    const el = $(id);
+    if(el) el.addEventListener('input', updateExecCostDisplay);
+  });
+
+  // 申立日のデフォルト（今日）
+  const today = new Date();
+  const appYear  = $('app_year');
+  const appMonth = $('app_month');
+  const appDay   = $('app_day');
+  if(appYear)  appYear.value  = today.getFullYear();
+  if(appMonth) appMonth.value = today.getMonth()+1;
+  if(appDay)   appDay.value   = today.getDate();
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   PDF生成ロジック
+   フォントは同一ディレクトリの NotoSansJP-Regular.ttf を fetch で読み込みます。
+   ファイルが存在しない場合は jsPDF デフォルトフォント（日本語非対応）で動作します。
+══════════════════════════════════════════════════════════════════ */
+
+// ── フォントキャッシュ（一度読んだら再利用） ──
+// ArrayBuffer を保持。null = 未読込、false = 読込失敗済
+let _fontCache = null;
+const FONT_PATH = './NotoSansJP-Regular.ttf';
+const FONT_NAME = 'NotoSansJP';
+
+/**
+ * フォントを fetch で非同期読み込みし ArrayBuffer を返す。
+ * 2回目以降はキャッシュを返すため fetch は走らない。
+ * 失敗した場合は null を返す（呼び出し元はデフォルトフォントで継続）。
+ */
+async function loadFont() {
+  if (_fontCache !== null) return _fontCache;   // キャッシュ済み（成功 or 失敗）
+  try {
+    const res = await fetch(FONT_PATH);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    _fontCache = await res.arrayBuffer();
+    console.info('フォント読み込み完了:', FONT_PATH);
+  } catch (e) {
+    console.warn('フォント読み込み失敗（デフォルトフォントで続行）:', e.message);
+    _fontCache = false;   // 失敗を記録 → 次回以降スキップ
+  }
+  return _fontCache;
+}
+
+/**
+ * ArrayBuffer → Base64 文字列変換（jsPDF の addFileToVFS に渡す形式）
+ */
+function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunk = 8192;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+/**
+ * jsPDF インスタンスにフォントを登録し、setFont する。
+ * fontBuffer が falsy の場合は何もしない（デフォルトフォントのまま）。
+ */
+function registerFont(pdf, fontBuffer) {
+  if (!fontBuffer) return;
+  try {
+    const b64 = arrayBufferToBase64(fontBuffer);
+    pdf.addFileToVFS('NotoSansJP-Regular.ttf', b64);
+    pdf.addFont('NotoSansJP-Regular.ttf', FONT_NAME, 'normal');
+    pdf.setFont(FONT_NAME, 'normal');
+  } catch (e) {
+    console.warn('jsPDF フォント登録失敗:', e.message);
+  }
+}
+
+/* ─────────────────────────────────────────
+   入力値取得ヘルパー
+───────────────────────────────────────── */
+function gv(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function gi(id){ return parseInt(gv(id)) || 0; }
+
+/** 西暦 → 令和 */
+function西暦to令和(y){ return y - 2018; }
+
+/** 箇条書き記号（ア・イ・ウ…） */
+const KA_ROW = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+function kigo(n){ return KA_ROW[n] || String(n+1); }
+
+/** 数値を日本語通貨表記 */
+function fmt(n){ return Number(n).toLocaleString('ja-JP'); }
+
+/* ─────────────────────────────────────────
+   フォームデータ収集
+───────────────────────────────────────── */
+function collectData(){
+  const isYes = agmtType === 'yes';
+
+  // 基本
+  const court    = gv('court_name') || '○○地方裁判所';
+  const appY     = gi('app_year')  || new Date().getFullYear();
+  const appM     = gi('app_month') || (new Date().getMonth()+1);
+  const appD     = gi('app_day')   || new Date().getDate();
+  const appReiwa = 西暦to令和(appY);
+
+  // 申立人
+  const crZip  = gv('cr_zip');
+  const crAddr = gv('cr_addr');
+  const crName = gv('cr_name') || '（申立人）';
+  const crTel  = gv('cr_tel');
+  const crFax  = gv('cr_fax');
+
+  // 債務者
+  const drZip  = gv('dr_zip');
+  const drAddr = gv('dr_addr');
+  const drName = gv('dr_name') || '（債務者）';
+
+  // 第三債務者
+  const tdZip  = gv('td_zip');
+  const tdAddr = gv('td_addr');
+  const tdCorp = gv('td_corp') || '（第三債務者）';
+  const tdRep  = gv('td_rep');
+
+  // 子
+  const children = [];
+  const container = document.getElementById('children_container');
+  const childCards = container ? container.querySelectorAll('.child-card') : [];
+  childCards.forEach((card, i) => {
+    const n = i + 1;
+    children.push({
+      name  : gv('child_name_' + n) || `第${n}子`,
+      birth : gv('child_birth_' + n),   // YYYY-MM-DD or ''
+    });
+  });
+  const childrenNames = children.map(c => c.name).join('、');
+
+  // 執行費用
+  const certFee   = gi('cert_fee');
+  const postage   = gi('postage');
+  const kosekiFee = isYes ? 0 : gi('koseki_fee');
+  const juminFee  = isYes ? 0 : gi('jumin_fee');
+  const execCost  = 4000 + certFee + postage + kosekiFee + juminFee;
+
+  // 過去未払い債権リスト
+  const pastClaims = [];
+  if(isYes){
+    claimsYes.forEach(id => {
+      const y   = gi('cy_year_'  + id);
+      const m   = gi('cy_month_' + id);
+      const amt = gi('cy_amt_'   + id);
+      if(y && m && amt) pastClaims.push({ year: y, month: m, amt });
+    });
+  } else {
+    claimsNo.forEach(id => {
+      const y = gi('cn_year_'  + id);
+      const m = gi('cn_month_' + id);
+      if(y && m) pastClaims.push({ year: y, month: m, amt: 20000 });
+    });
+  }
+  const pastTotal = pastClaims.reduce((s, c) => s + c.amt, 0);
+  const claimTotal = pastTotal + execCost;  // 請求債権（確定期限到来分）合計
+
+  // 将来分：子ごと
+  const futureClaims = [];
+  children.forEach((child, i) => {
+    const n       = i + 1;
+    const fsY     = gi('fs_year_'  + n);
+    const fsM     = gi('fs_month_' + n);
+    const feType  = (document.querySelector(`input[name="fe_type_${n}"]:checked`) || {}).value || 'specific';
+    let endText   = '';
+    let endReiwaY = 0, endM = 0;
+
+    if(feType === 'specific'){
+      const feY = gi('fe_year_'  + n);
+      const feM = gi('fe_month_' + n);
+      endReiwaY = 西暦to令和(feY);
+      endM      = feM;
+      endText   = `令和${endReiwaY}年${feM}月`;
+    } else {
+      // 年齢指定
+      const age   = gi('fe_age_val_' + n);
+      const birth = gv('fe_birth_'   + n);
+      if(isYes){
+        endText = `子${child.name}が満${age}歳に達する日の属する月`;
+      } else {
+        let birthStr = birth || child.birth || '';
+        // 生年月日を整形
+        const bLabel = birthStr
+          ? (()=>{ const d=new Date(birthStr); return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`; })()
+          : '（生年月日）';
+        // 前日計算
+        let prevDayText = '';
+        if(birth){
+          const d = new Date(birth);
+          d.setFullYear(d.getFullYear() + age);
+          d.setDate(d.getDate() - 1);
+          const ry = 西暦to令和(d.getFullYear());
+          prevDayText = `令和${ry}年${d.getMonth()+1}月${d.getDate()}日`;
+        }
+        endText = `子${child.name}（生年月日${bLabel}）の${age}歳の誕生日の前日${prevDayText ? '（'+prevDayText+'）' : ''}`;
+        if(birth){
+          const d2 = new Date(birth);
+          d2.setFullYear(d2.getFullYear() + age);
+          d2.setDate(d2.getDate() - 1);
+          endReiwaY = 西暦to令和(d2.getFullYear());
+          endM = d2.getMonth()+1;
+        }
+      }
+    }
+
+    const payDay  = isYes ? gi('pay_day_'     + n) : null;
+    const monthly = isYes ? gi('monthly_amt_' + n) : 20000;
+
+    futureClaims.push({
+      childName : child.name,
+      fsReiwaY  : 西暦to令和(fsY),
+      fsM,
+      endText,
+      endReiwaY,
+      endM,
+      payDay,
+      monthly,
+    });
+  });
+
+  return {
+    isYes, court,
+    appReiwa, appM, appD,
+    crZip, crAddr, crName, crTel, crFax,
+    drZip, drAddr, drName,
+    tdZip, tdAddr, tdCorp, tdRep,
+    children, childrenNames,
+    certFee, postage, kosekiFee, juminFee, execCost,
+    pastClaims, pastTotal, claimTotal,
+    futureClaims,
+    // 合意なし専用
+    divorceDate : gv('divorce_date'),
+  };
+}
+
+/* ─────────────────────────────────────────
+   PDF レイアウト定数・ヘルパー群
+───────────────────────────────────────── */
+const PDF_ML = 25;   // 左マージン mm
+const PDF_MR = 18;   // 右マージン mm
+const PDF_MT = 30;   // 上マージン mm
+const PDF_MB = 22;   // 下マージン mm
+const PDF_PW = 210;  // A4 幅
+const PDF_PH = 297;  // A4 高さ
+const PDF_FS = 10.5; // 本文フォントサイズ pt
+const LINES_PER_PAGE = 30;
+const TEXT_H  = PDF_PH - PDF_MT - PDF_MB;         // テキスト領域高さ
+const LINE_H  = TEXT_H / LINES_PER_PAGE;           // 1行高さ ≈ 8.17mm
+const TEXT_W  = PDF_PW - PDF_ML - PDF_MR;          // テキスト幅
+
+function makePdfHelper(pdf, FN){
+  let y = PDF_MT, pageNum = 1;
+
+  function setF(sz){ pdf.setFont(FN, 'normal'); pdf.setFontSize(sz || PDF_FS); }
+  setF(PDF_FS);
+
+  function footer(){
+    setF(9);
+    const s = `- ${pageNum} -`;
+    pdf.text(s, (PDF_PW - pdf.getTextWidth(s)) / 2, PDF_PH - 8);
+  }
+
+  function newPage(){
+    footer();
+    pdf.addPage();
+    pageNum++;
+    y = PDF_MT;
+    setF(PDF_FS);
+  }
+
+  function chk(needLines){
+    if(y + LINE_H * (needLines || 1) > PDF_PH - PDF_MB){ newPage(); }
+  }
+
+  // テキスト出力（折り返し・自動改ページ対応）
+  function tx(s, indMM, sz){
+    setF(sz || PDF_FS);
+    if(s === null || s === undefined){ y += LINE_H; return; }
+    const ind = indMM || 0;
+    const lines = pdf.splitTextToSize(String(s), TEXT_W - ind);
+    lines.forEach(l => {
+      chk(1);
+      pdf.text(l, PDF_ML + ind, y);
+      y += LINE_H;
+    });
+  }
+
+  function txR(s, sz){
+    setF(sz || PDF_FS);
+    const str = String(s || '');
+    const tw  = pdf.getTextWidth(str);
+    chk(1);
+    pdf.text(str, PDF_PW - PDF_MR - tw, y);
+    y += LINE_H;
+  }
+
+  function txC(s, sz){
+    setF(sz || PDF_FS);
+    const str = String(s || '');
+    const tw  = pdf.getTextWidth(str);
+    chk(1);
+    pdf.text(str, (PDF_PW - tw) / 2, y);
+    y += LINE_H;
+  }
+
+  function sp(n){ y += LINE_H * (n || 1); }
+
+  function hline(){
+    pdf.setLineWidth(0.25);
+    pdf.line(PDF_ML, y, PDF_PW - PDF_MR, y);
+    y += 1.5;
+  }
+
+  function docTitle(s){
+    sp(0.3);
+    txC(s, 13);
+    hline();
+    sp(0.3);
+  }
+
+  return { tx, txR, txC, sp, hline, docTitle, newPage, footer, setF, getY: ()=>y };
+}
+
+/* ─────────────────────────────────────────
+   書類1: 申立書表紙
+───────────────────────────────────────── */
+function buildDoc1(h, d){
+  const { tx, txR, sp, hline, docTitle } = h;
+
+  docTitle('債 権 差 押 命 令 申 立 書');
+
+  txR(`${d.court}　御中`);
+  txR(`令和${d.appReiwa}年${d.appM}月${d.appD}日`);
+  sp(0.5);
+  txR(`申立人　${d.crName}　㊞`);
+  if(d.crTel) txR(`電　話　${d.crTel}`);
+  if(d.crFax) txR(`ＦＡＸ　${d.crFax}`);
+  sp(1);
+
+  tx('当事者　　　別紙目録記載のとおり');
+  tx('担保権　　　別紙目録記載のとおり');
+  tx('被担保債権　別紙目録記載のとおり');
+  tx('請求債権　　別紙目録記載のとおり');
+  sp(1);
+
+  tx('申立人は，債務者に対し，別紙担保権・被担保債権・請求債権目録記載の債権を有しているが，債務者がその支払をしないので，債務者が第三債務者に対して有する別紙差押債権目録記載の債権の差押命令を求める。');
+  sp(0.5);
+  tx('□　第三債務者に対する陳述催告の申立て（民事執行法第１４７条１項）をする。');
+  sp(1.5);
+
+  tx('添 付 書 類');
+  sp(0.3);
+  tx('１　当事者目録　　　　　　　　　　　　１通', 6);
+  tx('２　担保権・被担保債権・請求債権目録　１通', 6);
+  tx('３　差押債権目録　　　　　　　　　　　１通', 6);
+  if(d.isYes){
+    tx('４　担保権の存在を証する文書　　　　　１通', 6);
+    tx('５　資格証明書　　　　　　　　　　　　１通', 6);
+  } else {
+    tx('４　戸籍事項全部証明書　　　　　　　　１通', 6);
+    tx('５　住民票の写し　　　　　　　　　　　１通', 6);
+    tx('６　資格証明書　　　　　　　　　　　　１通', 6);
+  }
+}
+
+/* ─────────────────────────────────────────
+   書類2: 当事者目録
+───────────────────────────────────────── */
+function buildDoc2(h, d){
+  const { tx, sp, docTitle } = h;
+
+  docTitle('当　事　者　目　録');
+
+  tx(`〒${d.crZip}　${d.crAddr}　（送達場所）`);
+  tx(`申立人(債権者)　　${d.crName}`);
+  if(d.crTel) tx(`連絡先　${d.crTel}`);
+  sp(1.2);
+
+  tx(`〒${d.drZip}　${d.drAddr}　（送達場所）`);
+  tx(`債　務　者　　${d.drName}`);
+  sp(1.2);
+
+  tx(`〒${d.tdZip}　${d.tdAddr}　（送達場所）`);
+  tx(`第三債務者　　${d.tdCorp}`);
+  if(d.tdRep) tx(d.tdRep, 12);
+}
+
+/* ─────────────────────────────────────────
+   書類3: 担保権・被担保債権・請求債権目録
+───────────────────────────────────────── */
+function buildDoc3(h, d){
+  const { tx, sp, docTitle } = h;
+
+  docTitle('担保権・被担保債権・請求債権目録');
+
+  // ── 1 担保権 ──
+  tx('１　担保権');
+  if(d.isYes){
+    tx(`債権者、債務者間の${d.childrenNames}について民法７６６条の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権`, 6);
+  } else {
+    tx(`債権者、債務者間の${d.childrenNames}について民法７６６条の３の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権`, 6);
+  }
+  sp(0.8);
+
+  // ── 2 被担保債権 ──
+  tx('２　被担保債権');
+
+  // （1）確定期限到来済
+  tx(`（１）確定期限が到来している債権　金${fmt(d.pastTotal)}円`, 6);
+  d.pastClaims.forEach((c, i) => {
+    const sym = kigo(i);
+    const ry  = 西暦to令和(c.year);
+    tx(`${sym}　金${fmt(c.amt)}円`, 12);
+    if(d.isYes){
+      tx(`ただし、債権者、債務者間の${d.childrenNames}についての令和${ry}年${c.month}月分の養育費の未払分`, 18);
+    } else {
+      tx(`ただし、債権者、債務者間の${d.childrenNames}についての令和${ry}年${c.month}月分の１か月２万円の法定養育費の未払分（支払期毎月末日・最初の月につき日割計算）`, 18);
+    }
+  });
+  sp(0.5);
+
+  // （2）確定期限未到来
+  tx('（２）確定期限が到来していない各定期金債権', 6);
+  d.futureClaims.forEach((fc, i) => {
+    const sym = kigo(i);
+    if(d.isYes){
+      tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月${fc.payDay}日限り金${fmt(fc.monthly)}円ずつの養育費`, 12);
+    } else {
+      tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）`, 12);
+    }
+  });
+  sp(0.8);
+
+  // ── 3 請求債権 ──
+  tx('３　請求債権');
+  tx(`（１）確定期限が到来している債権　合計金${fmt(d.claimTotal)}円`, 6);
+  tx('上記２（１）記載の債権及び差押命令の申立てにおける執行費用', 12);
+  tx(`執行費用　金${fmt(d.execCost)}円`, 12);
+  tx('（内訳）本申立手数料　金４，０００円', 18);
+  if(!d.isYes){
+    tx(`戸籍全部事項証明書交付手数料　金${fmt(d.kosekiFee)}円`, 18);
+    tx(`住民票の写し交付手数料　金${fmt(d.juminFee)}円`, 18);
+  }
+  tx(`資格証明書交付手数料　金${fmt(d.certFee)}円`, 18);
+  tx(`連絡用郵便切手代　金${fmt(d.postage)}円`, 18);
+  sp(0.5);
+  tx('（２）確定期限が到来していない各定期金債権', 6);
+  tx('上記２（２）の債権', 12);
+}
+
+/* ─────────────────────────────────────────
+   書類4: 差押債権目録
+───────────────────────────────────────── */
+function buildDoc4(h, d){
+  const { tx, sp, docTitle } = h;
+
+  docTitle('差 押 債 権 目 録');
+
+  // １ 確定期限到来済
+  tx(`１　金${fmt(d.claimTotal)}円（担保権・被担保債権・請求債権目録記載の３（１））`);
+  sp(0.5);
+
+  // ２ 未到来（子ごとの定期金をまとめて記載）
+  if(d.futureClaims.length === 0){
+    tx('２　（将来分の定期金債権の情報が入力されていません）');
+  } else if(d.futureClaims.length === 1){
+    const fc = d.futureClaims[0];
+    if(d.isYes){
+      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月${fc.payDay}日限り金${fmt(fc.monthly)}円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
+    } else {
+      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
+    }
+  } else {
+    // 複数の子：箇条書きで各子の分を列挙
+    tx('２　下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
+    d.futureClaims.forEach((fc, i) => {
+      const sym = kigo(i);
+      if(d.isYes){
+        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月${fc.payDay}日限り金${fmt(fc.monthly)}円ずつ（${fc.childName}分）`, 6);
+      } else {
+        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつ（${fc.childName}分）`, 6);
+      }
+    });
+  }
+  sp(1);
+
+  // 定型文
+  tx('債務者が第三債務者から支給を受ける給料（基本給のほか、歩合給、役付手当、家族手当、通勤手当その他名称の如何を問わず一切の手当を含む。）及び賞与（夏期、冬期その他名称の如何を問わず支給される一時金）等のうち、所得税、住民税、社会保険料等を控除した残額の２分の１（ただし、その残額が６６万円を超えるときは残額から３３万円を控除した金額）に相当する金員。');
+  sp(0.8);
+  tx('ただし、次の場合には、それぞれ次に定める金員とする。');
+  sp(0.3);
+  tx('（１）上記により計算した金員が頭書の残金額を超えるときは、当該残金額に相当する金員。', 6);
+  sp(0.3);
+  tx('（２）上記により計算した金員に１円未満の端数があるときは、その端数を切り捨てた金員。', 6);
+  sp(1);
+  tx('以上の差押債権は、その支払期が到来する都度、頭書金額に満つるまで差し押さえる。');
+  sp(1);
+  tx('第三債務者');
+  tx(`〒${d.tdZip}　${d.tdAddr}`, 6);
+  tx(d.tdCorp, 6);
+  if(d.tdRep) tx(d.tdRep, 6);
+}
+
+/* ─────────────────────────────────────────
+   メインの generate() 関数
+───────────────────────────────────────── */
+async function generate(){
+  const btn    = document.getElementById('btn_gen');
+  const btnTxt = document.getElementById('btn_txt');
+  const status = document.getElementById('status');
+
+  btn.disabled = true;
+  btnTxt.textContent = 'PDF 作成中…';
+  status.style.color = '';
+  status.textContent = '';
+
+  // 少し遅延してUIを更新させる
+  await new Promise(r => setTimeout(r, 50));
+
+  try {
+    if(!agmtType) throw new Error('養育費の種別を選択してください（STEP 2）');
+
+    // ── データ収集 ──
+    const d = collectData();
+
+    // ── フォント非同期読み込み（キャッシュ済みなら即時返却） ──
+    btnTxt.textContent = 'フォント読み込み中…';
+    const fontBuffer = await loadFont();
+
+    // ── PDF 初期化 ──
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    // フォント登録（fetch 成功時のみ。失敗時はデフォルトフォントで継続）
+    registerFont(pdf, fontBuffer);
+
+    // makePdfHelper に渡すフォント名:
+    //   登録成功 → FONT_NAME ('NotoSansJP')
+    //   登録失敗 → jsPDF デフォルト ('helvetica') ※日本語は文字化けします
+    const FN = fontBuffer ? FONT_NAME : 'helvetica';
+
+    btnTxt.textContent = 'PDF 作成中…';
+    const h = makePdfHelper(pdf, FN);
+
+    // ── 書類1: 申立書表紙 ──
+    buildDoc1(h, d);
+
+    // ── 書類2: 当事者目録 ──
+    h.footer();
+    pdf.addPage();
+    const h2 = makePdfHelper(pdf, FN);
+    buildDoc2(h2, d);
+
+    // ── 書類3: 担保権・被担保債権・請求債権目録 ──
+    h2.footer();
+    pdf.addPage();
+    const h3 = makePdfHelper(pdf, FN);
+    buildDoc3(h3, d);
+
+    // ── 書類4: 差押債権目録 ──
+    h3.footer();
+    pdf.addPage();
+    const h4 = makePdfHelper(pdf, FN);
+    buildDoc4(h4, d);
+    h4.footer();
+
+    // ── 保存 ──
+    const filename = `債権差押命令申立書（先取特権）_${d.crName}.pdf`;
+    pdf.save(filename);
+
+    status.style.color = '#27ae60';
+    status.textContent = '✓ PDFのダウンロードが完了しました（全４書類）';
+
+  } catch(e){
+    console.error(e);
+    status.style.color = '#b83232';
+    status.textContent = 'エラー: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btnTxt.textContent = '申立書 PDF を作成する（全４書類）';
+  }
+}
+</script>
+</body>
+</html>
