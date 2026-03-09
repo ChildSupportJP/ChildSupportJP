@@ -702,14 +702,12 @@ body {
           <span>債務名義（判決正本・調停調書・執行認諾文言付き公正証書等）を<strong>お持ちですか？</strong></span>
         </div>
         <div class="precheck-btns">
-          <button type="button" class="step1-btn step1-btn-ng" id="btn_q1_yes"
-            onclick="onQ1('yes')">
+          <button type="button" class="step1-btn step1-btn-ng" id="btn_q1_yes">
             <span class="step1-btn-icon">⚠️</span>
             <span class="step1-btn-main">はい、持っています</span>
             <span class="step1-btn-sub">（債務名義あり）</span>
           </button>
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q1_no"
-            onclick="onQ1('no')">
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q1_no">
             <span class="step1-btn-icon">✅</span>
             <span class="step1-btn-main">いいえ、持っていません</span>
             <span class="step1-btn-sub">（債務名義なし）</span>
@@ -729,14 +727,12 @@ body {
           <span>差し押さえる相手先となる<strong>第三債務者</strong>（勤務先の会社・預貯金のある銀行など）を<strong>特定できていますか？</strong></span>
         </div>
         <div class="precheck-btns">
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q2_yes"
-            onclick="onQ2('yes')">
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q2_yes">
             <span class="step1-btn-icon">✅</span>
             <span class="step1-btn-main">はい、特定できています</span>
             <span class="step1-btn-sub">（勤務先・銀行口座等が判明）</span>
           </button>
-          <button type="button" class="step1-btn step1-btn-ng" id="btn_q2_no"
-            onclick="onQ2('no')">
+          <button type="button" class="step1-btn step1-btn-ng" id="btn_q2_no">
             <span class="step1-btn-icon">⚠️</span>
             <span class="step1-btn-main">いいえ、特定できていません</span>
             <span class="step1-btn-sub">（不明・調査が必要）</span>
@@ -756,14 +752,12 @@ body {
           <span>債権者・債務者間に<strong>養育費の合意文書</strong>（離婚協議書・誓約書等）はありますか？</span>
         </div>
         <div class="precheck-btns">
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_yes"
-            onclick="onQ3('yes')">
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_yes">
             <span class="step1-btn-icon">📄</span>
             <span class="step1-btn-main">はい、あります</span>
             <span class="step1-btn-sub">（合意あり → 形成養育費）</span>
           </button>
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_no"
-            onclick="onQ3('no')">
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_no">
             <span class="step1-btn-icon">📋</span>
             <span class="step1-btn-main">いいえ、ありません</span>
             <span class="step1-btn-sub">（合意なし → 法定養育費）</span>
@@ -977,52 +971,72 @@ body {
 </div><!-- /.layout -->
 
 <script>
-'use strict';
 
-/* ══════════════════════════════════════════════════
-   グローバル状態
-══════════════════════════════════════════════════ */
-let agmtType = null;          // 'yes' | 'no'
-let childCount = 0;           // 現在の子供数
-let claimsYes = [];           // 合意あり未払リスト
-let claimsNo  = [];           // 合意なし未払リスト
-const MAX_CHILDREN    = 4;
-const MAX_CLAIMS_YES  = 360;
-const MAX_CLAIMS_NO   = 216;
-const MIN_DATE_STR    = '2026-04-01';  // 改正法施行日
+/* ============================================================
+   状態変数（グローバル）
+============================================================ */
+var agmtType     = null;
+var childCount   = 0;
+var claimsYes    = [];
+var claimsNo     = [];
+var MAX_CHILDREN   = 4;
+var MAX_CLAIMS_YES = 360;
+var MAX_CLAIMS_NO  = 216;
+var MIN_DATE_STR   = '2026-04-01';
 
-/* ══════════════════════════════════════════════════
-   ユーティリティ
-══════════════════════════════════════════════════ */
-function $(id){ return document.getElementById(id); }
-function show(id){ $(id).classList.remove('hidden'); }
-function hide(id){ $(id).classList.add('hidden'); }
-function isHidden(id){ return $(id).classList.contains('hidden'); }
+/* ============================================================
+   DOM操作ユーティリティ（すべてnullセーフ）
+============================================================ */
+function elById(id) {
+  return document.getElementById(id);
+}
+function showEl(id) {
+  var el = elById(id);
+  if (el) el.classList.remove('hidden');
+}
+function hideEl(id) {
+  var el = elById(id);
+  if (el) el.classList.add('hidden');
+}
+function isHiddenEl(id) {
+  var el = elById(id);
+  return el ? el.classList.contains('hidden') : true;
+}
 
-/** 西暦 → 令和 変換 */
-function toReiwa(year){ return year - 2018; }
+/* ============================================================
+   西暦→令和
+============================================================ */
+function toReiwa(year) { return year - 2018; }
 
-/** 執行費用計算 */
-function calcExecCost(){
-  const base = 4000 + (parseInt($('cert_fee').value)||0) + (parseInt($('postage').value)||0);
-  if(agmtType === 'no'){
-    return base + (parseInt($('koseki_fee').value)||0) + (parseInt($('jumin_fee').value)||0);
+/* ============================================================
+   執行費用計算（nullセーフ）
+============================================================ */
+function calcExecCost() {
+  var certEl    = elById('cert_fee');
+  var postEl    = elById('postage');
+  var kosekiEl  = elById('koseki_fee');
+  var juminEl   = elById('jumin_fee');
+  var base = 4000
+    + (certEl  ? (parseInt(certEl.value)  || 0) : 0)
+    + (postEl  ? (parseInt(postEl.value)  || 0) : 0);
+  if (agmtType === 'no') {
+    base += (kosekiEl ? (parseInt(kosekiEl.value) || 0) : 0)
+          + (juminEl  ? (parseInt(juminEl.value)  || 0) : 0);
   }
   return base;
 }
-
-/** 執行費用表示更新 */
-function updateExecCostDisplay(){
-  const el = $('exec_cost_disp');
-  if(el) el.textContent = calcExecCost().toLocaleString() + '円';
+function updateExecCostDisplay() {
+  var el = elById('exec_cost_disp');
+  if (el) el.textContent = calcExecCost().toLocaleString() + '円';
 }
 
-/** 日付 min バリデーション */
-function validateMinDate(input){
-  const errId = 'err_' + input.id;
-  const errEl = $(errId);
-  if(!errEl) return;
-  if(input.value && input.value < MIN_DATE_STR){
+/* ============================================================
+   日付バリデーション
+============================================================ */
+function validateMinDate(input) {
+  var errEl = elById('err_' + input.id);
+  if (!errEl) return;
+  if (input.value && input.value < MIN_DATE_STR) {
     errEl.classList.add('show');
     input.style.borderColor = 'var(--red)';
   } else {
@@ -1030,354 +1044,9 @@ function validateMinDate(input){
     input.style.borderColor = '';
   }
 }
-
-/** 年・月入力 min バリデーション（西暦年・月ペア） */
-function validateYearMonth(yearId, monthId){
-  const y = parseInt($(yearId)?.value) || 0;
-  const m = parseInt($(monthId)?.value) || 0;
-  // 2026年4月以降
-  if(y === 0 || m === 0) return;
-  if(y < 2026 || (y === 2026 && m < 4)){
-    $(yearId).style.borderColor = 'var(--red)';
-    $(monthId).style.borderColor = 'var(--red)';
-  } else {
-    $(yearId).style.borderColor = '';
-    $(monthId).style.borderColor = '';
-  }
-}
-
-/* ══════════════════════════════════════════════════
-   STEP 制御
-══════════════════════════════════════════════════ */
-function updateNav(){
-  // step1が非表示＝事前確認完了済み
-  const preCheckDone = $('step1').classList.contains('hidden');
-  const steps = [
-    { navId:'nav1', stepId:'step1', done: preCheckDone },
-    { navId:'nav2', stepId:'step3', done: agmtType !== null },
-    { navId:'nav3', stepId:'step4', done: agmtType !== null },
-    { navId:'nav4', stepId:'step5', done: agmtType !== null },
-  ];
-  steps.forEach(s => {
-    const nav = $(s.navId);
-    if(!nav) return;
-    const stepEl = $(s.stepId);
-    const visible = stepEl && !stepEl.classList.contains('hidden');
-    if(visible){
-      nav.classList.add('active');
-      nav.classList.remove('done');
-    } else if(s.done){
-      nav.classList.remove('active');
-      nav.classList.add('done');
-    } else {
-      nav.classList.remove('active','done');
-    }
-  });
-}
-
-/* ── ボタン選択状態リセットヘルパー ── */
-function resetBtns(...ids){
-  ids.forEach(id => {
-    const el = $(id);
-    if(el) el.classList.remove('selected-ok','selected-ng');
-  });
-}
-
-/* ════════════════════════════════════════════
-   事前確認 Q1: 債務名義の有無
-   yes → ブロック表示・先へ進まない
-   no  → Q2を表示
-════════════════════════════════════════════ */
-function onQ1(ans){
-  resetBtns('btn_q1_yes','btn_q1_no');
-
-  if(ans === 'yes'){
-    // 債務名義あり → 対象外
-    $('btn_q1_yes').classList.add('selected-ng');
-    show('warn_q1');
-    hide('pc_q2');
-    hide('pc_q3');
-    hideMainForms();
-  } else {
-    // 債務名義なし → Q2へ
-    $('btn_q1_no').classList.add('selected-ok');
-    hide('warn_q1');
-    // Q2をリセットして表示
-    resetBtns('btn_q2_yes','btn_q2_no');
-    hide('warn_q2');
-    hide('pc_q3');
-    hideMainForms();
-    show('pc_q2');
-    $('pc_q2').scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }
-  updateNav();
-}
-
-/* ════════════════════════════════════════════
-   事前確認 Q2: 第三債務者の特定
-   no  → ブロック表示・先へ進まない
-   yes → Q3を表示
-════════════════════════════════════════════ */
-function onQ2(ans){
-  resetBtns('btn_q2_yes','btn_q2_no');
-
-  if(ans === 'no'){
-    // 特定できていない → 先へ進まない
-    $('btn_q2_no').classList.add('selected-ng');
-    show('warn_q2');
-    hide('pc_q3');
-    hideMainForms();
-  } else {
-    // 特定できている → Q3へ
-    $('btn_q2_yes').classList.add('selected-ok');
-    hide('warn_q2');
-    // Q3をリセットして表示
-    resetBtns('btn_q3_yes','btn_q3_no');
-    hideMainForms();
-    show('pc_q3');
-    $('pc_q3').scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }
-  updateNav();
-}
-
-/* ════════════════════════════════════════════
-   事前確認 Q3: 養育費の合意文書
-   yes → 形成養育費モードでフォームへ
-   no  → 法定養育費モードでフォームへ
-════════════════════════════════════════════ */
-function onQ3(ans){
-  resetBtns('btn_q3_yes','btn_q3_no');
-  const btn = ans === 'yes' ? $('btn_q3_yes') : $('btn_q3_no');
-  btn.classList.add('selected-ok');
-
-  // 事前確認カードを非表示にしてメインフォームへ
-  hide('step1');
-  applyAgmtType(ans);   // 'yes'=形成養育費 / 'no'=法定養育費
-  updateNav();
-
-  // メインフォーム先頭へスクロール
-  setTimeout(() => {
-    const first = $('step3') || $('step4');
-    if(first) first.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 80);
-}
-
-/* ════════════════════════════════════════════
-   合意種別を適用してメインフォームを展開する
-   （旧 onStep2 の実体をここに集約）
-   val: 'yes'=形成養育費 / 'no'=法定養育費
-════════════════════════════════════════════ */
-function applyAgmtType(val){
-  if(agmtType === val) {
-    // 既に同じ種別で開いている場合もフォームを確実に表示
-    show('step3'); show('step4'); show('step5'); show('step_submit');
-    return;
-  }
-  agmtType = val;
-
-  // 費用行の表示切り替え
-  if(val === 'no'){
-    show('koseki_row');
-    show('jumin_row');
-  } else {
-    hide('koseki_row');
-    hide('jumin_row');
-  }
-  updateExecCostDisplay();
-
-  // メインフォーム（STEP2〜4）を表示
-  show('step3');
-  show('step4');
-  show('step5');
-  show('step_submit');
-  $('btn_gen').disabled = false;
-
-  // 種別別フォームエリアの表示切り替え
-  if(val === 'yes'){
-    show('past_yes_area');
-    hide('past_no_area');
-    $('claim_limit_note').textContent = '形成養育費：最大360月分（30年分）';
-  } else {
-    hide('past_yes_area');
-    show('past_no_area');
-    $('claim_limit_note').textContent = '法定養育費：最大216月分（18年分）';
-  }
-
-  // 将来分フォームを再描画
-  rebuildFutureCards();
-}
-
-/* メインフォームを全て非表示にして状態リセット */
-function hideMainForms(){
-  hide('step3'); hide('step4'); hide('step5'); hide('step_submit');
-  agmtType = null;
-  $('btn_gen').disabled = true;
-}
-
-/* ══════════════════════════════════════════════════
-   子供フォーム
-══════════════════════════════════════════════════ */
-function addChild(){
-  if(childCount >= MAX_CHILDREN) return;
-  childCount++;
-  const idx = childCount;
-
-  const container = $('children_container');
-  const div = document.createElement('div');
-  div.className = 'child-card';
-  div.id = 'child_card_' + idx;
-  div.innerHTML = `
-    <div class="child-card-header">
-      <span class="child-num">第${idx}子</span>
-      ${idx > 1 ? `<button class="btn-remove-child" type="button" onclick="removeChild(${idx})">✕ 削除</button>` : ''}
-    </div>
-    <div class="row">
-      <div class="fg">
-        <label>子の氏名</label>
-        <input type="text" id="child_name_${idx}" placeholder="山田 七子" oninput="onChildNameChange(${idx})">
-      </div>
-      <div class="fg w2">
-        <label>生年月日</label>
-        <input type="date" id="child_birth_${idx}">
-      </div>
-    </div>
-  `;
-  container.appendChild(div);
-
-  // 最大数チェック
-  if(childCount >= MAX_CHILDREN){
-    $('btn_add_child').disabled = true;
-    $('btn_add_child').textContent = '（最大4人まで）';
-  }
-
-  // 将来分フォームに枠を追加
-  rebuildFutureCards();
-}
-
-function removeChild(idx){
-  const card = $('child_card_' + idx);
-  if(card) card.remove();
-  childCount--;
-  renumberChildren();
-  $('btn_add_child').disabled = false;
-  $('btn_add_child').textContent = '＋ 子を追加する';
-  rebuildFutureCards();
-}
-
-function renumberChildren(){
-  const container = $('children_container');
-  const cards = container.querySelectorAll('.child-card');
-  childCount = cards.length;
-  cards.forEach((card, i) => {
-    const n = i + 1;
-    card.id = 'child_card_' + n;
-    card.querySelector('.child-num').textContent = `第${n}子`;
-    const btn = card.querySelector('.btn-remove-child');
-    if(btn) btn.setAttribute('onclick', `removeChild(${n})`);
-
-    const nameIn = card.querySelector('input[type=text]');
-    if(nameIn){ nameIn.id = 'child_name_' + n; nameIn.setAttribute('oninput', `onChildNameChange(${n})`); }
-    const dateIn = card.querySelector('input[type=date]');
-    if(dateIn) dateIn.id = 'child_birth_' + n;
-  });
-}
-
-function onChildNameChange(idx){
-  // 将来分カードのラベルも更新
-  const futureLbl = $('future_child_label_' + idx);
-  const val = $('child_name_' + idx)?.value;
-  if(futureLbl) futureLbl.textContent = val ? `${val}（第${idx}子）` : `第${idx}子`;
-}
-
-/* ══════════════════════════════════════════════════
-   未払い分（確定期限到来済）動的リスト
-══════════════════════════════════════════════════ */
-function addClaim(type){
-  const isYes = type === 'yes';
-  const arr   = isYes ? claimsYes : claimsNo;
-  const limit = isYes ? MAX_CLAIMS_YES : MAX_CLAIMS_NO;
-  if(arr.length >= limit) return;
-
-  const id = Date.now();
-  arr.push(id);
-
-  const container = $(isYes ? 'claims_yes_container' : 'claims_no_container');
-  const div = document.createElement('div');
-  div.className = 'claim-row';
-  div.id = 'claim_' + type + '_' + id;
-
-  if(isYes){
-    div.innerHTML = `
-      <div class="fg narrow">
-        <label>発生年（西暦）</label>
-        <input type="number" id="cy_year_${id}" placeholder="2026" min="2026" style="width:100%"
-          onchange="validateClaimYear(this)">
-      </div>
-      <div class="fg narrow">
-        <label>発生月</label>
-        <input type="number" id="cy_month_${id}" placeholder="4" min="1" max="12" style="width:100%">
-      </div>
-      <div class="fg">
-        <label>未払額（円）</label>
-        <input type="number" id="cy_amt_${id}" placeholder="50000" min="1" style="width:100%">
-      </div>
-      <button class="btn-remove-claim" type="button" onclick="removeClaim('yes', ${id})">✕</button>
-    `;
-  } else {
-    // 合意なしは月2万円固定、月だけ入力
-    div.innerHTML = `
-      <div class="fg narrow">
-        <label>発生年（西暦）</label>
-        <input type="number" id="cn_year_${id}" placeholder="2026" min="2026" style="width:100%"
-          onchange="validateClaimYear(this)">
-      </div>
-      <div class="fg narrow">
-        <label>発生月</label>
-        <input type="number" id="cn_month_${id}" placeholder="4" min="1" max="12" style="width:100%">
-      </div>
-      <div class="fg" style="flex:0 0 120px">
-        <label>月額</label>
-        <input type="text" value="20,000円" disabled style="width:100%;background:#f0f2f8;color:#888">
-      </div>
-      <div class="fg narrow">
-        <label>備考（日割等）</label>
-        <input type="text" id="cn_note_${id}" placeholder="初月日割" style="width:100%">
-      </div>
-      <button class="btn-remove-claim" type="button" onclick="removeClaim('no', ${id})">✕</button>
-    `;
-  }
-
-  container.appendChild(div);
-  updateClaimsCount(type);
-}
-
-function removeClaim(type, id){
-  const arr = type === 'yes' ? claimsYes : claimsNo;
-  const idx = arr.indexOf(id);
-  if(idx > -1) arr.splice(idx, 1);
-  const el = $('claim_' + type + '_' + id);
-  if(el) el.remove();
-  updateClaimsCount(type);
-}
-
-function updateClaimsCount(type){
-  const isYes = type === 'yes';
-  const arr   = isYes ? claimsYes : claimsNo;
-  const limit = isYes ? MAX_CLAIMS_YES : MAX_CLAIMS_NO;
-  const countEl = $(isYes ? 'claims_yes_count' : 'claims_no_count');
-  const btn     = $(isYes ? 'btn_add_claim_yes' : 'btn_add_claim_no');
-
-  if(countEl){
-    countEl.textContent = `${arr.length} / ${limit} 月分`;
-    countEl.classList.toggle('at-limit', arr.length >= limit);
-  }
-  if(btn) btn.disabled = arr.length >= limit;
-}
-
-/** 発生年の2026年4月以降バリデーション */
-function validateClaimYear(input){
-  const y = parseInt(input.value)||0;
-  if(y > 0 && y < 2026){
+function validateClaimYear(input) {
+  var y = parseInt(input.value) || 0;
+  if (y > 0 && y < 2026) {
     input.style.borderColor = 'var(--red)';
     input.title = '2026年以降を入力してください';
   } else {
@@ -1385,201 +1054,475 @@ function validateClaimYear(input){
     input.title = '';
   }
 }
+function validateFutureYear(input) {
+  validateClaimYear(input);
+}
 
-/* ══════════════════════════════════════════════════
+/* ============================================================
+   サイドバーナビ更新
+============================================================ */
+function updateNav() {
+  var step1Hidden = isHiddenEl('step1');
+  var steps = [
+    { navId:'nav1', stepId:'step1', done: step1Hidden },
+    { navId:'nav2', stepId:'step3', done: agmtType !== null },
+    { navId:'nav3', stepId:'step4', done: agmtType !== null },
+    { navId:'nav4', stepId:'step5', done: agmtType !== null }
+  ];
+  steps.forEach(function(s) {
+    var nav    = elById(s.navId);
+    var stepEl = elById(s.stepId);
+    if (!nav) return;
+    var visible = stepEl && !stepEl.classList.contains('hidden');
+    if (visible) {
+      nav.classList.add('active');
+      nav.classList.remove('done');
+    } else if (s.done) {
+      nav.classList.remove('active');
+      nav.classList.add('done');
+    } else {
+      nav.classList.remove('active', 'done');
+    }
+  });
+}
+
+/* ============================================================
+   事前確認ボタンの選択状態リセット
+============================================================ */
+function resetPreBtns(ids) {
+  ids.forEach(function(id) {
+    var el = elById(id);
+    if (el) el.classList.remove('selected-ok', 'selected-ng');
+  });
+}
+
+/* ============================================================
+   Q1：債務名義の有無
+   yes → ブロック（先へ進めない）
+   no  → Q2を表示
+============================================================ */
+function handleQ1(ans) {
+  resetPreBtns(['btn_q1_yes', 'btn_q1_no']);
+
+  if (ans === 'yes') {
+    var b = elById('btn_q1_yes');
+    if (b) b.classList.add('selected-ng');
+    showEl('warn_q1');
+    hideEl('pc_q2');
+    hideEl('pc_q3');
+    hideMainForms();
+  } else {
+    var b = elById('btn_q1_no');
+    if (b) b.classList.add('selected-ok');
+    hideEl('warn_q1');
+    resetPreBtns(['btn_q2_yes', 'btn_q2_no']);
+    hideEl('warn_q2');
+    hideEl('pc_q3');
+    hideMainForms();
+    showEl('pc_q2');
+    var q2 = elById('pc_q2');
+    if (q2) q2.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  updateNav();
+}
+
+/* ============================================================
+   Q2：第三債務者の特定
+   no  → ブロック（先へ進めない）
+   yes → Q3を表示
+============================================================ */
+function handleQ2(ans) {
+  resetPreBtns(['btn_q2_yes', 'btn_q2_no']);
+
+  if (ans === 'no') {
+    var b = elById('btn_q2_no');
+    if (b) b.classList.add('selected-ng');
+    showEl('warn_q2');
+    hideEl('pc_q3');
+    hideMainForms();
+  } else {
+    var b = elById('btn_q2_yes');
+    if (b) b.classList.add('selected-ok');
+    hideEl('warn_q2');
+    resetPreBtns(['btn_q3_yes', 'btn_q3_no']);
+    hideMainForms();
+    showEl('pc_q3');
+    var q3 = elById('pc_q3');
+    if (q3) q3.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  updateNav();
+}
+
+/* ============================================================
+   Q3：養育費の合意文書
+   yes → 形成養育費モードでメインフォームへ
+   no  → 法定養育費モードでメインフォームへ
+============================================================ */
+function handleQ3(ans) {
+  resetPreBtns(['btn_q3_yes', 'btn_q3_no']);
+  var b = elById(ans === 'yes' ? 'btn_q3_yes' : 'btn_q3_no');
+  if (b) b.classList.add('selected-ok');
+
+  hideEl('step1');
+  applyAgmtType(ans);
+  updateNav();
+
+  setTimeout(function() {
+    var first = elById('step3') || elById('step4');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+
+/* ============================================================
+   メインフォームへ合意種別を適用して展開
+============================================================ */
+function applyAgmtType(val) {
+  agmtType = val;
+
+  if (val === 'no') {
+    showEl('koseki_row');
+    showEl('jumin_row');
+  } else {
+    hideEl('koseki_row');
+    hideEl('jumin_row');
+  }
+  updateExecCostDisplay();
+
+  showEl('step3');
+  showEl('step4');
+  showEl('step5');
+  showEl('step_submit');
+  var btnGen = elById('btn_gen');
+  if (btnGen) btnGen.disabled = false;
+
+  if (val === 'yes') {
+    showEl('past_yes_area');
+    hideEl('past_no_area');
+    var note = elById('claim_limit_note');
+    if (note) note.textContent = '形成養育費：最大360月分（30年分）';
+  } else {
+    hideEl('past_yes_area');
+    showEl('past_no_area');
+    var note = elById('claim_limit_note');
+    if (note) note.textContent = '法定養育費：最大216月分（18年分）';
+  }
+
+  rebuildFutureCards();
+}
+
+/* ============================================================
+   メインフォームを全て非表示にしてリセット
+============================================================ */
+function hideMainForms() {
+  hideEl('step3');
+  hideEl('step4');
+  hideEl('step5');
+  hideEl('step_submit');
+  agmtType = null;
+  var btnGen = elById('btn_gen');
+  if (btnGen) btnGen.disabled = true;
+}
+
+/* ============================================================
+   子供フォーム
+============================================================ */
+function addChild() {
+  if (childCount >= MAX_CHILDREN) return;
+  childCount++;
+  var idx = childCount;
+  var container = elById('children_container');
+  if (!container) return;
+
+  var div = document.createElement('div');
+  div.className = 'child-card';
+  div.id = 'child_card_' + idx;
+  div.innerHTML =
+    '<div class="child-card-header">' +
+      '<span class="child-num">第' + idx + '子</span>' +
+      (idx > 1 ? '<button class="btn-remove-child" type="button" onclick="removeChild(' + idx + ')">✕ 削除</button>' : '') +
+    '</div>' +
+    '<div class="row">' +
+      '<div class="fg">' +
+        '<label>子の氏名</label>' +
+        '<input type="text" id="child_name_' + idx + '" placeholder="山田 七子" oninput="onChildNameChange(' + idx + ')">' +
+      '</div>' +
+      '<div class="fg w2">' +
+        '<label>生年月日</label>' +
+        '<input type="date" id="child_birth_' + idx + '">' +
+      '</div>' +
+    '</div>';
+  container.appendChild(div);
+
+  var btnAdd = elById('btn_add_child');
+  if (childCount >= MAX_CHILDREN && btnAdd) {
+    btnAdd.disabled = true;
+    btnAdd.textContent = '（最大4人まで）';
+  }
+  rebuildFutureCards();
+}
+
+function removeChild(idx) {
+  var card = elById('child_card_' + idx);
+  if (card) card.remove();
+  childCount--;
+  renumberChildren();
+  var btnAdd = elById('btn_add_child');
+  if (btnAdd) { btnAdd.disabled = false; btnAdd.textContent = '＋ 子を追加する'; }
+  rebuildFutureCards();
+}
+
+function renumberChildren() {
+  var container = elById('children_container');
+  if (!container) return;
+  var cards = container.querySelectorAll('.child-card');
+  childCount = cards.length;
+  cards.forEach(function(card, i) {
+    var n = i + 1;
+    card.id = 'child_card_' + n;
+    var numEl = card.querySelector('.child-num');
+    if (numEl) numEl.textContent = '第' + n + '子';
+    var rmBtn = card.querySelector('.btn-remove-child');
+    if (rmBtn) rmBtn.setAttribute('onclick', 'removeChild(' + n + ')');
+    var nameIn = card.querySelector('input[type=text]');
+    if (nameIn) { nameIn.id = 'child_name_' + n; nameIn.setAttribute('oninput', 'onChildNameChange(' + n + ')'); }
+    var dateIn = card.querySelector('input[type=date]');
+    if (dateIn) dateIn.id = 'child_birth_' + n;
+  });
+}
+
+function onChildNameChange(idx) {
+  var futureLbl = elById('future_child_label_' + idx);
+  var nameEl    = elById('child_name_' + idx);
+  if (!futureLbl || !nameEl) return;
+  futureLbl.textContent = nameEl.value ? nameEl.value + '（第' + idx + '子）' : '第' + idx + '子';
+}
+
+/* ============================================================
+   未払い分（確定期限到来済）動的リスト
+============================================================ */
+function addClaim(type) {
+  var isYes = (type === 'yes');
+  var arr   = isYes ? claimsYes : claimsNo;
+  var limit = isYes ? MAX_CLAIMS_YES : MAX_CLAIMS_NO;
+  if (arr.length >= limit) return;
+
+  var id = Date.now();
+  arr.push(id);
+  var container = elById(isYes ? 'claims_yes_container' : 'claims_no_container');
+  if (!container) return;
+
+  var div = document.createElement('div');
+  div.className = 'claim-row';
+  div.id = 'claim_' + type + '_' + id;
+
+  if (isYes) {
+    div.innerHTML =
+      '<div class="fg narrow"><label>発生年（西暦）</label>' +
+      '<input type="number" id="cy_year_' + id + '" placeholder="2026" min="2026" style="width:100%" onchange="validateClaimYear(this)"></div>' +
+      '<div class="fg narrow"><label>発生月</label>' +
+      '<input type="number" id="cy_month_' + id + '" placeholder="4" min="1" max="12" style="width:100%"></div>' +
+      '<div class="fg"><label>未払額（円）</label>' +
+      '<input type="number" id="cy_amt_' + id + '" placeholder="50000" min="1" style="width:100%"></div>' +
+      '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'yes\',' + id + ')">✕</button>';
+  } else {
+    div.innerHTML =
+      '<div class="fg narrow"><label>発生年（西暦）</label>' +
+      '<input type="number" id="cn_year_' + id + '" placeholder="2026" min="2026" style="width:100%" onchange="validateClaimYear(this)"></div>' +
+      '<div class="fg narrow"><label>発生月</label>' +
+      '<input type="number" id="cn_month_' + id + '" placeholder="4" min="1" max="12" style="width:100%"></div>' +
+      '<div class="fg" style="flex:0 0 120px"><label>月額</label>' +
+      '<input type="text" value="20,000円" disabled style="width:100%;background:#f0f2f8;color:#888"></div>' +
+      '<div class="fg narrow"><label>備考（日割等）</label>' +
+      '<input type="text" id="cn_note_' + id + '" placeholder="初月日割" style="width:100%"></div>' +
+      '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'no\',' + id + ')">✕</button>';
+  }
+  container.appendChild(div);
+  updateClaimsCount(type);
+}
+
+function removeClaim(type, id) {
+  var arr = (type === 'yes') ? claimsYes : claimsNo;
+  var idx = arr.indexOf(id);
+  if (idx > -1) arr.splice(idx, 1);
+  var el = elById('claim_' + type + '_' + id);
+  if (el) el.remove();
+  updateClaimsCount(type);
+}
+
+function updateClaimsCount(type) {
+  var isYes  = (type === 'yes');
+  var arr    = isYes ? claimsYes : claimsNo;
+  var limit  = isYes ? MAX_CLAIMS_YES : MAX_CLAIMS_NO;
+  var countEl = elById(isYes ? 'claims_yes_count' : 'claims_no_count');
+  var btn     = elById(isYes ? 'btn_add_claim_yes' : 'btn_add_claim_no');
+  if (countEl) {
+    countEl.textContent = arr.length + ' / ' + limit + ' 月分';
+    countEl.classList.toggle('at-limit', arr.length >= limit);
+  }
+  if (btn) btn.disabled = arr.length >= limit;
+}
+
+/* ============================================================
    将来分定期金債権フォーム
-══════════════════════════════════════════════════ */
-function rebuildFutureCards(){
-  const container = $('future_container');
+============================================================ */
+function rebuildFutureCards() {
+  var container = elById('future_container');
+  if (!container) return;
   container.innerHTML = '';
 
-  if(childCount === 0){
+  if (childCount === 0) {
     container.innerHTML = '<p class="note" style="color:#aaa;text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>';
     return;
   }
-
-  for(let i = 1; i <= childCount; i++){
-    const card = buildFutureCard(i);
-    container.appendChild(card);
+  for (var i = 1; i <= childCount; i++) {
+    container.appendChild(buildFutureCard(i));
   }
 }
 
-function buildFutureCard(idx){
-  const childName = $('child_name_' + idx)?.value || '';
-  const labelText = childName ? `${childName}（第${idx}子）` : `第${idx}子`;
-  const isYes = agmtType === 'yes';
+function buildFutureCard(idx) {
+  var nameEl    = elById('child_name_' + idx);
+  var childName = nameEl ? (nameEl.value || '') : '';
+  var labelText = childName ? childName + '（第' + idx + '子）' : '第' + idx + '子';
+  var isYes     = (agmtType === 'yes');
 
-  const div = document.createElement('div');
+  var payInfo = isYes
+    ? '<div class="row mt12">' +
+        '<div class="fg narrow"><label>支払期日（毎月〇日）<span class="req">*</span></label>' +
+        '<input type="number" id="pay_day_' + idx + '" placeholder="25" min="1" max="31"></div>' +
+        '<div class="fg"><label>月額（円）<span class="req">*</span></label>' +
+        '<input type="number" id="monthly_amt_' + idx + '" placeholder="50000" min="1"></div>' +
+      '</div>'
+    : '<div class="info-green" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>';
+
+  var ageOptions = '';
+  for (var a = 1; a <= 22; a++) {
+    ageOptions += '<option value="' + a + '"' + (a === 18 ? ' selected' : '') + '>' + a + '歳</option>';
+  }
+
+  var div = document.createElement('div');
   div.className = 'future-card';
   div.id = 'future_card_' + idx;
+  div.innerHTML =
+    '<div class="future-card-header">' +
+      '<span class="future-child-label" id="future_child_label_' + idx + '">' + labelText + '</span>' +
+    '</div>' +
+    '<div class="row">' +
+      '<div class="fg narrow"><label>未到来開始年月（西暦・年）<span class="req">*</span></label>' +
+      '<input type="number" id="fs_year_' + idx + '" placeholder="2026" min="2026" onchange="validateFutureYear(this)"></div>' +
+      '<div class="fg narrow"><label>月<span class="req">*</span></label>' +
+      '<input type="number" id="fs_month_' + idx + '" placeholder="4" min="1" max="12"></div>' +
+    '</div>' +
+    payInfo +
+    '<div style="margin-top:14px">' +
+      '<div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">未到来最終年月の指定方法</div>' +
+      '<div class="future-sub-radios">' +
+        '<label class="sub-radio-card">' +
+          '<input type="radio" name="fe_type_' + idx + '" value="specific" checked onchange="onFutureEndTypeChange(' + idx + ')">' +
+          '<span>A: 特定の年月を直接入力</span>' +
+        '</label>' +
+        '<label class="sub-radio-card">' +
+          '<input type="radio" name="fe_type_' + idx + '" value="age" onchange="onFutureEndTypeChange(' + idx + ')">' +
+          '<span>B: 子が満〇歳に達する日まで</span>' +
+        '</label>' +
+      '</div>' +
+      '<div id="fe_specific_' + idx + '" style="margin-top:8px">' +
+        '<div class="row">' +
+          '<div class="fg narrow"><label>最終年（西暦）<span class="req">*</span></label>' +
+          '<input type="number" id="fe_year_' + idx + '" placeholder="2044" min="2026" onchange="validateFutureYear(this)"></div>' +
+          '<div class="fg narrow"><label>月<span class="req">*</span></label>' +
+          '<input type="number" id="fe_month_' + idx + '" placeholder="3" min="1" max="12"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div id="fe_age_' + idx + '" class="hidden" style="margin-top:8px">' +
+        '<div class="row">' +
+          '<div class="fg narrow"><label>満年齢（歳）<span class="req">*</span></label>' +
+          '<select id="fe_age_val_' + idx + '">' + ageOptions + '</select></div>' +
+          '<div class="fg"><label>子の生年月日<span class="req">*</span></label>' +
+          '<input type="date" id="fe_birth_' + idx + '">' +
+          '<p class="note">※子の生年月日から満〇歳に達する日の前日を自動算出します</p></div>' +
+        '</div>' +
+        '<div id="fe_age_calc_' + idx + '" class="info" style="margin-top:8px;display:none">計算結果：</div>' +
+      '</div>' +
+    '</div>';
 
-  // 支払い期日・月額（合意あり専用）
-  const payInfo = isYes ? `
-    <div class="row mt12">
-      <div class="fg narrow">
-        <label>支払期日（毎月〇日）<span class="req">*</span></label>
-        <input type="number" id="pay_day_${idx}" placeholder="25" min="1" max="31">
-      </div>
-      <div class="fg">
-        <label>月額（円）<span class="req">*</span></label>
-        <input type="number" id="monthly_amt_${idx}" placeholder="50000" min="1">
-      </div>
-    </div>
-  ` : `
-    <div class="info-green" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>
-  `;
-
-  // 開始年月
-  const startLabel = isYes ? '未到来開始年月' : '未到来開始年月';
-
-  div.innerHTML = `
-    <div class="future-card-header">
-      <span class="future-child-label" id="future_child_label_${idx}">${labelText}</span>
-    </div>
-
-    <!-- 開始年月 -->
-    <div class="row">
-      <div class="fg narrow">
-        <label>${startLabel}（西暦・年）<span class="req">*</span></label>
-        <input type="number" id="fs_year_${idx}" placeholder="2026" min="2026"
-          onchange="validateFutureYear(this)">
-      </div>
-      <div class="fg narrow">
-        <label>月<span class="req">*</span></label>
-        <input type="number" id="fs_month_${idx}" placeholder="4" min="1" max="12">
-      </div>
-    </div>
-
-    ${payInfo}
-
-    <!-- 未到来最終年月の指定方法 -->
-    <div style="margin-top:14px">
-      <div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">未到来最終年月の指定方法</div>
-      <div class="future-sub-radios">
-        <label class="sub-radio-card">
-          <input type="radio" name="fe_type_${idx}" value="specific" checked
-            onchange="onFutureEndTypeChange(${idx})">
-          <span>A: 特定の年月を直接入力</span>
-        </label>
-        <label class="sub-radio-card">
-          <input type="radio" name="fe_type_${idx}" value="age"
-            onchange="onFutureEndTypeChange(${idx})">
-          <span>B: 子が満〇歳に達する日まで</span>
-        </label>
-      </div>
-
-      <!-- A: 特定年月 -->
-      <div id="fe_specific_${idx}" style="margin-top:8px">
-        <div class="row">
-          <div class="fg narrow">
-            <label>最終年（西暦）<span class="req">*</span></label>
-            <input type="number" id="fe_year_${idx}" placeholder="2044" min="2026"
-              onchange="validateFutureYear(this)">
-          </div>
-          <div class="fg narrow">
-            <label>月<span class="req">*</span></label>
-            <input type="number" id="fe_month_${idx}" placeholder="3" min="1" max="12">
-          </div>
-        </div>
-      </div>
-
-      <!-- B: 年齢指定 -->
-      <div id="fe_age_${idx}" class="hidden" style="margin-top:8px">
-        <div class="row">
-          <div class="fg narrow">
-            <label>満年齢（歳）<span class="req">*</span></label>
-            <select id="fe_age_val_${idx}">
-              ${Array.from({length:22},(_,k)=>k+1).map(a =>
-                `<option value="${a}" ${a===18?'selected':''}>${a}歳</option>`
-              ).join('')}
-            </select>
-          </div>
-          <div class="fg">
-            <label>子の生年月日<span class="req">*</span></label>
-            <input type="date" id="fe_birth_${idx}">
-            <p class="note">※子の生年月日から満〇歳に達する日の前日を自動算出します</p>
-          </div>
-        </div>
-        <div id="fe_age_calc_${idx}" class="info" style="margin-top:8px;display:none">
-          計算結果：
-        </div>
-      </div>
-    </div>
-  `;
-
-  // 年齢指定時の自動計算バインド
-  setTimeout(()=>{
-    const ageSelect = $(`fe_age_val_${idx}`);
-    const birthInput = $(`fe_birth_${idx}`);
-    if(ageSelect) ageSelect.addEventListener('change', ()=>calcAgeEnd(idx));
-    if(birthInput) birthInput.addEventListener('change', ()=>calcAgeEnd(idx));
+  setTimeout(function() {
+    var ageSelect  = elById('fe_age_val_' + idx);
+    var birthInput = elById('fe_birth_' + idx);
+    if (ageSelect)  ageSelect.addEventListener('change',  function(){ calcAgeEnd(idx); });
+    if (birthInput) birthInput.addEventListener('change', function(){ calcAgeEnd(idx); });
   }, 0);
 
   return div;
 }
 
-function onFutureEndTypeChange(idx){
-  const val = document.querySelector(`input[name="fe_type_${idx}"]:checked`)?.value;
-  if(val === 'specific'){
-    show(`fe_specific_${idx}`);
-    hide(`fe_age_${idx}`);
+function onFutureEndTypeChange(idx) {
+  var radios = document.querySelectorAll('input[name="fe_type_' + idx + '"]');
+  var val = '';
+  radios.forEach(function(r){ if(r.checked) val = r.value; });
+  if (val === 'specific') {
+    showEl('fe_specific_' + idx);
+    hideEl('fe_age_' + idx);
   } else {
-    hide(`fe_specific_${idx}`);
-    show(`fe_age_${idx}`);
+    hideEl('fe_specific_' + idx);
+    showEl('fe_age_' + idx);
   }
 }
 
-/** 将来分の開始・終了年バリデーション */
-function validateFutureYear(input){
-  const y = parseInt(input.value)||0;
-  if(y > 0 && y < 2026){
-    input.style.borderColor = 'var(--red)';
-    input.title = '2026年以降を入力してください';
-  } else {
-    input.style.borderColor = '';
-    input.title = '';
-  }
-}
+function calcAgeEnd(idx) {
+  var ageEl   = elById('fe_age_val_' + idx);
+  var birthEl = elById('fe_birth_' + idx);
+  var calcEl  = elById('fe_age_calc_' + idx);
+  if (!ageEl || !birthEl || !calcEl) return;
+  var age   = parseInt(ageEl.value) || 0;
+  var birth = birthEl.value;
+  if (!birth || !age) { calcEl.style.display = 'none'; return; }
 
-/** 年齢指定の終了日自動計算 */
-function calcAgeEnd(idx){
-  const age   = parseInt($(`fe_age_val_${idx}`)?.value)||0;
-  const birth = $(`fe_birth_${idx}`)?.value;
-  const calcEl = $(`fe_age_calc_${idx}`);
-  if(!birth || !age || !calcEl){ if(calcEl) calcEl.style.display='none'; return; }
-
-  const d = new Date(birth);
+  var d = new Date(birth);
   d.setFullYear(d.getFullYear() + age);
-  d.setDate(d.getDate() - 1); // 満〇歳に達する日の前日
-
-  const y = d.getFullYear(), m = d.getMonth()+1, day = d.getDate();
-  const reiwa = toReiwa(y);
-
+  d.setDate(d.getDate() - 1);
+  var y = d.getFullYear(), m = d.getMonth()+1, day = d.getDate();
   calcEl.style.display = 'block';
-  calcEl.textContent = `計算結果：令和${reiwa}年${m}月${day}日（${y}年${m}月${day}日）まで`;
+  calcEl.textContent = '計算結果：令和' + toReiwa(y) + '年' + m + '月' + day + '日（' + y + '年' + m + '月' + day + '日）まで';
 }
 
-/* ══════════════════════════════════════════════════
-   費用フォームのイベントバインド
-══════════════════════════════════════════════════ */
-/* ══════════════════════════════════════════════════
-   初期化
-══════════════════════════════════════════════════ */
-window.addEventListener('DOMContentLoaded', ()=>{
-  // 費用フィールドのリスナー
-  ['cert_fee','koseki_fee','jumin_fee','postage'].forEach(id => {
-    const el = $(id);
-    if(el) el.addEventListener('input', updateExecCostDisplay);
+/* ============================================================
+   DOMContentLoaded：全イベントをここで登録
+============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* ── 事前確認ボタン Q1/Q2/Q3 ── */
+  var bq1y = document.getElementById('btn_q1_yes');
+  var bq1n = document.getElementById('btn_q1_no');
+  var bq2y = document.getElementById('btn_q2_yes');
+  var bq2n = document.getElementById('btn_q2_no');
+  var bq3y = document.getElementById('btn_q3_yes');
+  var bq3n = document.getElementById('btn_q3_no');
+
+  if (bq1y) bq1y.addEventListener('click', function() { handleQ1('yes'); });
+  if (bq1n) bq1n.addEventListener('click', function() { handleQ1('no');  });
+  if (bq2y) bq2y.addEventListener('click', function() { handleQ2('yes'); });
+  if (bq2n) bq2n.addEventListener('click', function() { handleQ2('no');  });
+  if (bq3y) bq3y.addEventListener('click', function() { handleQ3('yes'); });
+  if (bq3n) bq3n.addEventListener('click', function() { handleQ3('no');  });
+
+  /* ── 費用フィールド ── */
+  ['cert_fee','koseki_fee','jumin_fee','postage'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateExecCostDisplay);
   });
 
-  // 申立日のデフォルト（今日）
-  const today = new Date();
-  const appYear  = $('app_year');
-  const appMonth = $('app_month');
-  const appDay   = $('app_day');
-  if(appYear)  appYear.value  = today.getFullYear();
-  if(appMonth) appMonth.value = today.getMonth()+1;
-  if(appDay)   appDay.value   = today.getDate();
+  /* ── 離婚年月日バリデーション ── */
+  var divorceEl = document.getElementById('divorce_date');
+  if (divorceEl) divorceEl.addEventListener('change', function(){ validateMinDate(this); });
+
+  /* ── 申立日デフォルト（今日） ── */
+  var today = new Date();
+  var yEl = document.getElementById('app_year');
+  var mEl = document.getElementById('app_month');
+  var dEl = document.getElementById('app_day');
+  if (yEl) yEl.value = today.getFullYear();
+  if (mEl) mEl.value = today.getMonth() + 1;
+  if (dEl) dEl.value = today.getDate();
 });
 
 /* ══════════════════════════════════════════════════════════════════
