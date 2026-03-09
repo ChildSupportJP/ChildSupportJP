@@ -584,6 +584,61 @@ body {
   transition: width .4s ease;
 }
 
+/* ── STEP1 選択ボタン ── */
+.step1-btn {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: var(--r);
+  border: 2px solid #d4dae8;
+  background: #fafbfd;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .18s;
+  text-align: center;
+}
+.step1-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.step1-btn.selected-ok  { border-color: var(--green); background: var(--green-light); box-shadow: 0 0 0 2px var(--green); }
+.step1-btn.selected-ng  { border-color: var(--red);   background: var(--red-light);   box-shadow: 0 0 0 2px var(--red); }
+.step1-btn-ok  { border-color: #7ec8aa; }
+.step1-btn-ng  { border-color: #e0a0a0; }
+.step1-btn-icon { font-size: 28px; line-height: 1; }
+.step1-btn-main { font-size: 14px; font-weight: 700; color: var(--ink); }
+.step1-btn-sub  { font-size: 11px; color: var(--mid); }
+
+/* ── 事前確認ブロック ── */
+.precheck-block { margin-top: 18px; }
+.precheck-q {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.precheck-num {
+  flex-shrink: 0;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  margin-top: 3px;
+  letter-spacing: .04em;
+}
+.precheck-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.precheck-divider {
+  border: none;
+  border-top: 1.5px dashed var(--light);
+  margin-bottom: 18px;
+}
+
 @media (max-width: 700px) {
   .layout { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: static; display: flex; overflow-x: auto; padding: 12px 0; }
@@ -619,17 +674,16 @@ body {
   <nav class="sidebar">
     <div class="sidebar-title">STEP</div>
     <div class="sidebar-step active" id="nav1"><span class="step-num">1</span><span>事前確認</span></div>
-    <div class="sidebar-step" id="nav2"><span class="step-num">2</span><span>養育費の種別</span></div>
-    <div class="sidebar-step" id="nav3"><span class="step-num">3</span><span>基本情報</span></div>
-    <div class="sidebar-step" id="nav4"><span class="step-num">4</span><span>当事者情報</span></div>
-    <div class="sidebar-step" id="nav5"><span class="step-num">5</span><span>子・債権情報</span></div>
+    <div class="sidebar-step" id="nav2"><span class="step-num">2</span><span>基本情報</span></div>
+    <div class="sidebar-step" id="nav3"><span class="step-num">3</span><span>当事者情報</span></div>
+    <div class="sidebar-step" id="nav4"><span class="step-num">4</span><span>子・債権情報</span></div>
   </nav>
 
   <!-- ── コンテンツ ── -->
   <div class="main">
 
     <!-- ══════════════════════════════════════
-         STEP 1: 事前確認
+         STEP 1: 事前確認（3段階フロー）
     ══════════════════════════════════════ -->
     <div class="card" id="step1">
       <div class="card-title">
@@ -638,56 +692,86 @@ body {
       </div>
 
       <div class="info" style="margin-top:0">
-        このシステムは<strong>債務名義（判決・公正証書・調停調書等）を持たない方</strong>向けに、民法の一般先取特権に基づく債権差押命令申立書を作成します。
+        このシステムは<strong>債務名義（判決・公正証書・調停調書等）を持たない方</strong>向けに、民法の一般先取特権に基づく債権差押命令申立書を作成します。まず以下の3つの確認を行ってください。
       </div>
 
-      <div class="fg mt16">
-        <label>相手方（債務者）の現在の勤務先・所在地など、差し押さえるべき給与債権を特定できていますか？</label>
-        <div class="radios">
-          <label class="radio-card">
-            <input type="radio" name="q_emp" value="yes">
-            <span><strong>はい</strong>（勤務先・所在地を特定できている）</span>
-          </label>
-          <label class="radio-card">
-            <input type="radio" name="q_emp" value="no">
-            <span><strong>いいえ</strong>（不明・調査が必要）</span>
-          </label>
+      <!-- ── Q1: 債務名義の有無 ── -->
+      <div class="precheck-block" id="pc_q1">
+        <div class="precheck-q">
+          <span class="precheck-num">Q1</span>
+          <span>債務名義（判決正本・調停調書・執行認諾文言付き公正証書等）を<strong>お持ちですか？</strong></span>
         </div>
-        <div id="warn_emp" class="warn hidden">
-          ⚠️ 勤務先が不明な場合は、まず裁判所の<strong>財産開示手続</strong>（民執§197）または<strong>第三者からの情報取得手続</strong>（民執§204）をご利用ください。勤務先を特定してから本申立てを行ってください。
+        <div class="precheck-btns">
+          <button type="button" class="step1-btn step1-btn-ng" id="btn_q1_yes"
+            onclick="onQ1('yes')">
+            <span class="step1-btn-icon">⚠️</span>
+            <span class="step1-btn-main">はい、持っています</span>
+            <span class="step1-btn-sub">（債務名義あり）</span>
+          </button>
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q1_no"
+            onclick="onQ1('no')">
+            <span class="step1-btn-icon">✅</span>
+            <span class="step1-btn-main">いいえ、持っていません</span>
+            <span class="step1-btn-sub">（債務名義なし）</span>
+          </button>
+        </div>
+        <div id="warn_q1" class="warn hidden">
+          <strong>申し訳ありませんが、このアプリは債務名義を有していない方専用です。</strong><br>
+          確定判決・調停調書・執行認諾文言付き公正証書等の債務名義をお持ちの場合は、通常の<strong>強制執行（債権差押命令申立）</strong>の手続きをご利用ください。詳しくは弁護士・司法書士等の専門家にご相談ください。
         </div>
       </div>
-    </div>
 
-    <!-- ══════════════════════════════════════
-         STEP 2: 養育費の合意有無
-    ══════════════════════════════════════ -->
-    <div class="card hidden" id="step2">
-      <div class="card-title">
-        <span>養育費の合意の有無</span>
-        <span class="badge badge-blue">STEP 2</span>
-      </div>
-
-      <div class="fg">
-        <label>養育費について離婚時等に合意（口頭・書面問わず）はありましたか？</label>
-        <div class="radios">
-          <label class="radio-card">
-            <input type="radio" name="q_agmt" value="yes">
-            <span>
-              <strong>合意あり（形成養育費）</strong><br>
-              <small style="font-weight:400;color:#666">離婚協議書・誓約書等で金額を取り決めた場合</small>
-            </span>
-          </label>
-          <label class="radio-card green-radio">
-            <input type="radio" name="q_agmt" value="no">
-            <span>
-              <strong>合意なし（法定養育費）</strong><br>
-              <small style="font-weight:400;color:#666">取り決めなし・月２万円の法定養育費（民法766条の3）を請求する場合</small>
-            </span>
-          </label>
+      <!-- ── Q2: 第三債務者の特定（Q1「いいえ」後に表示） ── -->
+      <div class="precheck-block hidden" id="pc_q2">
+        <div class="precheck-divider"></div>
+        <div class="precheck-q">
+          <span class="precheck-num">Q2</span>
+          <span>差し押さえる相手先となる<strong>第三債務者</strong>（勤務先の会社・預貯金のある銀行など）を<strong>特定できていますか？</strong></span>
+        </div>
+        <div class="precheck-btns">
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q2_yes"
+            onclick="onQ2('yes')">
+            <span class="step1-btn-icon">✅</span>
+            <span class="step1-btn-main">はい、特定できています</span>
+            <span class="step1-btn-sub">（勤務先・銀行口座等が判明）</span>
+          </button>
+          <button type="button" class="step1-btn step1-btn-ng" id="btn_q2_no"
+            onclick="onQ2('no')">
+            <span class="step1-btn-icon">⚠️</span>
+            <span class="step1-btn-main">いいえ、特定できていません</span>
+            <span class="step1-btn-sub">（不明・調査が必要）</span>
+          </button>
+        </div>
+        <div id="warn_q2" class="warn hidden">
+          <strong>申立てを行うには、あらかじめ第三債務者の特定が必要です。特定してから再度ご利用ください。</strong><br>
+          第三債務者が不明な場合は、裁判所の<strong>財産開示手続</strong>（民執§197）または<strong>第三者からの情報取得手続</strong>（民執§204）をご活用ください。
         </div>
       </div>
-    </div>
+
+      <!-- ── Q3: 養育費の合意文書（Q2「はい」後に表示） ── -->
+      <div class="precheck-block hidden" id="pc_q3">
+        <div class="precheck-divider"></div>
+        <div class="precheck-q">
+          <span class="precheck-num">Q3</span>
+          <span>債権者・債務者間に<strong>養育費の合意文書</strong>（離婚協議書・誓約書等）はありますか？</span>
+        </div>
+        <div class="precheck-btns">
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_yes"
+            onclick="onQ3('yes')">
+            <span class="step1-btn-icon">📄</span>
+            <span class="step1-btn-main">はい、あります</span>
+            <span class="step1-btn-sub">（合意あり → 形成養育費）</span>
+          </button>
+          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_no"
+            onclick="onQ3('no')">
+            <span class="step1-btn-icon">📋</span>
+            <span class="step1-btn-main">いいえ、ありません</span>
+            <span class="step1-btn-sub">（合意なし → 法定養育費）</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /#step1 -->
 
     <!-- ══════════════════════════════════════
          STEP 3: 基本情報・申立情報
@@ -695,7 +779,7 @@ body {
     <div class="card hidden" id="step3">
       <div class="card-title">
         <span>基本情報</span>
-        <span class="badge badge-blue">STEP 3</span>
+        <span class="badge badge-blue">STEP 2</span>
       </div>
 
       <div class="sec">申立先裁判所・申立日</div>
@@ -740,7 +824,7 @@ body {
     <div class="card hidden" id="step4">
       <div class="card-title">
         <span>当事者情報</span>
-        <span class="badge badge-blue">STEP 4</span>
+        <span class="badge badge-blue">STEP 3</span>
       </div>
 
       <!-- 申立人 -->
@@ -817,7 +901,7 @@ body {
     <div class="card hidden" id="step5">
       <div class="card-title">
         <span>子の情報・債権情報</span>
-        <span class="badge badge-blue">STEP 5</span>
+        <span class="badge badge-blue">STEP 4</span>
       </div>
 
       <!-- ── 子供の情報 ── -->
@@ -966,19 +1050,23 @@ function validateYearMonth(yearId, monthId){
    STEP 制御
 ══════════════════════════════════════════════════ */
 function updateNav(){
+  // step1が非表示＝事前確認完了済み
+  const preCheckDone = $('step1').classList.contains('hidden');
   const steps = [
-    { navId:'nav1', stepId:'step1', condition: true },
-    { navId:'nav2', stepId:'step2', condition: true },
-    { navId:'nav3', stepId:'step3', condition: agmtType !== null },
-    { navId:'nav4', stepId:'step4', condition: agmtType !== null },
-    { navId:'nav5', stepId:'step5', condition: agmtType !== null },
+    { navId:'nav1', stepId:'step1', done: preCheckDone },
+    { navId:'nav2', stepId:'step3', done: agmtType !== null },
+    { navId:'nav3', stepId:'step4', done: agmtType !== null },
+    { navId:'nav4', stepId:'step5', done: agmtType !== null },
   ];
   steps.forEach(s => {
     const nav = $(s.navId);
-    if(!isHidden(s.stepId)){
+    if(!nav) return;
+    const stepEl = $(s.stepId);
+    const visible = stepEl && !stepEl.classList.contains('hidden');
+    if(visible){
       nav.classList.add('active');
       nav.classList.remove('done');
-    } else if(s.condition){
+    } else if(s.done){
       nav.classList.remove('active');
       nav.classList.add('done');
     } else {
@@ -987,23 +1075,104 @@ function updateNav(){
   });
 }
 
-/** STEP 1: 勤務先確認 */
-function onStep1(){
-  const val = document.querySelector('input[name="q_emp"]:checked')?.value;
-  if(val === 'no'){
-    show('warn_emp');
-    hide('step2');
-    hideStepsFrom3();
-  } else if(val === 'yes'){
-    hide('warn_emp');
-    show('step2');
+/* ── ボタン選択状態リセットヘルパー ── */
+function resetBtns(...ids){
+  ids.forEach(id => {
+    const el = $(id);
+    if(el) el.classList.remove('selected-ok','selected-ng');
+  });
+}
+
+/* ════════════════════════════════════════════
+   事前確認 Q1: 債務名義の有無
+   yes → ブロック表示・先へ進まない
+   no  → Q2を表示
+════════════════════════════════════════════ */
+function onQ1(ans){
+  resetBtns('btn_q1_yes','btn_q1_no');
+
+  if(ans === 'yes'){
+    // 債務名義あり → 対象外
+    $('btn_q1_yes').classList.add('selected-ng');
+    show('warn_q1');
+    hide('pc_q2');
+    hide('pc_q3');
+    hideMainForms();
+  } else {
+    // 債務名義なし → Q2へ
+    $('btn_q1_no').classList.add('selected-ok');
+    hide('warn_q1');
+    // Q2をリセットして表示
+    resetBtns('btn_q2_yes','btn_q2_no');
+    hide('warn_q2');
+    hide('pc_q3');
+    hideMainForms();
+    show('pc_q2');
+    $('pc_q2').scrollIntoView({ behavior:'smooth', block:'nearest' });
   }
   updateNav();
 }
 
-/** STEP 2: 合意有無 */
-function onStep2(){
-  const val = document.querySelector('input[name="q_agmt"]:checked')?.value;
+/* ════════════════════════════════════════════
+   事前確認 Q2: 第三債務者の特定
+   no  → ブロック表示・先へ進まない
+   yes → Q3を表示
+════════════════════════════════════════════ */
+function onQ2(ans){
+  resetBtns('btn_q2_yes','btn_q2_no');
+
+  if(ans === 'no'){
+    // 特定できていない → 先へ進まない
+    $('btn_q2_no').classList.add('selected-ng');
+    show('warn_q2');
+    hide('pc_q3');
+    hideMainForms();
+  } else {
+    // 特定できている → Q3へ
+    $('btn_q2_yes').classList.add('selected-ok');
+    hide('warn_q2');
+    // Q3をリセットして表示
+    resetBtns('btn_q3_yes','btn_q3_no');
+    hideMainForms();
+    show('pc_q3');
+    $('pc_q3').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+  updateNav();
+}
+
+/* ════════════════════════════════════════════
+   事前確認 Q3: 養育費の合意文書
+   yes → 形成養育費モードでフォームへ
+   no  → 法定養育費モードでフォームへ
+════════════════════════════════════════════ */
+function onQ3(ans){
+  resetBtns('btn_q3_yes','btn_q3_no');
+  const btn = ans === 'yes' ? $('btn_q3_yes') : $('btn_q3_no');
+  btn.classList.add('selected-ok');
+
+  // 事前確認カードを非表示にしてメインフォームへ
+  hide('step1');
+  applyAgmtType(ans);   // 'yes'=形成養育費 / 'no'=法定養育費
+  updateNav();
+
+  // メインフォーム先頭へスクロール
+  setTimeout(() => {
+    const first = $('step3') || $('step4');
+    if(first) first.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 80);
+}
+
+/* ════════════════════════════════════════════
+   合意種別を適用してメインフォームを展開する
+   （旧 onStep2 の実体をここに集約）
+   val: 'yes'=形成養育費 / 'no'=法定養育費
+════════════════════════════════════════════ */
+function applyAgmtType(val){
+  if(agmtType === val) {
+    // 既に同じ種別で開いている場合もフォームを確実に表示
+    show('step3'); show('step4'); show('step5'); show('step_submit');
+    return;
+  }
   agmtType = val;
 
   // 費用行の表示切り替え
@@ -1016,14 +1185,14 @@ function onStep2(){
   }
   updateExecCostDisplay();
 
-  // STEP 3〜5 表示
+  // メインフォーム（STEP2〜4）を表示
   show('step3');
   show('step4');
   show('step5');
   show('step_submit');
   $('btn_gen').disabled = false;
 
-  // 種別別フォーム表示
+  // 種別別フォームエリアの表示切り替え
   if(val === 'yes'){
     show('past_yes_area');
     hide('past_no_area');
@@ -1036,12 +1205,13 @@ function onStep2(){
 
   // 将来分フォームを再描画
   rebuildFutureCards();
-  updateNav();
 }
 
-function hideStepsFrom3(){
+/* メインフォームを全て非表示にして状態リセット */
+function hideMainForms(){
   hide('step3'); hide('step4'); hide('step5'); hide('step_submit');
   agmtType = null;
+  $('btn_gen').disabled = true;
 }
 
 /* ══════════════════════════════════════════════════
@@ -1396,16 +1566,6 @@ function calcAgeEnd(idx){
    初期化
 ══════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', ()=>{
-  // ── STEP1 ラジオ：勤務先確認
-  document.querySelectorAll('input[name="q_emp"]').forEach(el => {
-    el.addEventListener('change', onStep1);
-  });
-
-  // ── STEP2 ラジオ：合意有無
-  document.querySelectorAll('input[name="q_agmt"]').forEach(el => {
-    el.addEventListener('change', onStep2);
-  });
-
   // 費用フィールドのリスナー
   ['cert_fee','koseki_fee','jumin_fee','postage'].forEach(id => {
     const el = $(id);
