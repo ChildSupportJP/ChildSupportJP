@@ -1304,7 +1304,6 @@ function buildFutureCard(idx) {
     badgeText = '生年月日未入力';
   }
 
-  // 【修正】支払期日を過去分で入力させるため、将来分のカードからは支払期日を削除し、金額だけ残す
   var payInfo = isYes
     ? '<div class="row mt12">' +
         '<div class="fg"><label>月額（円）<span class="req">*</span></label>' +
@@ -1455,14 +1454,13 @@ document.addEventListener('DOMContentLoaded', function() {
   if (mEl) mEl.value = today.getMonth() + 1;
   if (dEl) dEl.value = today.getDate();
 
-  // 【修正】支払期日のドロップダウンリストを生成（1〜31日 ＆ 末日）
   var payDaySelect = document.getElementById('global_pay_day_yes');
   if (payDaySelect) {
       for (var i = 1; i <= 31; i++) {
           var opt = document.createElement('option');
           opt.value = i;
           opt.textContent = i + '日';
-          if (i === 25) opt.selected = true; // デフォルトは25日
+          if (i === 25) opt.selected = true;
           payDaySelect.appendChild(opt);
       }
       var optLast = document.createElement('option');
@@ -1473,7 +1471,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* ============================================================
-   フォント読み込み（jsPDFで文字化けしない M PLUS 1p を採用）
+   フォント読み込み
 ============================================================ */
 var _fontCache = null;
 var FONT_NAME  = 'MPLUS1p';
@@ -1585,7 +1583,6 @@ function collectData(){
   var juminFee  = isYes ? 0 : gi('jumin_fee');
   var execCost  = 4000 + certFee + postage + kosekiFee + juminFee;
 
-  // 【修正】全体で共通の支払期日を取得
   var globalPayDay = gv('global_pay_day_yes');
 
   var pastClaims = [];
@@ -1688,7 +1685,7 @@ function collectData(){
 }
 
 /* ============================================================
-   PDF レイアウト定数・ヘルパー（装飾線描画を全て削除）
+   PDF レイアウト定数・ヘルパー
 ============================================================ */
 var PDF_ML = 25, PDF_MR = 18, PDF_MT = 30, PDF_MB = 22;
 var PDF_PW = 210, PDF_PH = 297, PDF_FS = 10.5;
@@ -1853,49 +1850,64 @@ function buildDoc3(h, d){
    書類4: 差押債権目録
 ============================================================ */
 function buildDoc4(h, d){
-  h.docTitle('差 押 債 権 目 録');
+  const { tx, txC, sp, docTitle } = h;
 
-  h.tx('１　金' + fmt(d.claimTotal) + '円（担保権・被担保債権・請求債権目録記載の３（１））');
-  h.sp(0.5);
+  docTitle('差 押 債 権 目 録');
 
-  if (d.futureClaims.length === 0) {
-    h.tx('２　（将来分の定期金債権の情報が入力されていません）');
-  } else if (d.futureClaims.length === 1) {
-    var fc = d.futureClaims[0];
-    if (d.isYes) {
+  // １ 確定期限到来済
+  tx(`１　金${fmt(d.claimTotal)}円（担保権・被担保債権・請求債権目録記載の３（１））`);
+  sp(0.5);
+
+  // ２ 未到来
+  if(d.futureClaims.length === 0){
+    tx('２　（将来分の定期金債権の情報が入力されていません）');
+  } else if(d.futureClaims.length === 1){
+    const fc = d.futureClaims[0];
+    if(d.isYes){
       var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-      h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
+      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
     } else {
-      h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
+      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
     }
   } else {
-    h.tx('２　下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
-    d.futureClaims.forEach(function(fc, i){
-      var sym = kigo(i);
-      if (d.isYes) {
+    tx('２　下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
+    d.futureClaims.forEach((fc, i) => {
+      const sym = kigo(i);
+      if(d.isYes){
         var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-        h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（' + fc.childName + '分）', 6);
+        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（${fc.childName}分）`, 6);
       } else {
-        h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（' + fc.childName + '分）', 6);
+        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつ（${fc.childName}分）`, 6);
       }
     });
   }
-  h.sp(1);
+  sp(1);
 
-  h.tx('債務者が第三債務者から支給を受ける給料（基本給のほか、歩合給、役付手当、家族手当、通勤手当その他名称の如何を問わず一切の手当を含む。）及び賞与（夏期、冬期その他名称の如何を問わず支給される一時金）等のうち、所得税、住民税、社会保険料等を控除した残額の２分の１（ただし、その残額が６６万円を超えるときは残額から３３万円を控除した金額）に相当する金員。');
-  h.sp(0.8);
-  h.tx('ただし、次の場合には、それぞれ次に定める金員とする。');
-  h.sp(0.3);
-  h.tx('（１）上記により計算した金員が頭書の残金額を超えるときは、当該残金額に相当する金員。', 6);
-  h.sp(0.3);
-  h.tx('（２）上記により計算した金員に１円未満の端数があるときは、その端数を切り捨てた金員。', 6);
-  h.sp(1);
-  h.tx('以上の差押債権は、その支払期が到来する都度、頭書金額に満つるまで差し押さえる。');
-  h.sp(1);
-  h.tx('第三債務者');
-  h.tx('〒' + d.tdZip + '　' + d.tdAddr, 6);
-  h.tx(d.tdCorp, 6);
-  if (d.tdRep) h.tx(d.tdRep, 6);
+  tx('　債務者が第三債務者から支給される下記債権にして、まずは本命令送達時に既に支払期にあるもの（未払分）のうち支払期の古い順から、次いで本命令送達日以降支払期が到来するものから、頭書１及び２の金額に満つるまで。ただし、頭書２の金額については、その確定期限の到来後に支払期が到来する下記債権に限る。');
+  sp(0.5);
+  txC('記');
+  sp(0.5);
+  tx('１　給料債権（基本給（俸給・給料）と諸手当。ただし、通勤手当を除く。）及び継続的に支払を受ける労務報酬債権(日給、週給、歩合手当、割増金)の額から所得税、住民税及び社会保険料を差し引いた残額の２分の１（ただし，上記税金等を控除した残額の２分の１に相当する額が、後記一覧表記載の支払期の別に応じ、同記載の政令で定める額を超えるときは、その残額から政令で定める額を控除した金額）');
+  sp(0.5);
+  tx('２　賞与債権(夏季、冬季、期末、勤勉手当、その他の賞与の性質を有するものを含む。)の額から所得税、住民税及び社会保険料を差し引いた残額の２分の１（ただし、上記税金等を控除した残額が６６万円を超えるときは、その残額から３３万円を控除した金額）');
+  sp(0.5);
+  
+  tx('一覧表');
+  tx('支払期　　　　　　　　政令で定める額', 6);
+  tx('毎月　　　　　　　　　３３０，０００円', 6);
+  tx('毎半月　　　　　　　　１６５，０００円', 6);
+  tx('毎旬　　　　　　　　　１１０，０００円', 6);
+  tx('月の整数倍の期間ごと　３３０，０００円に当該倍数を乗じて得た金額に相当する額', 6);
+  tx('毎日　　　　　　　　　１１，０００円', 6);
+  tx('その他の期間　　　　　１１，０００円に当該期間にかかる日数を乗じて得た金額に相当する額', 6);
+  
+  sp(0.5);
+  tx('　なお，１及び２により弁済しないうちに退職したときは，退職金から所得税及び住民税を控除した残額の４分の１にして，１及び２と合計して頭書金額に満つるまで');
+  sp(1);
+  tx('第三債務者');
+  tx(`〒${d.tdZip}　${d.tdAddr}`, 6);
+  tx(d.tdCorp, 6);
+  if(d.tdRep) tx(d.tdRep, 6);
 }
 
 /* ============================================================
