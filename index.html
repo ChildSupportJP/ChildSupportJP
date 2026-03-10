@@ -857,13 +857,22 @@ body {
       <p class="note mt8">※最大4人まで登録できます。ここで入力した生年月日は将来分の終期計算に自動的に使用されます。</p>
 
       <div class="sec">確定期限が到来している債権（過去の未払分）</div>
-      <div class="info" style="margin-top:0">
-        発生月ごとに1件の債権として追加します。<strong>2026年4月1日以降</strong>に発生した月分のみ対象です。<br>
-        <span id="claim_limit_note"></span>
-      </div>
-
+      
       <div id="past_yes_area" class="agmt-section agmt-yes hidden">
         <span class="agmt-label">✦ 合意あり（形成養育費）</span>
+        
+        <div class="row" style="margin-top: 4px; margin-bottom: 16px;">
+          <div class="fg narrow" style="flex: 0 0 180px;">
+            <label>毎月の支払期日<span class="req">*</span></label>
+            <select id="global_pay_day_yes"></select>
+          </div>
+        </div>
+
+        <div class="info" style="margin-top:0">
+          発生月ごとに1件の債権として追加します。<strong>2026年4月1日以降</strong>に発生した月分のみ対象です。<br>
+          <span id="claim_limit_note_yes">形成養育費：最大360月分（30年分）</span>
+        </div>
+
         <div class="claims-container" id="claims_yes_container"></div>
         <button class="btn-add-claim" id="btn_add_claim_yes" onclick="addClaim('yes')" type="button">
           ＋ 未払月を追加する
@@ -1094,12 +1103,8 @@ function applyAgmtType(val) {
   if (btnGen) btnGen.disabled = false;
   if (val === 'yes') {
     showEl('past_yes_area'); hideEl('past_no_area');
-    var note = elById('claim_limit_note');
-    if (note) note.textContent = '形成養育費：最大360月分（30年分）';
   } else {
     hideEl('past_yes_area'); showEl('past_no_area');
-    var note = elById('claim_limit_note');
-    if (note) note.textContent = '法定養育費：最大216月分（18年分）';
   }
   rebuildFutureCards();
 }
@@ -1299,12 +1304,11 @@ function buildFutureCard(idx) {
     badgeText = '生年月日未入力';
   }
 
+  // 【修正】支払期日を過去分で入力させるため、将来分のカードからは支払期日を削除し、金額だけ残す
   var payInfo = isYes
     ? '<div class="row mt12">' +
-        '<div class="fg narrow"><label>支払期日（毎月〇日）<span class="req">*</span></label>' +
-        '<input type="number" id="pay_day_' + idx + '" placeholder="25" min="1" max="31"></div>' +
         '<div class="fg"><label>月額（円）<span class="req">*</span></label>' +
-        '<input type="number" id="monthly_amt_' + idx + '" placeholder="50000" min="1"></div>' +
+        '<input type="number" id="monthly_amt_' + idx + '" placeholder="50000" min="1" style="max-width:200px"></div>' +
       '</div>'
     : '<div class="info-green" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>';
 
@@ -1450,10 +1454,26 @@ document.addEventListener('DOMContentLoaded', function() {
   if (yEl) yEl.value = today.getFullYear();
   if (mEl) mEl.value = today.getMonth() + 1;
   if (dEl) dEl.value = today.getDate();
+
+  // 【修正】支払期日のドロップダウンリストを生成（1〜31日 ＆ 末日）
+  var payDaySelect = document.getElementById('global_pay_day_yes');
+  if (payDaySelect) {
+      for (var i = 1; i <= 31; i++) {
+          var opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = i + '日';
+          if (i === 25) opt.selected = true; // デフォルトは25日
+          payDaySelect.appendChild(opt);
+      }
+      var optLast = document.createElement('option');
+      optLast.value = '末日';
+      optLast.textContent = '末日';
+      payDaySelect.appendChild(optLast);
+  }
 });
 
 /* ============================================================
-   【修正】 フォント読み込み（jsPDFで文字化けしない M PLUS 1p を採用）
+   フォント読み込み（jsPDFで文字化けしない M PLUS 1p を採用）
 ============================================================ */
 var _fontCache = null;
 var FONT_NAME  = 'MPLUS1p';
@@ -1461,8 +1481,6 @@ var FONT_NAME  = 'MPLUS1p';
 async function loadFont() {
   if (_fontCache !== null) return _fontCache;
 
-  // Noto Sans の一部ファイルはjsPDF内部パーサーで文字化けを起こすため、
-  // 完全な互換性を持つオープンソース日本語フォント「M PLUS 1p」を使用します。
   var urls = [
     'https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf',
     'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mplus1p/MPLUS1p-Regular.ttf'
@@ -1488,7 +1506,6 @@ async function loadFont() {
   return _fontCache;
 }
 
-// 【修正】コールスタックオーバーフローを避け、文字化けを防ぐ安全なBase64変換
 function arrayBufferToBase64(buffer) {
   let binary = '';
   const bytes = new Uint8Array(buffer);
@@ -1568,6 +1585,9 @@ function collectData(){
   var juminFee  = isYes ? 0 : gi('jumin_fee');
   var execCost  = 4000 + certFee + postage + kosekiFee + juminFee;
 
+  // 【修正】全体で共通の支払期日を取得
+  var globalPayDay = gv('global_pay_day_yes');
+
   var pastClaims = [];
   if (isYes) {
     claimsYes.forEach(function(id) {
@@ -1638,7 +1658,7 @@ function collectData(){
       }
     }
 
-    var payDay  = isYes ? gi('pay_day_'     + n) : null;
+    var payDay  = isYes ? globalPayDay : null;
     var monthly = isYes ? gi('monthly_amt_' + n) : 20000;
 
     futureClaims.push({
@@ -1713,7 +1733,6 @@ function makePdfHelper(pdf, FN) {
   
   function sp(n){ y += LINE_H * (n || 1); }
   
-  // 【修正】線を引く処理（hline）を削除し、タイトル描画をテキストのみに変更
   function docTitle(s){
     sp(0.3); txC(s, 13); sp(0.5);
   }
@@ -1806,7 +1825,8 @@ function buildDoc3(h, d){
   d.futureClaims.forEach(function(fc, i){
     var sym = kigo(i);
     if (d.isYes) {
-      h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月' + fc.payDay + '日限り金' + fmt(fc.monthly) + '円ずつの養育費', 12);
+      var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
+      h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつの養育費', 12);
     } else {
       h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）', 12);
     }
@@ -1843,7 +1863,8 @@ function buildDoc4(h, d){
   } else if (d.futureClaims.length === 1) {
     var fc = d.futureClaims[0];
     if (d.isYes) {
-      h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月' + fc.payDay + '日限り金' + fmt(fc.monthly) + '円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
+      var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
+      h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
     } else {
       h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
     }
@@ -1852,7 +1873,8 @@ function buildDoc4(h, d){
     d.futureClaims.forEach(function(fc, i){
       var sym = kigo(i);
       if (d.isYes) {
-        h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月' + fc.payDay + '日限り金' + fmt(fc.monthly) + '円ずつ（' + fc.childName + '分）', 6);
+        var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
+        h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（' + fc.childName + '分）', 6);
       } else {
         h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（' + fc.childName + '分）', 6);
       }
