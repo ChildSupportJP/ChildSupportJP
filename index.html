@@ -1618,13 +1618,13 @@ function collectData(){
       var feM = gi('fe_month_' + n);
       endReiwaY = 西暦to令和(feY);
       endM      = feM;
-      endText   = '令和' + endReiwaY + '年' + feM + '月';
+      endText   = `令和${endReiwaY}年${feM}月`;
     } else {
       var age   = gi('fe_age_val_' + n);
       var birth = child.birth;
 
       if (isYes) {
-        endText = '子' + child.name + 'が満' + age + '歳に達する日の属する月';
+        endText = `${child.name}が満${age}歳に達する日の属する月`; // 子プレフィックスを削除
       } else {
         var bLabel = '';
         if (birth) {
@@ -1639,11 +1639,11 @@ function collectData(){
           d.setFullYear(d.getFullYear() + age);
           d.setDate(d.getDate() - 1);
           var ry = 西暦to令和(d.getFullYear());
-          prevDayText = '令和' + ry + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
+          prevDayText = `令和${ry}年${d.getMonth()+1}月${d.getDate()}日`;
           endReiwaY   = ry;
           endM        = d.getMonth() + 1;
         }
-        endText = '子' + child.name + '（生年月日' + bLabel + '）の' + age + '歳の誕生日の前日' + (prevDayText ? '（' + prevDayText + '）' : '');
+        endText = `${child.name}（生年月日${bLabel}）の${age}歳の誕生日の前日${prevDayText ? '（'+prevDayText+'）' : ''}`; // 子プレフィックスを削除
       }
 
       if (isYes && birth) {
@@ -1798,22 +1798,22 @@ function buildDoc3(h, d){
 
   h.tx('１　担保権');
   if (d.isYes) {
-    h.tx('債権者、債務者間の' + d.childrenNames + 'について民法７６６条の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権', 6);
+    h.tx(`債権者、債務者間の子${d.childrenNames}について民法７６６条の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権`, 6);
   } else {
-    h.tx('債権者、債務者間の' + d.childrenNames + 'について民法７６６条の３の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権', 6);
+    h.tx(`債権者、債務者間の子${d.childrenNames}について民法７６６条の３の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権`, 6);
   }
   h.sp(0.8);
 
   h.tx('２　被担保債権');
-  h.tx('（１）確定期限が到来している債権　金' + fmt(d.pastTotal) + '円', 6);
+  h.tx(`（１）確定期限が到来している債権　金${fmt(d.pastTotal)}円`, 6);
   d.pastClaims.forEach(function(c, i){
     var sym = kigo(i);
     var ry  = 西暦to令和(c.year);
-    h.tx(sym + '　金' + fmt(c.amt) + '円', 12);
+    h.tx(`${sym}　金${fmt(c.amt)}円`, 12);
     if (d.isYes) {
-      h.tx('ただし、債権者、債務者間の' + d.childrenNames + 'についての令和' + ry + '年' + c.month + '月分の養育費の未払分', 18);
+      h.tx(`ただし、債権者、債務者間の子${d.childrenNames}についての令和${ry}年${c.month}月分の養育費の未払分`, 18);
     } else {
-      h.tx('ただし、債権者、債務者間の' + d.childrenNames + 'についての令和' + ry + '年' + c.month + '月分の１か月２万円の法定養育費の未払分（支払期毎月末日・最初の月につき日割計算）', 18);
+      h.tx(`ただし、債権者、債務者間の子${d.childrenNames}についての令和${ry}年${c.month}月分の１か月２万円の法定養育費の未払分（支払期毎月末日・最初の月につき日割計算）`, 18);
     }
   });
   h.sp(0.5);
@@ -1823,24 +1823,24 @@ function buildDoc3(h, d){
     var sym = kigo(i);
     if (d.isYes) {
       var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-      h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつの養育費', 12);
+      h.tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつの養育費`, 12);
     } else {
-      h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）', 12);
+      h.tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から子${fc.endText}まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）`, 12);
     }
   });
   h.sp(0.8);
 
   h.tx('３　請求債権');
-  h.tx('（１）確定期限が到来している債権　合計金' + fmt(d.claimTotal) + '円', 6);
+  h.tx(`（１）確定期限が到来している債権　合計金${fmt(d.claimTotal)}円`, 6);
   h.tx('上記２（１）記載の債権及び差押命令の申立てにおける執行費用', 12);
-  h.tx('執行費用　金' + fmt(d.execCost) + '円', 12);
+  h.tx(`執行費用　金${fmt(d.execCost)}円`, 12);
   h.tx('（内訳）本申立手数料　金４，０００円', 18);
   if (!d.isYes) {
-    h.tx('戸籍全部事項証明書交付手数料　金' + fmt(d.kosekiFee) + '円', 18);
-    h.tx('住民票の写し交付手数料　金' + fmt(d.juminFee) + '円', 18);
+    h.tx(`戸籍全部事項証明書交付手数料　金${fmt(d.kosekiFee)}円`, 18);
+    h.tx(`住民票の写し交付手数料　金${fmt(d.juminFee)}円`, 18);
   }
-  h.tx('資格証明書交付手数料　金' + fmt(d.certFee) + '円', 18);
-  h.tx('連絡用郵便切手代　金' + fmt(d.postage) + '円', 18);
+  h.tx(`資格証明書交付手数料　金${fmt(d.certFee)}円`, 18);
+  h.tx(`連絡用郵便切手代　金${fmt(d.postage)}円`, 18);
   h.sp(0.5);
   h.tx('（２）確定期限が到来していない各定期金債権', 6);
   h.tx('上記２（２）の債権', 12);
@@ -1865,9 +1865,9 @@ function buildDoc4(h, d){
     const fc = d.futureClaims[0];
     if(d.isYes){
       var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
+      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
     } else {
-      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
+      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
     }
   } else {
     tx('２　下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
@@ -1875,9 +1875,9 @@ function buildDoc4(h, d){
       const sym = kigo(i);
       if(d.isYes){
         var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（${fc.childName}分）`, 6);
+        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（${fc.childName}分）`, 6);
       } else {
-        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から${fc.endText}まで、毎月末日限り金２万円ずつ（${fc.childName}分）`, 6);
+        tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、毎月末日限り金２万円ずつ（${fc.childName}分）`, 6);
       }
     });
   }
@@ -1903,11 +1903,6 @@ function buildDoc4(h, d){
   
   sp(0.5);
   tx('　なお，１及び２により弁済しないうちに退職したときは，退職金から所得税及び住民税を控除した残額の４分の１にして，１及び２と合計して頭書金額に満つるまで');
-  sp(1);
-  tx('第三債務者');
-  tx(`〒${d.tdZip}　${d.tdAddr}`, 6);
-  tx(d.tdCorp, 6);
-  if(d.tdRep) tx(d.tdRep, 6);
 }
 
 /* ============================================================
