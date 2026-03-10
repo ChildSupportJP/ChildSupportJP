@@ -689,13 +689,13 @@ body {
         <div class="precheck-divider"></div>
         <div class="precheck-q">
           <span class="precheck-num">Q2</span>
-          <span>差し押さえる相手先となる<strong>第三債務者</strong>（勤務先の会社・預貯金のある銀行など）を<strong>特定できていますか？</strong></span>
+          <span>差し押さえる相手先となる<strong>第三債務者</strong>（勤務先の会社）を<strong>特定できていますか？</strong></span>
         </div>
         <div class="precheck-btns">
           <button type="button" class="step1-btn step1-btn-ok" id="btn_q2_yes">
             <span class="step1-btn-icon">✅</span>
             <span class="step1-btn-main">はい、特定できています</span>
-            <span class="step1-btn-sub">（勤務先・銀行口座等が判明）</span>
+            <span class="step1-btn-sub">（勤務先が判明）</span>
           </button>
           <button type="button" class="step1-btn step1-btn-ng" id="btn_q2_no">
             <span class="step1-btn-icon">⚠️</span>
@@ -704,8 +704,8 @@ body {
           </button>
         </div>
         <div id="warn_q2" class="warn hidden">
-          <strong>申立てを行うには、あらかじめ第三債務者の特定が必要です。特定してから再度ご利用ください。</strong><br>
-          第三債務者が不明な場合は、裁判所の<strong>財産開示手続</strong>（民執§197）または<strong>第三者からの情報取得手続</strong>（民執§204）をご活用ください。
+          <strong>このアプリのご利用には、あらかじめ第三債務者の特定が必要です。</strong><br>
+          第三債務者を特定できていない場合には、裁判所に相談し、ワンストップ手続（債務者の財産や第三債務者の情報を調査し、その結果を用いて財産の差押ができる手続）のご利用をご検討ください。
         </div>
       </div>
 
@@ -799,7 +799,7 @@ body {
           <input type="text" id="cr_tel" placeholder="090-0000-0000">
         </div>
         <div class="fg">
-          <label>FAX番号</label>
+          <label>FAX番号（任意）</label>
           <input type="text" id="cr_fax" placeholder="03-0000-0000">
         </div>
       </div>
@@ -883,16 +883,11 @@ body {
       <div id="past_no_area" class="agmt-section agmt-no hidden">
         <span class="agmt-label">✦ 合意なし（法定養育費）</span>
         <div class="info-green" style="margin-top:0">
-          法定養育費は月2万円（民法766条の3）。離婚日〜請求対象最終月まで月ごとに自動計算も可能です。
-        </div>
-        <div class="fg mt12">
-          <label>離婚年月日<span class="req">*</span></label>
-          <input type="date" id="divorce_date" min="2026-04-01" onchange="validateMinDate(this)">
-          <p class="date-error" id="err_divorce_date">2026年4月1日以降の日付を入力してください</p>
+          法定養育費は月2万円（民法766条の3）。初月が日割りの場合は金額を修正してください。
         </div>
         <div class="claims-container" id="claims_no_container"></div>
         <button class="btn-add-claim" id="btn_add_claim_no" onclick="addClaim('no')" type="button">
-          ＋ 未払月を追加する（月2万円）
+          ＋ 未払月を追加する（初期値2万円）
         </button>
         <p class="claims-count" id="claims_no_count">0 / 216 月分</p>
         <p class="note">法定養育費は最大216月分（18年分）です。</p>
@@ -933,7 +928,6 @@ var claimsNo     = [];
 var MAX_CHILDREN   = 4;
 var MAX_CLAIMS_YES = 360;
 var MAX_CLAIMS_NO  = 216;
-var MIN_DATE_STR   = '2026-04-01';
 
 /* ============================================================
    DOM ユーティリティ
@@ -981,17 +975,6 @@ function updateExecCostDisplay() {
 /* ============================================================
    日付バリデーション
 ============================================================ */
-function validateMinDate(input) {
-  var errEl = elById('err_' + input.id);
-  if (!errEl) return;
-  if (input.value && input.value < MIN_DATE_STR) {
-    errEl.classList.add('show');
-    input.style.borderColor = 'var(--red)';
-  } else {
-    errEl.classList.remove('show');
-    input.style.borderColor = '';
-  }
-}
 function validateClaimYear(input) {
   var y = parseInt(input.value) || 0;
   if (y > 0 && y < 2026) {
@@ -1240,10 +1223,8 @@ function addClaim(type) {
       '<input type="number" id="cn_year_' + id + '" placeholder="2026" min="2026" style="width:100%" onchange="validateClaimYear(this)"></div>' +
       '<div class="fg narrow"><label>発生月</label>' +
       '<input type="number" id="cn_month_' + id + '" placeholder="4" min="1" max="12" style="width:100%"></div>' +
-      '<div class="fg" style="flex:0 0 120px"><label>月額</label>' +
-      '<input type="text" value="20,000円" disabled style="width:100%;background:#f0f2f8;color:#888"></div>' +
-      '<div class="fg narrow"><label>備考（日割等）</label>' +
-      '<input type="text" id="cn_note_' + id + '" placeholder="初月日割" style="width:100%"></div>' +
+      '<div class="fg" style="flex:0 0 120px"><label>未払額（円）</label>' +
+      '<input type="number" id="cn_amt_' + id + '" value="20000" min="1" style="width:100%"></div>' +
       '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'no\',' + id + ')">✕</button>';
   }
   container.appendChild(div);
@@ -1443,9 +1424,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (el) el.addEventListener('input', updateExecCostDisplay);
   });
 
-  var divorceEl = document.getElementById('divorce_date');
-  if (divorceEl) divorceEl.addEventListener('change', function(){ validateMinDate(this); });
-
   var today = new Date();
   var yEl = document.getElementById('app_year');
   var mEl = document.getElementById('app_month');
@@ -1597,7 +1575,8 @@ function collectData(){
     claimsNo.forEach(function(id) {
       var y = gi('cn_year_'  + id);
       var m = gi('cn_month_' + id);
-      if (y && m) pastClaims.push({ year: y, month: m, amt: 20000 });
+      var amt = gi('cn_amt_' + id) || 20000;
+      if (y && m) pastClaims.push({ year: y, month: m, amt: amt });
     });
   }
   var pastTotal  = pastClaims.reduce(function(s,c){ return s + c.amt; }, 0);
@@ -1624,7 +1603,7 @@ function collectData(){
       var birth = child.birth;
 
       if (isYes) {
-        endText = `${child.name}が満${age}歳に達する日の属する月`; // 子プレフィックスを削除
+        endText = `${child.name}が満${age}歳に達する日の属する月`;
       } else {
         var bLabel = '';
         if (birth) {
@@ -1643,7 +1622,7 @@ function collectData(){
           endReiwaY   = ry;
           endM        = d.getMonth() + 1;
         }
-        endText = `${child.name}（生年月日${bLabel}）の${age}歳の誕生日の前日${prevDayText ? '（'+prevDayText+'）' : ''}`; // 子プレフィックスを削除
+        endText = `${child.name}（生年月日${bLabel}）の${age}歳の誕生日の前日${prevDayText ? '（'+prevDayText+'）' : ''}`;
       }
 
       if (isYes && birth) {
@@ -1679,8 +1658,7 @@ function collectData(){
     children: children, childrenNames: childrenNames,
     certFee: certFee, postage: postage, kosekiFee: kosekiFee, juminFee: juminFee, execCost: execCost,
     pastClaims: pastClaims, pastTotal: pastTotal, claimTotal: claimTotal,
-    futureClaims: futureClaims,
-    divorceDate: gv('divorce_date')
+    futureClaims: futureClaims
   };
 }
 
@@ -1747,7 +1725,7 @@ function buildDoc1(h, d){
   h.sp(0.5);
   h.txR('申立人　' + d.crName + '　㊞');
   if (d.crTel) h.txR('電　話　' + d.crTel);
-  if (d.crFax) h.txR('ＦＡＸ　' + d.crFax);
+  h.txR('ＦＡＸ　' + (d.crFax ? d.crFax : '番号なし'));
   h.sp(1);
   h.tx('当事者　　　別紙目録記載のとおり');
   h.tx('担保権　　　別紙目録記載のとおり');
@@ -1756,7 +1734,7 @@ function buildDoc1(h, d){
   h.sp(1);
   h.tx('申立人は，債務者に対し，別紙担保権・被担保債権・請求債権目録記載の債権を有しているが，債務者がその支払をしないので，債務者が第三債務者に対して有する別紙差押債権目録記載の債権の差押命令を求める。');
   h.sp(0.5);
-  h.tx('□　第三債務者に対する陳述催告の申立て（民事執行法第１４７条１項）をする。');
+  h.tx('■　第三債務者に対する陳述催告の申立て（民事執行法第１４７条１項）をする。');
   h.sp(1.5);
   h.tx('添 付 書 類');
   h.sp(0.3);
@@ -1823,9 +1801,9 @@ function buildDoc3(h, d){
     var sym = kigo(i);
     if (d.isYes) {
       var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-      h.tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつの養育費`, 12);
+      h.tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつの養育費`, 12);
     } else {
-      h.tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から子${fc.endText}まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）`, 12);
+      h.tx(`${sym}　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）`, 12);
     }
   });
   h.sp(0.8);
