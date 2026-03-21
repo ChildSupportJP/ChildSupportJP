@@ -16,6 +16,9 @@
   --blue: #1e5fa8;
   --blue-light: #eff5ff;
   --red: #b83232;
+  --red-light: #fdf2f2;
+  --green: #0e7c5b;
+  --green-light: #f0fdf8;
   --r: 12px;
   --shadow: 0 4px 12px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.02);
   --shadow-hover: 0 8px 24px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.04);
@@ -141,6 +144,28 @@ body {
   margin-bottom: 20px;
 }
 
+/* 対象者バッジのスタイル */
+.target-badge {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.target-all {
+  background: var(--green-light);
+  border: 1.5px solid #7ec8aa;
+  color: var(--green);
+}
+.target-limited {
+  background: var(--red-light);
+  border: 1.5px solid #e0a0a0;
+  color: var(--red);
+}
+
 /* ボタン類のスタイル */
 .card-actions {
   display: flex;
@@ -233,7 +258,7 @@ body {
 <main class="main">
   <section class="intro">
     <h2>煩雑な手続き書類を、もっと簡単に。</h2>
-    <p>法律の専門知識がなくても、フォームに沿って入力するだけで<br>裁判所や相手方に提出できる書類（PDF）を自動で作成します。</p>
+    <p>法律の専門知識がなくても、フォームに沿って入力するだけで<br>裁判所や相手方に提出できる書類（PDF/Word）を自動で作成します。</p>
     <div class="privacy-badge">
       <span>🔒</span>
       <span>入力データはご自身の端末内でのみ処理され、外部に送信されることは一切ありません。</span>
@@ -244,6 +269,15 @@ body {
     <div class="card">
       <div class="card-icon">🤝</div>
       <div class="card-title">養育費合意書 作成ツール</div>
+      
+      <div class="target-badge target-all">
+        <span>✅</span>
+        <div>
+          <strong style="font-size: 13px;">対象：どなたでもご利用可能</strong><br>
+          これから離婚する方・すでに離婚した方のいずれもご利用いただけます。
+        </div>
+      </div>
+
       <div class="card-desc">
         離婚時や、養育費の取り決めを新しく行う際に交わす「合意書」を簡単に作成できます。口約束だけでなく、しっかりと書面に残したい方向けのツールです。
       </div>
@@ -255,6 +289,16 @@ body {
     <div class="card">
       <div class="card-icon">⚖️</div>
       <div class="card-title">給与差押え書類 作成ツール</div>
+      
+      <div class="target-badge target-limited">
+        <span>⚠️</span>
+        <div>
+          <strong style="font-size: 13px;">【対象となる方】以下のいずれか</strong><br>
+          ・2026年4月1日以降に離婚した方<br>
+          ・2026年3月31日以前に離婚し、2026年4月1日以降に養育費の取り決めをした方
+        </div>
+      </div>
+
       <div class="card-desc">
         養育費が支払われなくなった際に、一般先取特権を利用して相手の給与を差し押さえるための「債権差押命令申立書」を作成できます。（※債務名義がない方向け）
       </div>
