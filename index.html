@@ -604,6 +604,23 @@ body {
   margin-bottom: 18px;
 }
 
+/* 保存ボタン用 */
+.save-btn {
+  background: #fff;
+  border: 1.5px solid #d4dae8;
+  color: var(--ink);
+  padding: 8px 16px;
+  border-radius: var(--r);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.save-btn:hover { background: #f0f2f8; border-color: var(--blue); color: var(--blue); }
+
 @media (max-width: 700px) {
   .layout { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: static; display: flex; overflow-x: auto; padding: 12px 0; }
@@ -641,6 +658,22 @@ body {
   </nav>
 
   <div class="main">
+
+    <div class="card" style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h3 style="font-size:14px; font-weight:700; color:var(--ink); margin-bottom:2px;">入力データの一時保存・読込</h3>
+        <p style="font-size:11px; color:var(--mid);">入力途中のデータをパソコンに保存したり、保存したデータから再開できます。</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="save-btn" onclick="saveData()">
+          <span>💾</span> データを保存
+        </button>
+        <button type="button" class="save-btn" onclick="document.getElementById('file_input').click()">
+          <span>📁</span> データを読込
+        </button>
+        <input type="file" id="file_input" accept=".json" style="display:none" onchange="loadData(event)">
+      </div>
+    </div>
 
     <div class="card" id="step1">
       <div class="card-title">
@@ -916,6 +949,176 @@ body {
 </div>
 
 <script>
+/* ============================================================
+   データ保存・読込処理 (Save & Load)
+============================================================ */
+function saveData() {
+  var basicInputIds = [
+    'court_name', 'app_year', 'app_month', 'app_day',
+    'cert_fee', 'koseki_fee', 'jumin_fee', 'postage',
+    'cr_zip', 'cr_addr', 'cr_name', 'cr_tel', 'cr_fax',
+    'dr_zip', 'dr_addr', 'dr_name',
+    'td_zip', 'td_addr', 'td_corp', 'td_rep',
+    'global_pay_day_yes'
+  ];
+  
+  var data = {
+    agmtType: agmtType,
+    inputs: {},
+    childrenData: [],
+    claimsYesData: [],
+    claimsNoData: []
+  };
+
+  basicInputIds.forEach(id => {
+    data.inputs[id] = gv(id);
+  });
+
+  for (var i = 1; i <= childCount; i++) {
+    var fe_type_el = document.querySelector('input[name="fe_type_' + i + '"]:checked');
+    data.childrenData.push({
+      name: gv('child_name_' + i),
+      birth: gv('child_birth_' + i),
+      fs_year: gv('fs_year_' + i),
+      fs_month: gv('fs_month_' + i),
+      monthly_amt: gv('monthly_amt_' + i),
+      fe_type: fe_type_el ? fe_type_el.value : 'specific',
+      fe_year: gv('fe_year_' + i),
+      fe_month: gv('fe_month_' + i),
+      fe_age_val: gv('fe_age_val_' + i)
+    });
+  }
+
+  claimsYes.forEach(id => {
+    data.claimsYesData.push({
+      year: gv('cy_year_' + id),
+      month: gv('cy_month_' + id),
+      amt: gv('cy_amt_' + id)
+    });
+  });
+
+  claimsNo.forEach(id => {
+    data.claimsNoData.push({
+      year: gv('cn_year_' + id),
+      month: gv('cn_month_' + id),
+      amt: gv('cn_amt_' + id)
+    });
+  });
+
+  var json = JSON.stringify(data, null, 2);
+  var blob = new Blob([json], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '差押命令申立書_保存データ.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function loadData(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      
+      // 復元処理：状態の復元
+      if (data.agmtType) {
+        handleQ1('no');
+        handleQ2('yes');
+        handleQ3(data.agmtType);
+      } else {
+        hideMainForms();
+        resetPreBtns(['btn_q1_yes', 'btn_q1_no', 'btn_q2_yes', 'btn_q2_no', 'btn_q3_yes', 'btn_q3_no']);
+        showEl('pc_q1'); hideEl('pc_q2'); hideEl('pc_q3');
+      }
+
+      var basicInputIds = [
+        'court_name', 'app_year', 'app_month', 'app_day',
+        'cert_fee', 'koseki_fee', 'jumin_fee', 'postage',
+        'cr_zip', 'cr_addr', 'cr_name', 'cr_tel', 'cr_fax',
+        'dr_zip', 'dr_addr', 'dr_name',
+        'td_zip', 'td_addr', 'td_corp', 'td_rep',
+        'global_pay_day_yes'
+      ];
+      basicInputIds.forEach(id => {
+        var el = elById(id);
+        if (el && data.inputs && data.inputs[id] !== undefined) {
+          el.value = data.inputs[id];
+        }
+      });
+
+      // 子ども、未払い分のクリア
+      elById('children_container').innerHTML = '';
+      childCount = 0;
+      claimsYes = [];
+      if(elById('claims_yes_container')) elById('claims_yes_container').innerHTML = '';
+      claimsNo = [];
+      if(elById('claims_no_container')) elById('claims_no_container').innerHTML = '';
+      updateClaimsCount('yes');
+      updateClaimsCount('no');
+
+      // 子どもの復元
+      if (data.childrenData) {
+        data.childrenData.forEach(c => {
+          addChild();
+          var n = childCount;
+          elById('child_name_' + n).value = c.name || '';
+          elById('child_birth_' + n).value = c.birth || '';
+          onChildNameChange(n);
+          onChildBirthChange(n);
+
+          elById('fs_year_' + n).value = c.fs_year || '';
+          elById('fs_month_' + n).value = c.fs_month || '';
+          if (elById('monthly_amt_' + n)) elById('monthly_amt_' + n).value = c.monthly_amt || '';
+
+          var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]');
+          radios.forEach(r => { if (r.value === c.fe_type) r.checked = true; });
+          onFutureEndTypeChange(n);
+
+          elById('fe_year_' + n).value = c.fe_year || '';
+          elById('fe_month_' + n).value = c.fe_month || '';
+          elById('fe_age_val_' + n).value = c.fe_age_val || '18';
+          calcAgeEnd(n);
+        });
+      }
+
+      // 未払い分（合意あり）の復元
+      if (data.claimsYesData) {
+        data.claimsYesData.forEach(c => {
+          addClaim('yes');
+          var id = claimsYes[claimsYes.length - 1];
+          elById('cy_year_' + id).value = c.year || '';
+          elById('cy_month_' + id).value = c.month || '';
+          elById('cy_amt_' + id).value = c.amt || '';
+        });
+      }
+
+      // 未払い分（合意なし）の復元
+      if (data.claimsNoData) {
+        data.claimsNoData.forEach(c => {
+          addClaim('no');
+          var id = claimsNo[claimsNo.length - 1];
+          elById('cn_year_' + id).value = c.year || '';
+          elById('cn_month_' + id).value = c.month || '';
+          elById('cn_amt_' + id).value = c.amt || '';
+        });
+      }
+
+      updateExecCostDisplay();
+      
+      alert('データを読み込みました。');
+    } catch (err) {
+      alert('ファイルの読み込みに失敗しました。正しいデータファイルを選択してください。');
+      console.error(err);
+    }
+    // 同じファイルを再度読めるようにクリア
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
 /* ============================================================
    状態変数
 ============================================================ */
@@ -1991,7 +2194,6 @@ async function generate(format){
         status.textContent = '✓ PDFのダウンロードが完了しました（全４書類）';
 
     } else if (format === 'word') {
-        // Word(.doc) 出力処理
         var hw = makeWordHelper();
         
         buildDoc1(hw, d); hw.newPage();
@@ -2001,12 +2203,10 @@ async function generate(format){
 
         var htmlContent = hw.getHtml();
         
-        // Wordとして読み込ませるための特殊なHTMLタグとスタイル
         var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>申立書</title><style>@page WordSection1 { size: 595.3pt 841.9pt; margin: 30mm 18mm 22mm 25mm; mso-header-margin: 36.0pt; mso-footer-margin: 36.0pt; mso-paper-source: 0; } div.WordSection1 { page: WordSection1; } p { font-family: 'MS Mincho', 'ＭＳ 明朝', serif; line-height: 1.8; margin: 0; padding: 0; }</style></head><body><div class='WordSection1'>";
         var postHtml = "</div></body></html>";
         var fullHtml = preHtml + htmlContent + postHtml;
 
-        // Blobを作成し、application/msword 形式でダウンロードさせる
         var blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
         var downloadLink = document.createElement("a");
         document.body.appendChild(downloadLink);
