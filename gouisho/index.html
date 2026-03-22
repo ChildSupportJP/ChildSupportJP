@@ -22,7 +22,8 @@ const { useState, useRef } = React;
 // CONSTANTS
 // ============================================================
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
-const YEARS = Array.from({ length: 30 }, (_, i) => 2020 + i);
+// ★変更点1: 2001年から50年分（2001〜2050年）を選択できるように変更
+const YEARS = Array.from({ length: 50 }, (_, i) => 2001 + i);
 const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
 const AGES = Array.from({ length: 22 }, (_, i) => i + 1);
 
@@ -283,7 +284,8 @@ function ChildForm({ child, idx, onUpdate, onRemove, canRemove }) {
                 {child.paymentType === "A" && (
                   <div className="flex gap-2 items-center">
                     <span className="text-stone-500 text-sm">毎月</span>
-                    <Select value={child.paymentADay} onChange={(v) => updateChild("paymentADay", v)} options={DAYS} placeholder="日" className="w-20" />
+                    {/* ★変更点2: 選択肢に「末」を追加 */}
+                    <Select value={child.paymentADay} onChange={(v) => updateChild("paymentADay", v)} options={[...DAYS, "末"]} placeholder="日/末" className="w-20" />
                     <span className="text-stone-500 text-sm">日（1か月分）</span>
                   </div>
                 )}
@@ -486,6 +488,7 @@ function generatePDFContent(data) {
 
   function paymentText(child) {
     if (child.paymentType === "A") {
+      // 「末」を選択した場合、自動で「末日」となるように処理
       return `毎月${child.paymentADay}日（1か月分）`;
     }
     return `毎年${child.paymentBMonth}月に${child.paymentBMonths}か月分ずつ`;
@@ -531,7 +534,7 @@ function generatePDFContent(data) {
   .sign-label { font-weight: bold; width: 30mm; text-align: right; padding-right: 4mm; }
   .sign-line { border-bottom: 1px solid #555; flex: 1; min-width: 60mm; height: 10mm; }
   .sign-hanko { width: 15mm; height: 15mm; border: 1px solid #555; text-align: center; line-height: 15mm; font-size: 9pt; }
-  .footer-note { margin-top: 10mm; font-size: 9pt; border-top: 1px solid #ccc; padding-top: 3mm; color: #555; }
+  /* ★変更点3: 下部の免責事項（footer-note）を削除しました */
   @media print {
     button { display: none; }
     .no-print { display: none; }
@@ -603,9 +606,6 @@ function generatePDFContent(data) {
     </div>
   </div>
 
-  <div class="footer-note">
-    ※ 本合意書は、法務省モデル案を参考に作成したものです。法的効力を完全に担保するため、公正証書の作成をご検討ください。
-  </div>
 </div>
 </body>
 </html>
@@ -758,9 +758,6 @@ function App() {
           )}
         </div>
 
-        <p className="text-center text-xs text-stone-400 mt-6">
-          法務省モデル案に準拠 ・ 完全ブラウザ完結処理 ・ 公正証書の作成をお勧めします
-        </p>
       </main>
     </div>
   );
