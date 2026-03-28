@@ -3,35 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>債権差押命令申立書（一般先取特権用）自動生成システム</title>
+<title>債権差押命令申立書 自動生成システム｜養育費サポートJP</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
 :root {
-  --ink: #1a1a2e;
-  --ink2: #2d2d44;
-  --mid: #5a6478;
-  --light: #e4e9f2;
-  --bg: #f4f6fb;
+  /* 新しい温かいカラーパレット */
+  --ink: #4a403d;
+  --mid: #857c7a;
+  --light: #e8e0de;
+  --bg: #fdfcf9;
   --white: #ffffff;
-  --red: #b83232;
-  --red-light: #fdf2f2;
-  --blue: #1e5fa8;
-  --blue-light: #eff5ff;
-  --green: #0e7c5b;
-  --green-light: #f0fdf8;
-  --gold: #9a7c10;
-  --gold-light: #fffbea;
-  --r: 8px;
-  --shadow: 0 2px 8px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md: 0 4px 16px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06);
+  
+  --primary: #f48c71;       /* 温かいコーラルオレンジ */
+  --primary-light: #fff3f0;
+  --primary-dark: #e2765b;
+  
+  --secondary: #6cb8a9;     /* 安心感のあるミントグリーン */
+  --secondary-light: #f0f9f7;
+  --secondary-dark: #559f91;
+  
+  --warning: #eaaa58;       /* 威圧感のないマスタードイエロー */
+  --warning-light: #fdf7f0;
+  
+  --r: 24px;
+  --shadow: 0 8px 24px rgba(74, 64, 61, 0.06), 0 2px 6px rgba(74, 64, 61, 0.04);
+  --shadow-hover: 0 12px 32px rgba(74, 64, 61, 0.10), 0 4px 10px rgba(74, 64, 61, 0.05);
+
+  /* JSのクラス制御用（旧変数のマッピング） */
+  --blue: var(--secondary);
+  --blue-light: var(--secondary-light);
+  --green: var(--secondary);
+  --green-light: var(--secondary-light);
+  --red: var(--primary);
+  --red-light: var(--primary-light);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Noto Sans JP', sans-serif;
   font-size: 14px;
   background: var(--bg);
   color: var(--ink);
@@ -39,493 +51,496 @@ body {
   min-height: 100vh;
 }
 
+/* ========== Header ========== */
 .site-header {
-  background: var(--ink);
-  color: #fff;
+  background: var(--primary-light);
+  color: var(--ink);
   padding: 16px 28px;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  border-bottom: 3px solid var(--red);
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 4px solid var(--primary);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 12px rgba(0,0,0,.3);
 }
-.header-icon { font-size: 30px; flex-shrink: 0; }
-.header-text h1 { font-size: 16px; font-weight: 700; font-family: 'Noto Serif JP', serif; letter-spacing: .03em; line-height: 1.4; }
-.header-text p { font-size: 11px; color: #99a; margin-top: 2px; }
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.back-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(244,140,113,0.15);
+  transition: transform 0.2s;
+}
+.back-link:hover { transform: translateX(-4px); }
+
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.header-icon { font-size: 34px; flex-shrink: 0; }
+.header-text h1 { font-size: 18px; font-weight: 700; letter-spacing: .03em; line-height: 1.4; color: var(--primary); }
+.header-text p { font-size: 12px; color: var(--mid); margin-top: 2px; }
 .header-badge {
   margin-left: auto;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.2);
+  background: var(--white);
+  border: 1px solid var(--primary);
   border-radius: 20px;
   padding: 4px 14px;
   font-size: 11px;
-  color: #bbc;
+  color: var(--primary);
+  font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .notice {
-  background: var(--gold-light);
-  border-bottom: 1px solid #e8d98a;
-  padding: 8px 28px;
+  background: var(--warning-light);
+  border-bottom: 2px solid #f3d7a8;
+  padding: 10px 28px;
   font-size: 12px;
-  color: var(--gold);
+  font-weight: 700;
+  color: #8c6014;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.layout { display: flex; min-height: calc(100vh - 82px); }
+/* ========== Layout ========== */
+.layout { display: flex; min-height: calc(100vh - 120px); }
 
+/* ========== Sidebar ========== */
 .sidebar {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
-  background: var(--ink2);
+  background: var(--white);
+  border-right: 2px solid var(--light);
   padding: 32px 0;
   position: sticky;
-  top: 82px;
-  height: calc(100vh - 82px);
+  top: 120px;
+  height: calc(100vh - 120px);
   overflow-y: auto;
 }
 .sidebar-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .1em;
-  color: #556;
-  padding: 0 20px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  margin-bottom: 8px;
+  color: var(--mid);
+  padding: 0 24px 12px;
+  border-bottom: 2px dashed var(--light);
+  margin-bottom: 12px;
 }
 .sidebar-step {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 20px;
-  color: #4a5570;
-  font-size: 13px;
+  padding: 14px 24px;
+  color: var(--mid);
+  font-size: 14px;
+  font-weight: 500;
   cursor: default;
   transition: all .15s;
-  border-left: 3px solid transparent;
+  border-left: 4px solid transparent;
 }
 .sidebar-step.active {
-  background: rgba(255,255,255,.07);
-  color: #e0e4f0;
-  border-left-color: var(--blue);
+  background: var(--secondary-light);
+  color: var(--secondary);
+  border-left-color: var(--secondary);
+  font-weight: 700;
 }
-.sidebar-step.done { color: #5a9e7a; }
+.sidebar-step.done { color: var(--secondary); }
 .step-num {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  border: 1.5px solid currentColor;
+  border: 2px solid currentColor;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   flex-shrink: 0;
   transition: all .15s;
 }
-.sidebar-step.done .step-num { background: #5a9e7a; border-color: #5a9e7a; color: #fff; }
-.sidebar-step.active .step-num { border-color: var(--blue); color: var(--blue); }
+.sidebar-step.done .step-num { background: var(--secondary); border-color: var(--secondary); color: #fff; }
+.sidebar-step.active .step-num { border-color: var(--secondary); color: var(--secondary); }
 
-.main { flex: 1; padding: 28px 36px 60px; max-width: 860px; }
+.main { flex: 1; padding: 32px 40px 80px; max-width: 900px; }
 
+/* ========== Cards ========== */
 .card {
   background: var(--white);
-  border: 1px solid var(--light);
+  border: 2px solid var(--light);
   border-radius: var(--r);
-  padding: 26px 30px;
-  margin-bottom: 20px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
   box-shadow: var(--shadow);
 }
 .card-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  font-family: 'Noto Serif JP', serif;
   color: var(--ink);
-  padding-bottom: 14px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid var(--light);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 2px dashed var(--light);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 .badge {
-  background: var(--ink);
+  background: var(--secondary);
   color: #fff;
-  font-size: 10px;
-  padding: 3px 10px;
+  font-size: 11px;
+  padding: 4px 12px;
   border-radius: 20px;
-  font-weight: 500;
+  font-weight: 700;
   font-family: 'Noto Sans JP', sans-serif;
 }
-.badge-blue { background: var(--blue); }
-.badge-green { background: var(--green); }
-.badge-red { background: var(--red); }
+.badge-blue { background: var(--secondary); }
 
 .sec {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 10px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--mid);
-  letter-spacing: .06em;
-  margin: 24px 0 14px;
+  color: var(--ink);
+  margin: 32px 0 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--light);
+  border-bottom: 2px solid var(--light);
 }
 .sec::before {
   content: '';
   display: inline-block;
-  width: 3px;
-  height: 14px;
-  background: var(--blue);
-  border-radius: 2px;
+  width: 6px;
+  height: 18px;
+  background: var(--secondary);
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
-.fg { margin-bottom: 14px; }
+/* ========== Forms ========== */
+.fg { margin-bottom: 16px; }
 .fg label {
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   color: var(--mid);
 }
 .fg label .req {
-  color: var(--red);
-  margin-left: 3px;
-  font-size: 11px;
+  color: var(--primary);
+  margin-left: 4px;
+  font-size: 12px;
 }
 .fg input[type=text],
 .fg input[type=number],
 .fg input[type=date],
 .fg select {
   width: 100%;
-  padding: 9px 12px;
-  border: 1.5px solid #d4dae8;
-  border-radius: var(--r);
-  font-size: 13px;
+  padding: 12px 14px;
+  border: 2px solid var(--light);
+  border-radius: 12px;
+  font-size: 14px;
   color: var(--ink);
-  background: #fafbfd;
+  background: #faf8f6;
   font-family: inherit;
-  transition: border-color .15s, box-shadow .15s, background .15s;
+  transition: all .2s;
   appearance: none;
   -webkit-appearance: none;
 }
 .fg select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6478' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23857c7a' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
+  background-position: right 14px center;
+  padding-right: 36px;
 }
 .fg input:focus, .fg select:focus {
   outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(30,95,168,.12);
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px var(--secondary-light);
   background: #fff;
 }
 .fg input[disabled], .fg select[disabled] {
-  background: #f0f1f4;
-  color: #999;
+  background: var(--light);
+  color: var(--mid);
   cursor: not-allowed;
 }
 
-.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row { display: flex; gap: 16px; flex-wrap: wrap; }
 .row .fg { flex: 1; min-width: 0; margin-bottom: 0; }
-.row .fg.zip { flex: 0 0 150px; min-width: 0; }
-.row .fg.narrow { flex: 0 0 120px; min-width: 0; }
-.row .fg.w2 { flex: 0 0 200px; min-width: 0; }
-.row + .fg, .row + .row { margin-top: 12px; }
+.row .fg.zip { flex: 0 0 160px; min-width: 0; }
+.row .fg.narrow { flex: 0 0 140px; min-width: 0; }
+.row .fg.w2 { flex: 0 0 220px; min-width: 0; }
+.row + .fg, .row + .row { margin-top: 16px; }
 
-.radios { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+/* ========== Radios ========== */
+.radios { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
 .radio-card {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  padding: 12px 16px;
-  border: 1.5px solid #d4dae8;
-  border-radius: var(--r);
+  padding: 14px 18px;
+  border: 2px solid var(--light);
+  border-radius: 16px;
   flex: 1;
   min-width: 200px;
-  transition: all .15s;
-  background: #fafbfd;
+  transition: all .2s;
+  background: #faf8f6;
 }
 .radio-card:has(input:checked) {
-  border-color: var(--blue);
-  background: var(--blue-light);
-  box-shadow: 0 0 0 1px var(--blue);
-}
-.radio-card.green-radio:has(input:checked) {
-  border-color: var(--green);
-  background: var(--green-light);
-  box-shadow: 0 0 0 1px var(--green);
+  border-color: var(--secondary);
+  background: var(--secondary-light);
+  box-shadow: 0 0 0 1px var(--secondary);
 }
 .radio-card input[type=radio] {
-  accent-color: var(--blue);
-  width: 16px;
-  height: 16px;
+  accent-color: var(--secondary);
+  width: 18px;
+  height: 18px;
   margin-top: 2px;
   flex-shrink: 0;
-}
-
-.warn {
-  background: var(--red-light);
-  border-left: 3px solid var(--red);
-  padding: 10px 14px;
-  border-radius: 0 var(--r) var(--r) 0;
-  font-size: 13px;
-  color: #6b1f1f;
-  margin-top: 10px;
-}
-.info {
-  background: var(--blue-light);
-  border-left: 3px solid var(--blue);
-  padding: 10px 14px;
-  border-radius: 0 var(--r) var(--r) 0;
-  font-size: 13px;
-  color: #1a3f6a;
-  margin-top: 10px;
-}
-.info-green {
-  background: var(--green-light);
-  border-left: 3px solid var(--green);
-  padding: 10px 14px;
-  border-radius: 0 var(--r) var(--r) 0;
-  font-size: 13px;
-  color: #065f46;
-  margin-top: 10px;
-}
-.note { font-size: 11px; color: #888; margin-top: 5px; line-height: 1.6; }
-
-.agmt-section {
-  border: 1.5px solid var(--light);
-  border-radius: var(--r);
-  padding: 20px 22px;
-  margin-top: 18px;
-  background: #fafbfd;
-}
-.agmt-section.agmt-yes { border-color: #93c0ee; background: #f7fbff; }
-.agmt-section.agmt-no  { border-color: #7ec8aa; background: #f5fdf9; }
-.agmt-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  padding: 3px 12px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 16px;
-}
-.agmt-yes .agmt-label { background: #dbeafe; color: #1d4ed8; }
-.agmt-no  .agmt-label { background: #d1fae5; color: #065f46; }
-
-.cost-box {
-  background: #f9fafc;
-  border: 1px solid #e4e9f2;
-  border-radius: var(--r);
-  padding: 14px 18px;
-  margin-top: 10px;
-}
-.cost-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.cost-table td { padding: 6px 8px; vertical-align: middle; }
-.cost-table td:last-child { text-align: right; white-space: nowrap; }
-.cost-table input {
-  width: 130px;
-  padding: 5px 10px;
-  text-align: right;
-  border: 1.5px solid #d4dae8;
-  border-radius: var(--r);
-  font-size: 13px;
-  font-family: inherit;
-  background: #fff;
-  transition: border-color .15s, box-shadow .15s;
-}
-.cost-table input:focus {
-  outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(30,95,168,.1);
-}
-.cost-total-row td { font-weight: 700; border-top: 1.5px solid var(--light); padding-top: 10px; }
-
-.children-container { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
-.child-card {
-  background: #fff;
-  border: 1.5px solid var(--light);
-  border-radius: var(--r);
-  padding: 16px 18px;
-  position: relative;
-}
-.child-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-.child-num {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--blue);
-  background: var(--blue-light);
-  padding: 3px 12px;
-  border-radius: 20px;
-}
-.btn-remove-child {
-  background: none;
-  border: 1.5px solid #e0e0e0;
-  border-radius: var(--r);
-  padding: 4px 12px;
-  font-size: 12px;
-  color: #999;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.btn-remove-child:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
-.btn-add-child {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: 1.5px dashed #a0aec0;
-  border-radius: var(--r);
-  padding: 10px 18px;
-  font-size: 13px;
-  color: var(--mid);
-  cursor: pointer;
-  font-family: inherit;
-  width: 100%;
-  justify-content: center;
-  transition: all .15s;
-  margin-top: 4px;
-}
-.btn-add-child:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-.btn-add-child:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.claims-container { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
-.claim-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  background: #fff;
-  border: 1px solid var(--light);
-  border-radius: var(--r);
-  padding: 12px 14px;
-}
-.claim-row .fg { margin-bottom: 0; }
-.btn-remove-claim {
-  background: none;
-  border: 1px solid #e0e0e0;
-  border-radius: var(--r);
-  padding: 8px 12px;
-  font-size: 12px;
-  color: #bbb;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-  flex-shrink: 0;
-  height: 36px;
-  align-self: flex-end;
-}
-.btn-remove-claim:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
-.btn-add-claim {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: 1.5px dashed #a0aec0;
-  border-radius: var(--r);
-  padding: 8px 16px;
-  font-size: 12px;
-  color: var(--mid);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-  margin-top: 4px;
-}
-.btn-add-claim:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-.btn-add-claim:disabled { opacity: 0.4; cursor: not-allowed; }
-.claims-count {
-  font-size: 11px;
-  color: #888;
-  margin-top: 4px;
-}
-.claims-count.at-limit { color: var(--red); font-weight: 700; }
-
-.future-container { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
-.future-card {
-  background: #fff;
-  border: 1.5px solid var(--light);
-  border-radius: var(--r);
-  padding: 16px 18px;
-}
-.future-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.future-child-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--mid);
-  background: #f0f2f8;
-  padding: 3px 12px;
-  border-radius: 20px;
-}
-.birth-ref-badge {
-  font-size: 11px;
-  color: var(--green);
-  background: var(--green-light);
-  border: 1px solid #7ec8aa;
-  padding: 2px 10px;
-  border-radius: 20px;
-  margin-left: 8px;
-}
-.future-sub-radios {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
 }
 .sub-radio-card {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  padding: 8px 14px;
-  border: 1.5px solid #d4dae8;
-  border-radius: var(--r);
-  transition: all .15s;
-  background: #fafbfd;
+  padding: 10px 16px;
+  border: 2px solid var(--light);
+  border-radius: 12px;
+  transition: all .2s;
+  background: #faf8f6;
 }
 .sub-radio-card:has(input:checked) {
-  border-color: var(--blue);
-  background: var(--blue-light);
-  font-weight: 700;
+  border-color: var(--secondary);
+  background: var(--secondary-light);
 }
 .sub-radio-card input[type=radio] {
-  accent-color: var(--blue);
-  width: 14px;
-  height: 14px;
+  accent-color: var(--secondary);
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
-.submit-area {
-  text-align: center;
-  padding: 12px 0 4px;
-  margin-top: 28px;
+/* ========== Info & Warnings ========== */
+.warn {
+  background: var(--primary-light);
+  border-left: 4px solid var(--primary);
+  padding: 14px 18px;
+  border-radius: 0 12px 12px 0;
+  font-size: 13px;
+  color: #9d462f;
+  margin-top: 12px;
 }
-.submit-note { font-size: 12px; color: #999; margin-bottom: 16px; }
+.info {
+  background: var(--secondary-light);
+  border-left: 4px solid var(--secondary);
+  padding: 14px 18px;
+  border-radius: 0 12px 12px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f6b5a;
+  margin-top: 12px;
+}
+.info-green {
+  background: var(--secondary-light);
+  border-left: 4px solid var(--secondary);
+  padding: 14px 18px;
+  border-radius: 0 12px 12px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f6b5a;
+  margin-top: 12px;
+}
+.note { font-size: 12px; color: var(--mid); margin-top: 6px; line-height: 1.6; }
+
+/* ========== Sections ========== */
+.agmt-section {
+  border: 2px solid var(--light);
+  border-radius: var(--r);
+  padding: 24px 28px;
+  margin-top: 20px;
+  background: #faf8f6;
+}
+.agmt-section.agmt-yes { border-color: var(--secondary); background: var(--secondary-light); }
+.agmt-section.agmt-no  { border-color: var(--warning); background: var(--warning-light); }
+.agmt-label {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: var(--white);
+}
+.agmt-yes .agmt-label { color: var(--secondary); border: 2px solid var(--secondary); }
+.agmt-no  .agmt-label { color: var(--warning); border: 2px solid var(--warning); }
+
+/* ========== Cost Table ========== */
+.cost-box {
+  background: #faf8f6;
+  border: 2px solid var(--light);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin-top: 12px;
+}
+.cost-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cost-table td { padding: 10px 12px; vertical-align: middle; }
+.cost-table td:first-child { font-weight: 700; color: var(--mid); }
+.cost-table td:last-child { text-align: right; white-space: nowrap; }
+.cost-table input {
+  width: 140px;
+  padding: 8px 12px;
+  text-align: right;
+  border: 2px solid var(--light);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  transition: all .2s;
+}
+.cost-table input:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px var(--secondary-light);
+}
+.cost-total-row td { font-weight: 700; color: var(--ink); border-top: 2px dashed var(--light); padding-top: 16px; font-size: 16px; }
+
+/* ========== Children / Claims ========== */
+.children-container, .claims-container, .future-container { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
+.child-card, .future-card {
+  background: #fff;
+  border: 2px solid var(--light);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  position: relative;
+}
+.child-card-header, .future-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.child-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--secondary);
+  background: var(--secondary-light);
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+.btn-remove-child {
+  background: var(--white);
+  border: 2px solid var(--light);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mid);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .2s;
+}
+.btn-remove-child:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+.btn-add-child, .btn-add-claim {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: none;
+  border: 2px dashed #d1c8c5;
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mid);
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  transition: all .2s;
+  margin-top: 8px;
+}
+.btn-add-child:hover, .btn-add-claim:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
+.btn-add-child:disabled, .btn-add-claim:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.claim-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  background: #faf8f6;
+  border: 2px solid var(--light);
+  border-radius: 16px;
+  padding: 16px 20px;
+}
+.claim-row .fg { margin-bottom: 0; }
+.btn-remove-claim {
+  background: var(--white);
+  border: 2px solid var(--light);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mid);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .2s;
+  flex-shrink: 0;
+  height: 44px;
+  align-self: flex-end;
+}
+.btn-remove-claim:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+.claims-count { font-size: 12px; font-weight: 700; color: var(--mid); margin-top: 4px; text-align: right; }
+.claims-count.at-limit { color: var(--primary); }
+
+/* Future */
+.future-card-header { justify-content: flex-start; gap: 12px; }
+.future-child-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  background: #faf8f6;
+  padding: 4px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--light);
+}
+.birth-ref-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--secondary);
+  background: var(--secondary-light);
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+.future-sub-radios {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+/* ========== Buttons ========== */
+.submit-area { text-align: center; padding: 20px 0 10px; margin-top: 32px; border-top: 2px dashed var(--light); }
+.submit-note { font-size: 13px; font-weight: 700; color: var(--mid); margin-bottom: 24px; }
 .btn-gen {
   display: inline-flex;
   align-items: center;
@@ -533,124 +548,134 @@ body {
   gap: 10px;
   color: #fff;
   border: none;
-  border-radius: var(--r);
-  padding: 16px 20px;
-  font-size: 15px;
+  border-radius: 50px;
+  padding: 20px 24px;
+  font-size: 16px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   transition: all .2s;
-  box-shadow: 0 3px 12px rgba(0,0,0,.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  flex: 1;
 }
-.btn-gen:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(0,0,0,.2); }
-.btn-gen:disabled { background: #ccc !important; box-shadow: none; cursor: not-allowed; transform: none; }
+.btn-gen:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+.btn-gen:disabled { background: var(--light) !important; color: var(--mid); box-shadow: none; cursor: not-allowed; transform: none; }
+#btn_gen_pdf { background: var(--primary); box-shadow: 0 4px 12px rgba(244, 140, 113, 0.3); }
+#btn_gen_pdf:hover:not(:disabled) { background: var(--primary-dark); }
+#btn_gen_word { background: var(--secondary); box-shadow: 0 4px 12px rgba(108, 184, 169, 0.3); }
+#btn_gen_word:hover:not(:disabled) { background: var(--secondary-dark); }
 
 .hidden { display: none !important; }
 .mt8 { margin-top: 8px; }
 .mt12 { margin-top: 12px; }
 .mt16 { margin-top: 16px; }
-.inline-flex { display: inline-flex; align-items: center; gap: 6px; }
 
+/* ========== Step 1 Selectors ========== */
 .step1-btn {
   flex: 1;
-  min-width: 220px;
+  min-width: 240px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 18px 20px;
+  gap: 8px;
+  padding: 24px 20px;
   border-radius: var(--r);
-  border: 2px solid #d4dae8;
-  background: #fafbfd;
+  border: 2px solid var(--light);
+  background: #faf8f6;
   cursor: pointer;
   font-family: inherit;
-  transition: all .18s;
+  transition: all .2s;
   text-align: center;
 }
-.step1-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.step1-btn.selected-ok  { border-color: var(--green); background: var(--green-light); box-shadow: 0 0 0 2px var(--green); }
-.step1-btn.selected-ng  { border-color: var(--red);   background: var(--red-light);   box-shadow: 0 0 0 2px var(--red); }
-.step1-btn-ok  { border-color: #7ec8aa; }
-.step1-btn-ng  { border-color: #e0a0a0; }
-.step1-btn-icon { font-size: 28px; line-height: 1; }
-.step1-btn-main { font-size: 14px; font-weight: 700; color: var(--ink); }
-.step1-btn-sub  { font-size: 11px; color: var(--mid); }
+.step1-btn:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: #d8cec9; }
+.step1-btn.selected-ok  { border-color: var(--secondary); background: var(--secondary-light); box-shadow: 0 0 0 2px var(--secondary); }
+.step1-btn.selected-ng  { border-color: var(--primary);   background: var(--primary-light);   box-shadow: 0 0 0 2px var(--primary); }
+.step1-btn-icon { font-size: 32px; line-height: 1; }
+.step1-btn-main { font-size: 15px; font-weight: 700; color: var(--ink); }
+.step1-btn-sub  { font-size: 12px; color: var(--mid); }
 
-.precheck-block { margin-top: 18px; }
+.precheck-block { margin-top: 24px; }
 .precheck-q {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 14px;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 16px;
   line-height: 1.6;
 }
 .precheck-num {
   flex-shrink: 0;
-  background: var(--ink);
+  background: var(--secondary);
   color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 9px;
+  font-size: 12px;
+  padding: 4px 12px;
   border-radius: 20px;
-  margin-top: 3px;
+  margin-top: 2px;
   letter-spacing: .04em;
 }
-.precheck-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-.precheck-divider {
-  border: none;
-  border-top: 1.5px dashed var(--light);
-  margin-bottom: 18px;
-}
+.precheck-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+.precheck-divider { border: none; border-top: 2px dashed var(--light); margin-bottom: 24px; margin-top: 8px; }
 
-/* 保存ボタン用 */
+/* ========== Save/Load ========== */
 .save-btn {
-  background: #fff;
-  border: 1.5px solid #d4dae8;
+  background: var(--white);
+  border: 2px solid var(--light);
   color: var(--ink);
-  padding: 8px 16px;
-  border-radius: var(--r);
+  padding: 10px 18px;
+  border-radius: 50px;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all .15s;
+  transition: all .2s;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-.save-btn:hover { background: #f0f2f8; border-color: var(--blue); color: var(--blue); }
+.save-btn:hover { background: var(--secondary-light); border-color: var(--secondary); color: var(--secondary); }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .layout { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: static; display: flex; overflow-x: auto; padding: 12px 0; }
+  .sidebar { width: 100%; height: auto; position: static; display: flex; overflow-x: auto; padding: 16px 0; border-right: none; border-bottom: 2px solid var(--light); }
   .sidebar-title { display: none; }
-  .sidebar-step { flex-direction: column; gap: 4px; font-size: 11px; padding: 8px 14px; text-align: center; flex-shrink: 0; }
-  .main { padding: 16px; }
-  .row .fg.zip { flex: 0 0 130px; }
-  .row .fg.narrow { flex: 0 0 100px; }
+  .sidebar-step { flex-direction: column; gap: 6px; font-size: 12px; padding: 10px 16px; text-align: center; flex-shrink: 0; border-left: none; border-bottom: 4px solid transparent; }
+  .sidebar-step.active { border-left-color: transparent; border-bottom-color: var(--secondary); }
+  .main { padding: 24px 16px 60px; }
+  .row .fg.zip { flex: 0 0 140px; }
+  .row .fg.narrow { flex: 0 0 110px; }
+  .claim-row { flex-direction: column; align-items: flex-start; }
+  .btn-remove-claim { width: 100%; height: auto; padding: 12px; }
 }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <div class="header-icon">⚖️</div>
-  <div class="header-text">
-    <h1>債権差押命令申立書（一般先取特権用）自動生成システム</h1>
-    <p>養育費先取特権用・債務名義不要版　／　ブラウザ完結・サーバー送信なし</p>
+  <div class="header-top">
+    <a href="../index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
+      トップへ戻る
+    </a>
+    <div class="header-badge">🔒 ローカル処理</div>
   </div>
-  <div class="header-badge">🔒 ローカル処理</div>
+  <div class="header-main">
+    <div class="header-icon">⚖️</div>
+    <div class="header-text">
+      <h1>給与差押え書類 自動生成システム</h1>
+      <p>養育費の一般先取特権用（※債務名義をお持ちでない方向け）</p>
+    </div>
+  </div>
 </header>
 
 <div class="notice">
-  🔒 入力した情報はブラウザ内のみで処理されます。外部サーバーへの送信は一切ありません。
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:2px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+  入力した情報はブラウザ内のみで処理されます。外部サーバーへの送信は一切ありません。
 </div>
 
 <div class="layout">
 
   <nav class="sidebar">
-    <div class="sidebar-title">STEP</div>
+    <div class="sidebar-title">作成ステップ</div>
     <div class="sidebar-step active" id="nav1"><span class="step-num">1</span><span>事前確認</span></div>
     <div class="sidebar-step" id="nav2"><span class="step-num">2</span><span>基本情報</span></div>
     <div class="sidebar-step" id="nav3"><span class="step-num">3</span><span>当事者情報</span></div>
@@ -659,17 +684,19 @@ body {
 
   <div class="main">
 
-    <div class="card" style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+    <div class="card" style="padding:20px 28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div>
-        <h3 style="font-size:14px; font-weight:700; color:var(--ink); margin-bottom:2px;">入力データの一時保存・読込</h3>
-        <p style="font-size:11px; color:var(--mid);">入力途中のデータをパソコンに保存したり、保存したデータから再開できます。</p>
+        <h3 style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:4px;">入力データの一時保存・読込</h3>
+        <p style="font-size:12px; color:var(--mid);">入力途中のデータをパソコンに保存したり、保存したデータから再開できます。</p>
       </div>
-      <div style="display:flex; gap:10px;">
+      <div style="display:flex; gap:12px;">
         <button type="button" class="save-btn" onclick="saveData()">
-          <span>💾</span> データを保存
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          データを保存
         </button>
         <button type="button" class="save-btn" onclick="document.getElementById('file_input').click()">
-          <span>📁</span> データを読込
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          データを読込
         </button>
         <input type="file" id="file_input" accept=".json" style="display:none" onchange="loadData(event)">
       </div>
@@ -678,33 +705,33 @@ body {
     <div class="card" id="step1">
       <div class="card-title">
         <span>事前確認</span>
-        <span class="badge">STEP 1</span>
+        <span class="badge badge-blue">STEP 1</span>
       </div>
 
       <div class="info" style="margin-top:0">
-        このシステムは<strong>債務名義（判決・公正証書・調停調書等）を持たない方</strong>向けに、民法の一般先取特権に基づく債権差押命令申立書を作成します。まず以下の3つの確認を行ってください。
+        このシステムは<strong>債務名義（公正証書・調停調書など）を持たない方</strong>向けに、民法の一般先取特権に基づく債権差押命令申立書を作成します。まず以下の3つの確認を行ってください。
       </div>
 
       <div class="precheck-block" id="pc_q1">
         <div class="precheck-q">
           <span class="precheck-num">Q1</span>
-          <span>債務名義（判決正本・調停調書・執行認諾文言付き公正証書等）を<strong>お持ちですか？</strong></span>
+          <span>債務名義（公正証書・調停調書・判決など）を<strong>お持ちですか？</strong></span>
         </div>
         <div class="precheck-btns">
-          <button type="button" class="step1-btn step1-btn-ng" id="btn_q1_yes">
+          <button type="button" class="step1-btn" id="btn_q1_yes">
             <span class="step1-btn-icon">⚠️</span>
             <span class="step1-btn-main">はい、持っています</span>
             <span class="step1-btn-sub">（債務名義あり）</span>
           </button>
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q1_no">
+          <button type="button" class="step1-btn" id="btn_q1_no">
             <span class="step1-btn-icon">✅</span>
             <span class="step1-btn-main">いいえ、持っていません</span>
-            <span class="step1-btn-sub">（債務名義なし）</span>
+            <span class="step1-btn-sub">（合意書のみ、または何もない）</span>
           </button>
         </div>
         <div id="warn_q1" class="warn hidden">
           <strong>申し訳ありませんが、このアプリは債務名義を有していない方専用です。</strong><br>
-          確定判決・調停調書・執行認諾文言付き公正証書等の債務名義をお持ちの場合は、通常の<strong>強制執行（債権差押命令申立）</strong>の手続きをご利用ください。詳しくは弁護士・司法書士等の専門家にご相談ください。
+          公正証書等の債務名義をお持ちの場合は、通常の<strong>強制執行</strong>の手続きをご利用ください。詳しくは専門家や裁判所にご相談ください。
         </div>
       </div>
 
@@ -712,23 +739,23 @@ body {
         <div class="precheck-divider"></div>
         <div class="precheck-q">
           <span class="precheck-num">Q2</span>
-          <span>差し押さえる相手先となる<strong>第三債務者</strong>（勤務先の会社）を<strong>特定できていますか？</strong></span>
+          <span>差し押さえる相手先となる<strong>第三債務者</strong>（勤務先の会社など）を<strong>特定できていますか？</strong></span>
         </div>
         <div class="precheck-btns">
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q2_yes">
+          <button type="button" class="step1-btn" id="btn_q2_yes">
             <span class="step1-btn-icon">✅</span>
             <span class="step1-btn-main">はい、特定できています</span>
-            <span class="step1-btn-sub">（勤務先が判明）</span>
+            <span class="step1-btn-sub">（勤務先が判明している）</span>
           </button>
-          <button type="button" class="step1-btn step1-btn-ng" id="btn_q2_no">
+          <button type="button" class="step1-btn" id="btn_q2_no">
             <span class="step1-btn-icon">⚠️</span>
             <span class="step1-btn-main">いいえ、特定できていません</span>
             <span class="step1-btn-sub">（不明・調査が必要）</span>
           </button>
         </div>
         <div id="warn_q2" class="warn hidden">
-          <strong>このアプリのご利用には、あらかじめ第三債務者の特定が必要です。</strong><br>
-          第三債務者を特定できていない場合には、裁判所に相談し、ワンストップ手続（債務者の財産や第三債務者の情報を調査し、その結果を用いて財産の差押ができる手続）のご利用をご検討ください。
+          <strong>このアプリのご利用には、あらかじめ第三債務者（勤務先など）の特定が必要です。</strong><br>
+          相手の勤務先が分からない場合は、裁判所の「第三者からの情報取得手続」を利用して調査することができます。
         </div>
       </div>
 
@@ -736,18 +763,18 @@ body {
         <div class="precheck-divider"></div>
         <div class="precheck-q">
           <span class="precheck-num">Q3</span>
-          <span>債権者・債務者間に<strong>養育費の合意</strong>（離婚協議書、養育費合意書、誓約書、メールやチャットでの約束等）はありますか？</span>
+          <span>当事者間に<strong>養育費の合意</strong>（合意書、離婚協議書、メールでの約束など）はありますか？</span>
         </div>
         <div class="precheck-btns">
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_yes">
+          <button type="button" class="step1-btn" id="btn_q3_yes">
             <span class="step1-btn-icon">📄</span>
             <span class="step1-btn-main">はい、あります</span>
-            <span class="step1-btn-sub">（合意あり → 形成養育費）</span>
+            <span class="step1-btn-sub">（合意あり）</span>
           </button>
-          <button type="button" class="step1-btn step1-btn-ok" id="btn_q3_no">
+          <button type="button" class="step1-btn" id="btn_q3_no">
             <span class="step1-btn-icon">📋</span>
             <span class="step1-btn-main">いいえ、ありません</span>
-            <span class="step1-btn-sub">（合意なし → 法定養育費）</span>
+            <span class="step1-btn-sub">（合意なし・法定養育費の請求）</span>
           </button>
         </div>
       </div>
@@ -764,6 +791,7 @@ body {
         <div class="fg">
           <label>申立先裁判所名<span class="req">*</span></label>
           <input type="text" id="court_name" placeholder="例：東京地方裁判所">
+          <p class="note">※相手方（債務者）の住所を管轄する地方裁判所です。</p>
         </div>
       </div>
       <div class="row mt12">
@@ -781,18 +809,20 @@ body {
         </div>
       </div>
 
-      <div class="sec">執行費用</div>
+      <div class="sec">執行費用（申立てにかかる費用）</div>
       <div class="cost-box">
         <table class="cost-table">
           <tr><td>本申立手数料</td><td><strong>4,000円</strong>（固定）</td></tr>
           <tr><td>資格証明書交付手数料（円）</td><td><input type="number" id="cert_fee" value="600"></td></tr>
           <tr id="koseki_row" class="hidden"><td>戸籍全部事項証明書交付手数料（円）</td><td><input type="number" id="koseki_fee" value="450"></td></tr>
           <tr id="jumin_row" class="hidden"><td>住民票の写し交付手数料（円）</td><td><input type="number" id="jumin_fee" value="300"></td></tr>
-          <tr><td>連絡用郵便切手代（円）</td><td><input type="number" id="postage" value="3320"></td></tr>
+          <tr>
+            <td>連絡用郵便切手代（円）<br><span style="font-size:11px;font-weight:normal;">※裁判所によって異なります</span></td>
+            <td><input type="number" id="postage" value="3320"></td>
+          </tr>
           <tr class="cost-total-row"><td>執行費用合計</td><td><strong id="exec_cost_disp">7,920円</strong></td></tr>
         </table>
       </div>
-      <p class="note">※切手代は管轄裁判所の指定額に合わせて修正してください。合計額は自動計算されます。</p>
     </div>
 
     <div class="card hidden" id="step4">
@@ -801,7 +831,7 @@ body {
         <span class="badge badge-blue">STEP 3</span>
       </div>
 
-      <div class="sec">申立人（債権者）</div>
+      <div class="sec">申立人（あなた）</div>
       <div class="row">
         <div class="fg zip">
           <label>郵便番号</label>
@@ -836,6 +866,7 @@ body {
         <div class="fg">
           <label>住所（送達場所）<span class="req">*</span></label>
           <input type="text" id="dr_addr" placeholder="東京都渋谷区〇〇〇丁目〇番〇号">
+          <p class="note">※取得した住民票の住所を入力してください。</p>
         </div>
       </div>
       <div class="fg mt12">
@@ -843,7 +874,7 @@ body {
         <input type="text" id="dr_name" placeholder="山田 太郎">
       </div>
 
-      <div class="sec">第三債務者（勤務先）</div>
+      <div class="sec">第三債務者（相手の勤務先など）</div>
       <div class="row">
         <div class="fg zip">
           <label>郵便番号</label>
@@ -875,11 +906,11 @@ body {
       <div class="sec">子の情報（最大4人）</div>
       <div class="children-container" id="children_container"></div>
       <button class="btn-add-child" id="btn_add_child" onclick="addChild()" type="button">
-        ＋ 子を追加する
+        ＋ 子どもを追加する
       </button>
-      <p class="note mt8">※最大4人まで登録できます。ここで入力した生年月日は将来分の終期計算に自動的に使用されます。</p>
+      <p class="note mt8">※ここで入力した生年月日は将来分の計算に自動的に使用されます。</p>
 
-      <div class="sec">確定期限が到来している債権（過去の未払分）</div>
+      <div class="sec">過去の未払い分（確定期限が到来している債権）</div>
       
       <div id="past_yes_area" class="agmt-section agmt-yes hidden">
         <span class="agmt-label">✦ 合意あり（形成養育費）</span>
@@ -893,7 +924,7 @@ body {
 
         <div class="info" style="margin-top:0">
           発生月ごとに1件の債権として追加します。<strong>2026年4月1日以降</strong>に発生した月分のみ対象です。<br>
-          <span id="claim_limit_note_yes">形成養育費：最大360月分（30年分）</span>
+          <span id="claim_limit_note_yes">最大360月分まで登録可能</span>
         </div>
 
         <div class="claims-container" id="claims_yes_container"></div>
@@ -905,7 +936,7 @@ body {
 
       <div id="past_no_area" class="agmt-section agmt-no hidden">
         <span class="agmt-label">✦ 合意なし（法定養育費）</span>
-        <div class="info-green" style="margin-top:0">
+        <div class="info" style="margin-top:0">
           法定養育費は子１人あたり月２万円です。全ての子についての未払額を合算して記入してください。
         </div>
         <div class="claims-container" id="claims_no_container"></div>
@@ -913,35 +944,34 @@ body {
           ＋ 未払月を追加する（初期値2万円）
         </button>
         <p class="claims-count" id="claims_no_count">0 / 216 月分</p>
-        <p class="note">法定養育費は最大216月分（18年分）です。</p>
       </div>
 
-      <div class="sec">確定期限が到来していない各定期金債権（将来分）</div>
+      <div class="sec">将来分（確定期限が到来していない各定期金債権）</div>
       <div class="info" style="margin-top:0">
-        登録した子1人につき1つの設定枠が表示されます。終期を「満〇歳に達する日まで」とする場合、<strong>子の情報で入力した生年月日を自動参照</strong>します（再入力不要）。
+        登録した子ども1人につき1つの設定枠が表示されます。
       </div>
 
       <div class="future-container" id="future_container">
-        <p class="note" style="color:#aaa;text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>
+        <p class="note" style="color:var(--mid);text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>
       </div>
     </div>
 
-    <div class="card hidden" id="step_submit">
+    <div class="card hidden" id="step_submit" style="background:transparent; border:none; box-shadow:none; padding:0;">
       <div class="submit-area">
         <p class="submit-note">内容をよく確認のうえ、専門家（弁護士・司法書士等）へのご相談をお勧めします</p>
         
-        <div class="row" style="margin-top: 14px; gap: 16px;">
-          <button class="btn-gen" id="btn_gen_pdf" type="button" disabled onclick="generate('pdf')" style="background: var(--red); flex: 1;">
-            <span>📄</span>
-            <span id="btn_txt_pdf">PDF で作成する</span>
+        <div class="row" style="margin-top: 16px; gap: 20px;">
+          <button class="btn-gen" id="btn_gen_pdf" type="button" disabled onclick="generate('pdf')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span id="btn_txt_pdf">PDF で出力する</span>
           </button>
-          <button class="btn-gen" id="btn_gen_word" type="button" disabled onclick="generate('word')" style="background: var(--blue); flex: 1;">
-            <span>📝</span>
-            <span id="btn_txt_word">Word で作成する</span>
+          <button class="btn-gen" id="btn_gen_word" type="button" disabled onclick="generate('word')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span id="btn_txt_word">Word で出力する</span>
           </button>
         </div>
 
-        <div id="status" style="margin-top:14px;font-size:14px;font-weight:700;min-height:20px;text-align:center"></div>
+        <div id="status" style="margin-top:20px;font-size:15px;font-weight:700;min-height:24px;text-align:center"></div>
       </div>
     </div>
 
@@ -1179,7 +1209,7 @@ function updateExecCostDisplay() {
 function validateClaimYear(input) {
   var y = parseInt(input.value) || 0;
   if (y > 0 && y < 2026) {
-    input.style.borderColor = 'var(--red)';
+    input.style.borderColor = 'var(--primary)';
     input.title = '2026年以降を入力してください';
   } else {
     input.style.borderColor = '';
@@ -1351,7 +1381,7 @@ function removeChild(idx) {
   childCount--;
   renumberChildren();
   var btnAdd = elById('btn_add_child');
-  if (btnAdd) { btnAdd.disabled = false; btnAdd.textContent = '＋ 子を追加する'; }
+  if (btnAdd) { btnAdd.disabled = false; btnAdd.innerHTML = '＋ 子どもを追加する'; }
   rebuildFutureCards();
 }
 
@@ -1423,7 +1453,7 @@ function addClaim(type) {
       '<input type="number" id="cy_month_' + id + '" placeholder="4" min="1" max="12" style="width:100%"></div>' +
       '<div class="fg"><label>未払額（円）</label>' +
       '<input type="number" id="cy_amt_' + id + '" placeholder="50000" min="1" style="width:100%"></div>' +
-      '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'yes\',' + id + ')">✕</button>';
+      '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'yes\',' + id + ')">✕ 削除</button>';
   } else {
     div.innerHTML =
       '<div class="fg narrow"><label>発生年（西暦）</label>' +
@@ -1432,7 +1462,7 @@ function addClaim(type) {
       '<input type="number" id="cn_month_' + id + '" placeholder="4" min="1" max="12" style="width:100%"></div>' +
       '<div class="fg" style="flex:0 0 120px"><label>未払額（円）</label>' +
       '<input type="number" id="cn_amt_' + id + '" value="20000" min="1" style="width:100%"></div>' +
-      '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'no\',' + id + ')">✕</button>';
+      '<button class="btn-remove-claim" type="button" onclick="removeClaim(\'no\',' + id + ')">✕ 削除</button>';
   }
   container.appendChild(div);
   updateClaimsCount(type);
@@ -1469,7 +1499,7 @@ function rebuildFutureCards() {
   container.innerHTML = '';
 
   if (childCount === 0) {
-    container.innerHTML = '<p class="note" style="color:#aaa;text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>';
+    container.innerHTML = '<p class="note" style="color:var(--mid);text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>';
     return;
   }
   for (var i = 1; i <= childCount; i++) {
@@ -1544,7 +1574,7 @@ function buildFutureCard(idx) {
           '<div class="fg narrow"><label>満年齢（歳）<span class="req">*</span></label>' +
           '<select id="fe_age_val_' + idx + '">' + ageOptions + '</select></div>' +
           '<div class="fg"><label>生年月日（自動参照）</label>' +
-          '<div id="fe_birth_ref_' + idx + '" style="padding:9px 12px;border:1.5px solid #d4dae8;border-radius:8px;background:#f0f2f8;font-size:13px;color:#888;">' +
+          '<div id="fe_birth_ref_' + idx + '" style="padding:11px 14px;border:2px solid var(--light);border-radius:12px;background:#faf8f6;font-size:14px;color:var(--ink);">' +
             (birth
               ? (function(b){ var bd=new Date(b); return bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日'; })(birth)
               : '子の情報から自動取得（未入力）') +
@@ -1594,7 +1624,7 @@ function calcAgeEnd(idx) {
       refEl.style.color = '';
     } else {
       refEl.textContent = '子の情報から自動取得（未入力）';
-      refEl.style.color = '#b83232';
+      refEl.style.color = 'var(--primary)';
     }
   }
 
@@ -1765,7 +1795,7 @@ function collectData(){
   var certFee   = gi('cert_fee');
   var postage   = gi('postage');
   var kosekiFee = isYes ? 0 : gi('koseki_fee');
-  var juminFee  = gi('jumin_fee');
+  var juminFee  = gi('juminFee') || gi('jumin_fee');
   var execCost  = 4000 + certFee + postage + kosekiFee + juminFee;
 
   var globalPayDay = gv('global_pay_day_yes');
@@ -1947,15 +1977,11 @@ function makeWordHelper() {
   function docTitle(s) {
     sp(0.3); txC(s, 13); sp(0.5);
   }
-  function footer() {
-    // Word出力時は自動改ページとフッターがWord側で制御されるため省略
-  }
+  function footer() {}
   function newPage() {
     html += '<br clear="all" style="page-break-before:always" />';
   }
-  function getHtml() {
-    return html;
-  }
+  function getHtml() { return html; }
   return { tx: tx, txR: txR, txC: txC, sp: sp, docTitle: docTitle, newPage: newPage, footer: footer, getHtml: getHtml };
 }
 
@@ -2161,7 +2187,7 @@ async function generate(format){
     var filename = '債権差押命令申立書（先取特権）_' + d.crName;
 
     if (format === 'pdf') {
-        btnTxtPdf.textContent = 'フォント読み込み中…';
+        btnTxtPdf.textContent = 'フォント読込中…';
         var fontBuffer = await loadFont();
 
         var jsPDF = window.jspdf.jsPDF;
@@ -2172,7 +2198,7 @@ async function generate(format){
 
         if (!fontRegistered) {
           status.style.color = '#b83232';
-          status.textContent = '⚠️ フォントの読み込みに失敗しました。日本語が正しく表示されない場合があります。PDFの作成は続行します。';
+          status.textContent = '⚠️ フォント読込に失敗しました。PDF作成は続行します。';
         }
 
         btnTxtPdf.textContent = 'PDF 作成中…';
@@ -2191,7 +2217,7 @@ async function generate(format){
 
         pdf.save(filename + '.pdf');
 
-        status.style.color = '#27ae60';
+        status.style.color = 'var(--secondary)';
         status.textContent = '✓ PDFのダウンロードが完了しました（全４書類）';
 
     } else if (format === 'word') {
@@ -2221,13 +2247,13 @@ async function generate(format){
         }
         document.body.removeChild(downloadLink);
 
-        status.style.color = '#27ae60';
+        status.style.color = 'var(--secondary)';
         status.textContent = '✓ Wordファイル（.doc）のダウンロードが完了しました';
     }
 
   } catch(e) {
     console.error(e);
-    status.style.color = '#b83232';
+    status.style.color = 'var(--primary)';
     status.textContent = 'エラー: ' + e.message;
   } finally {
     btnPdf.disabled = false;
