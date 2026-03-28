@@ -1161,10 +1161,10 @@ function calcExecCost() {
   var juminEl  = elById('jumin_fee');
   var base = 4000
     + (certEl  ? (parseInt(certEl.value)  || 0) : 0)
-    + (postEl  ? (parseInt(postEl.value)  || 0) : 0);
+    + (postEl  ? (parseInt(postEl.value)  || 0) : 0)
+    + (juminEl ? (parseInt(juminEl.value) || 0) : 0);
   if (agmtType === 'no') {
-    base += (kosekiEl ? (parseInt(kosekiEl.value) || 0) : 0)
-          + (juminEl  ? (parseInt(juminEl.value)  || 0) : 0);
+    base += (kosekiEl ? (parseInt(kosekiEl.value) || 0) : 0);
   }
   return base;
 }
@@ -1280,7 +1280,7 @@ function handleQ3(ans) {
 function applyAgmtType(val) {
   agmtType = val;
   if (val === 'no') { showEl('koseki_row'); showEl('jumin_row'); }
-  else              { hideEl('koseki_row'); hideEl('jumin_row'); }
+  else              { hideEl('koseki_row'); showEl('jumin_row'); }
   updateExecCostDisplay();
   showEl('step3'); showEl('step4'); showEl('step5'); showEl('step_submit');
   
@@ -1765,7 +1765,7 @@ function collectData(){
   var certFee   = gi('cert_fee');
   var postage   = gi('postage');
   var kosekiFee = isYes ? 0 : gi('koseki_fee');
-  var juminFee  = isYes ? 0 : gi('jumin_fee');
+  var juminFee  = gi('jumin_fee');
   var execCost  = 4000 + certFee + postage + kosekiFee + juminFee;
 
   var globalPayDay = gv('global_pay_day_yes');
@@ -1987,10 +1987,11 @@ function buildDoc1(h, d){
   h.tx('３　差押債権目録　　　　　　　　　　　１通', 6);
   if (d.isYes) {
     h.tx('４　担保権の存在を証する文書　　　　　１通', 6);
-    h.tx('５　資格証明書　　　　　　　　　　　　１通', 6);
+    h.tx('５　住民票の写し（相手方）　　　　　　１通', 6);
+    h.tx('６　資格証明書　　　　　　　　　　　　１通', 6);
   } else {
     h.tx('４　戸籍事項全部証明書　　　　　　　　１通', 6);
-    h.tx('５　住民票の写し　　　　　　　　　　　１通', 6);
+    h.tx('５　住民票の写し（相手方）　　　　　　１通', 6);
     h.tx('６　資格証明書　　　　　　　　　　　　１通', 6);
   }
 }
@@ -2059,8 +2060,8 @@ function buildDoc3(h, d){
   h.tx('（内訳）本申立手数料　金４，０００円', 18);
   if (!d.isYes) {
     h.tx(`戸籍全部事項証明書交付手数料　金${fmt(d.kosekiFee)}円`, 18);
-    h.tx(`住民票の写し交付手数料　金${fmt(d.juminFee)}円`, 18);
   }
+  h.tx(`住民票の写し交付手数料　金${fmt(d.juminFee)}円`, 18);
   h.tx(`資格証明書交付手数料　金${fmt(d.certFee)}円`, 18);
   h.tx(`連絡用郵便切手代　金${fmt(d.postage)}円`, 18);
   h.sp(0.5);
