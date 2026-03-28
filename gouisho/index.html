@@ -798,7 +798,7 @@ function App() {
               <div key={s.id} className="flex items-center flex-shrink-0">
                 <button
                   onClick={() => i <= step && setStep(i)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
                     i === step
                       ? "bg-primary text-white shadow-md"
                       : i < step
@@ -807,7 +807,7 @@ function App() {
                   }`}
                 >
                   <span className="text-base">{s.icon}</span>
-                  <span className="hidden sm:inline">{s.label}</span>
+                  <span className="hidden sm:inline whitespace-nowrap">{s.label}</span>
                   <span className="sm:hidden">{i + 1}</span>
                 </button>
                 {i < STEPS.length - 1 && (
