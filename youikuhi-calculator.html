@@ -7,30 +7,30 @@
 <meta name="description" content="裁判所公表の標準算定方式（令和元年版）に基づいて養育費の月額目安を自動計算できる無料ツールです。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #1a1a2e;
-  --mid: #5a6478;
-  --light: #e4e9f2;
-  --bg: #f4f6fb;
+  /* 親しみやすく温かいカラーパレット（トップページと統一） */
+  --ink: #4a403d;
+  --mid: #857c7a;
+  --light: #e8e0de;
+  --bg: #fdfcf9;
   --white: #ffffff;
-  --blue: #1e5fa8;
-  --blue-light: #eff5ff;
-  --blue-dark: #0c3d6e;
-  --green: #0e7c5b;
-  --green-light: #f0fdf8;
-  --red: #b83232;
-  --red-light: #fdf2f2;
-  --r: 12px;
-  --shadow: 0 4px 12px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.03);
-  --shadow-lg: 0 12px 32px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.05);
+  --primary: #f48c71;
+  --primary-light: #fff3f0;
+  --secondary: #6cb8a9;
+  --secondary-light: #f0f9f7;
+  --warning: #eaaa58;
+  --warning-light: #fdf7f0;
+  --r: 24px;
+  --shadow: 0 8px 24px rgba(74, 64, 61, 0.06), 0 2px 6px rgba(74, 64, 61, 0.04);
+  --shadow-lg: 0 12px 32px rgba(74, 64, 61, 0.10), 0 4px 10px rgba(74, 64, 61, 0.05);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Noto Sans JP', sans-serif;
   font-size: 15px;
   background: var(--bg);
   color: var(--ink);
@@ -38,23 +38,74 @@ body {
   min-height: 100vh;
 }
 
-/* ========== Header ========== */
-.header {
-  background: var(--ink);
-  color: #fff;
-  padding: 18px 0;
+/* ========== Hero Section (Header) ========== */
+.hero {
+  background: var(--primary-light);
+  padding: 40px 20px 40px;
   text-align: center;
-  border-bottom: 4px solid var(--blue);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid var(--primary);
 }
-.header a { color: #aab; text-decoration: none; font-size: 12px; display: block; margin-bottom: 6px; }
-.header a:hover { color: #fff; }
-.header h1 {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 22px;
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 200px; height: 200px;
+  background: var(--white);
+  border-radius: 50%;
+  opacity: 0.4;
+}
+.back-link {
+  position: absolute;
+  top: 20px; left: 20px;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--white);
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(244,140,113,0.15);
+  transition: transform 0.2s;
+  z-index: 10;
+}
+.back-link:hover { transform: translateX(-4px); }
+
+.hero-ill {
+  width: 90px;
+  height: auto;
+  margin: 0 auto 16px;
+  display: block;
+}
+.hero h1 {
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  font-weight: 700;
   letter-spacing: .05em;
-  margin-bottom: 4px;
 }
-.header p { font-size: 12px; color: #aab; }
+.hero p {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.basis-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  color: var(--secondary);
+  border: 1.5px solid var(--secondary);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 16px;
+}
 
 /* ========== Main ========== */
 .main {
@@ -63,131 +114,111 @@ body {
   padding: 40px 20px 60px;
 }
 
-/* ========== Intro ========== */
-.intro {
-  text-align: center;
-  margin-bottom: 32px;
-}
-.intro h2 {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 22px;
-  color: var(--ink);
-  margin-bottom: 10px;
-  line-height: 1.5;
-}
-.intro p { font-size: 14px; color: var(--mid); }
-.basis-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--blue-light);
-  color: var(--blue);
-  border: 1px solid #b8d4f5;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-  margin-top: 14px;
-}
-
 /* ========== Form Sections ========== */
 .form-section {
   background: var(--white);
-  border: 1.5px solid var(--light);
+  border: 2px solid var(--light);
   border-radius: var(--r);
-  padding: 24px;
-  margin-bottom: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
   box-shadow: var(--shadow);
+  transition: border-color 0.3s;
+}
+.form-section:hover {
+  border-color: #d8cec9;
 }
 .section-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--light);
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px dashed var(--light);
 }
 .section-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   flex-shrink: 0;
 }
-.icon-blue { background: var(--blue-light); }
-.icon-green { background: var(--green-light); }
-.icon-amber { background: #fffbeb; }
+.section-icon svg { width: 24px; height: 24px; stroke-width: 2.5; }
+.icon-primary { background: var(--primary-light); color: var(--primary); }
+.icon-secondary { background: var(--secondary-light); color: var(--secondary); }
+.icon-warning { background: var(--warning-light); color: var(--warning); }
+
 .section-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--ink);
 }
 .section-sub {
   font-size: 12px;
   color: var(--mid);
+  margin-top: 2px;
 }
 
 .row2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
-.field { margin-bottom: 14px; }
+.field { margin-bottom: 16px; }
 .field:last-child { margin-bottom: 0; }
 label {
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--mid);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   letter-spacing: 0.03em;
 }
 input[type=number], select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid var(--light);
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 2px solid var(--light);
+  border-radius: 12px;
   font-size: 15px;
   font-family: inherit;
   color: var(--ink);
-  background: var(--bg);
-  transition: border-color .15s, box-shadow .15s;
+  background: #faf8f6;
+  transition: all .2s;
   appearance: none;
   -webkit-appearance: none;
 }
 input[type=number]:focus, select:focus {
   outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(30,95,168,.12);
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px var(--secondary-light);
   background: var(--white);
 }
 .input-unit {
   position: relative;
 }
-.input-unit input { padding-right: 44px; }
+.input-unit input { padding-right: 48px; }
 .input-unit::after {
   content: attr(data-unit);
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 13px;
+  font-weight: 700;
   color: var(--mid);
   pointer-events: none;
 }
 .select-wrap { position: relative; }
-.select-wrap select { padding-right: 36px; }
+.select-wrap select { padding-right: 40px; }
 .select-wrap::after {
-  content: '▾';
+  content: '▼';
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--mid);
-  font-size: 13px;
+  font-size: 10px;
   pointer-events: none;
 }
 
@@ -196,64 +227,77 @@ input[type=number]:focus, select:focus {
   display: grid;
   grid-template-columns: 80px 1fr auto;
   align-items: end;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 16px;
+  background: #faf8f6;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--light);
 }
 .child-row:last-child { margin-bottom: 0; }
+.child-row label { margin-bottom: 0; color: var(--ink); }
 .remove-btn {
-  padding: 10px 12px;
-  border: 1.5px solid var(--light);
-  border-radius: 8px;
-  background: none;
+  padding: 10px 16px;
+  border: 2px solid var(--light);
+  border-radius: 50px;
+  background: var(--white);
   color: var(--mid);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 700;
   transition: all .15s;
 }
-.remove-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+.remove-btn:hover { border-color: #e2765b; color: #e2765b; background: var(--primary-light); }
 .add-child-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 6px;
-  padding: 9px 16px;
-  border: 1.5px dashed var(--light);
-  border-radius: 8px;
+  padding: 14px;
+  border: 2px dashed #d1c8c5;
+  border-radius: 16px;
   background: none;
-  color: var(--blue);
-  font-size: 13px;
+  color: var(--mid);
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all .15s;
-  margin-top: 12px;
+  margin-top: 16px;
   font-family: inherit;
 }
 .add-child-btn:hover {
-  border-color: var(--blue);
-  background: var(--blue-light);
+  border-color: var(--secondary);
+  color: var(--secondary);
+  background: var(--secondary-light);
 }
 .add-child-btn.hidden { display: none; }
 
 /* ========== Calc Button ========== */
 .calc-btn {
   width: 100%;
-  padding: 16px;
-  background: var(--blue);
+  padding: 18px;
+  background: var(--primary);
   color: #fff;
   border: none;
-  border-radius: var(--r);
+  border-radius: 50px;
   font-size: 16px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 12px;
   transition: all .2s;
-  letter-spacing: .03em;
-  box-shadow: 0 4px 16px rgba(30,95,168,.3);
+  letter-spacing: .05em;
+  box-shadow: 0 4px 12px rgba(244, 140, 113, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 .calc-btn:hover {
-  background: var(--blue-dark);
-  box-shadow: 0 6px 20px rgba(30,95,168,.4);
-  transform: translateY(-1px);
+  background: #e2765b;
+  box-shadow: 0 6px 16px rgba(244, 140, 113, 0.4);
+  transform: translateY(-2px);
 }
 .calc-btn:active { transform: translateY(0); }
 
@@ -261,80 +305,104 @@ input[type=number]:focus, select:focus {
 .result-box {
   display: none;
   background: var(--white);
-  border: 2px solid var(--blue);
+  border: 3px solid var(--secondary);
   border-radius: var(--r);
   overflow: hidden;
-  margin-top: 24px;
+  margin-top: 40px;
   box-shadow: var(--shadow-lg);
-  animation: fadeUp .3s ease;
+  animation: fadeUp .4s ease;
 }
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .result-header {
-  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  background: var(--secondary);
   color: #fff;
-  padding: 28px;
+  padding: 32px;
   text-align: center;
 }
 .result-header-label {
-  font-size: 13px;
-  opacity: .8;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: .9;
   margin-bottom: 8px;
   letter-spacing: .04em;
 }
 .result-amount {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 700;
   letter-spacing: .02em;
   margin-bottom: 6px;
 }
 .result-header-note {
   font-size: 12px;
-  opacity: .7;
+  opacity: .8;
 }
 
-.result-body { padding: 24px; }
+.result-body { padding: 30px; }
 .calc-steps-title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--mid);
-  letter-spacing: .04em;
-  margin-bottom: 12px;
+  color: var(--ink);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.calc-steps-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px; height: 16px;
+  background: var(--secondary);
+  border-radius: 4px;
 }
 .steps-table { width: 100%; border-collapse: collapse; }
-.steps-table tr { border-bottom: 1px solid var(--light); }
+.steps-table tr { border-bottom: 1px dashed var(--light); }
 .steps-table tr:last-child { border-bottom: none; }
-.steps-table td { padding: 10px 0; font-size: 13px; }
+.steps-table td { padding: 12px 0; font-size: 13px; }
 .steps-table td:first-child { color: var(--mid); }
 .steps-table td:last-child { text-align: right; font-weight: 700; color: var(--ink); }
 
 .disclaimer {
-  margin-top: 20px;
-  padding: 14px;
-  background: #fffbeb;
-  border-left: 3px solid #f59e0b;
-  border-radius: 0 8px 8px 0;
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: var(--warning-light);
+  border-left: 4px solid var(--warning);
+  border-radius: 0 12px 12px 0;
   font-size: 12px;
-  color: #78540a;
+  color: #8c6014;
   line-height: 1.7;
 }
 
 .cta-section {
-  margin-top: 16px;
-  padding: 16px;
-  background: var(--green-light);
-  border-radius: 8px;
-  border: 1px solid #7ec8aa;
-  font-size: 13px;
-  color: var(--green);
-  font-weight: 700;
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--primary-light);
+  border-radius: 16px;
+  text-align: center;
 }
-.cta-section a {
-  color: var(--green);
-  text-decoration: underline;
+.cta-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.cta-btn {
+  display: inline-block;
+  background: var(--white);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 10px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all .2s;
+}
+.cta-btn:hover {
+  background: var(--primary);
+  color: var(--white);
 }
 
 /* ========== Footer ========== */
@@ -342,51 +410,66 @@ input[type=number]:focus, select:focus {
   text-align: center;
   padding: 24px;
   font-size: 12px;
-  color: #889;
+  color: var(--mid);
   border-top: 1px solid var(--light);
 }
 
 /* ========== Error ========== */
 .error-msg {
   font-size: 12px;
-  color: var(--red);
-  margin-top: 4px;
+  color: #d9534f;
+  margin-top: 6px;
+  font-weight: 700;
   display: none;
 }
 .field.has-error input,
 .field.has-error select {
-  border-color: var(--red);
+  border-color: #d9534f;
+  background: #fdf2f2;
 }
 
 @media (max-width: 560px) {
+  .hero { padding: 50px 16px 30px; }
   .main { padding: 24px 14px 50px; }
-  .row2 { grid-template-columns: 1fr; gap: 14px; }
-  .child-row { grid-template-columns: 70px 1fr auto; gap: 8px; }
-  .result-amount { font-size: 30px; }
-  .intro h2 { font-size: 18px; }
+  .row2 { grid-template-columns: 1fr; gap: 16px; }
+  .child-row { grid-template-columns: 60px 1fr auto; gap: 12px; padding: 12px; }
+  .result-amount { font-size: 32px; }
+  .hero h1 { font-size: 20px; }
 }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <a href="../">← 養育費サポートJP トップへ</a>
-  <h1>養育費サポートJP</h1>
-  <p>養育費かんたん計算ツール</p>
+<header class="hero">
+  <a href="index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
+    トップへ戻る
+  </a>
+  <svg class="hero-ill" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect x="25" y="15" width="50" height="70" rx="10" fill="#fff" opacity="0.8"/>
+    <rect x="35" y="25" width="30" height="15" rx="4" fill="#6cb8a9"/>
+    <circle cx="35" cy="50" r="4" fill="#f48c71"/>
+    <circle cx="50" cy="50" r="4" fill="#e8e0de"/>
+    <circle cx="65" cy="50" r="4" fill="#e8e0de"/>
+    <circle cx="35" cy="65" r="4" fill="#e8e0de"/>
+    <circle cx="50" cy="65" r="4" fill="#e8e0de"/>
+    <circle cx="65" cy="65" r="4" fill="#e8e0de"/>
+  </svg>
+  <h1>養育費かんたん計算ツール</h1>
+  <p>年収とお子さまの年齢を入力するだけで、<br>裁判所の算定方式による目安額を自動で算出します。</p>
+  <div class="basis-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    裁判所公表・標準算定方式（令和元年版）準拠
+  </div>
 </header>
 
 <main class="main">
 
-  <div class="intro">
-    <h2>養育費の月額目安を<br>かんたんに計算</h2>
-    <p>年収とお子さまの年齢を入力するだけで、<br>裁判所の算定方式による目安額を自動で算出します。</p>
-    <div class="basis-badge">📋 裁判所公表・標準算定方式（令和元年版）準拠</div>
-  </div>
-
-  <!-- 義務者 -->
   <div class="form-section">
     <div class="section-header">
-      <div class="section-icon icon-blue">💼</div>
+      <div class="section-icon icon-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      </div>
       <div>
         <div class="section-title">養育費を支払う側（義務者）</div>
         <div class="section-sub">子どもと一緒に暮らしていない親</div>
@@ -412,10 +495,11 @@ input[type=number]:focus, select:focus {
     </div>
   </div>
 
-  <!-- 権利者 -->
   <div class="form-section">
     <div class="section-header">
-      <div class="section-icon icon-green">🏠</div>
+      <div class="section-icon icon-secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      </div>
       <div>
         <div class="section-title">養育費を受け取る側（権利者）</div>
         <div class="section-sub">子どもと一緒に暮らしている親</div>
@@ -441,10 +525,11 @@ input[type=number]:focus, select:focus {
     </div>
   </div>
 
-  <!-- 子ども -->
   <div class="form-section">
     <div class="section-header">
-      <div class="section-icon icon-amber">👦</div>
+      <div class="section-icon icon-warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+      </div>
       <div>
         <div class="section-title">お子さまの情報</div>
         <div class="section-sub">最大3人まで入力できます</div>
@@ -453,23 +538,28 @@ input[type=number]:focus, select:focus {
     <div id="children-grid">
       <div class="child-row" id="child-row-1">
         <div>
-          <label>第1子</label>
+          <label style="font-size:14px;">第1子</label>
         </div>
         <div class="field" id="field-child-1" style="margin:0">
           <div class="input-unit" data-unit="歳">
-            <input type="number" class="child-age" placeholder="例：8" min="0" max="17" step="1">
+            <input type="number" class="child-age" placeholder="例：8" min="0" max="17" step="1" style="background:var(--white)">
           </div>
           <div class="error-msg" id="err-child">年齢を入力してください</div>
         </div>
         <div></div>
       </div>
     </div>
-    <button class="add-child-btn" id="add-child-btn">＋ 子どもを追加</button>
+    <button class="add-child-btn" id="add-child-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      子どもを追加
+    </button>
   </div>
 
-  <button class="calc-btn" onclick="calculate()">養育費の目安を計算する →</button>
+  <button class="calc-btn" onclick="calculate()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="8.01" y2="10"></line><line x1="12" y1="10" x2="12.01" y2="10"></line><line x1="16" y1="10" x2="16.01" y2="10"></line><line x1="8" y1="14" x2="8.01" y2="14"></line><line x1="12" y1="14" x2="12.01" y2="14"></line><line x1="16" y1="14" x2="16.01" y2="14"></line><line x1="8" y1="18" x2="16" y2="18"></line></svg>
+    養育費の目安を計算する
+  </button>
 
-  <!-- Result -->
   <div class="result-box" id="result-box">
     <div class="result-header">
       <div class="result-header-label">毎月の養育費の目安（月額）</div>
@@ -492,7 +582,8 @@ input[type=number]:focus, select:focus {
       </div>
 
       <div class="cta-section">
-        🤝 取り決めができたら → <a href="../gouisho/">養育費合意書 作成ツール</a> で書類を無料作成できます。
+        <div class="cta-text">取り決めができたら、合意書を残しましょう</div>
+        <a href="gouisho/" class="cta-btn">養育費合意書 作成ツールを使う（無料）</a>
       </div>
     </div>
   </div>
@@ -536,10 +627,10 @@ document.getElementById('add-child-btn').onclick = function() {
   div.className = 'child-row';
   div.id = 'child-row-' + childCount;
   div.innerHTML =
-    '<div><label>第' + childCount + '子</label></div>' +
+    '<div><label style="font-size:14px;">第' + childCount + '子</label></div>' +
     '<div class="field" style="margin:0">' +
       '<div class="input-unit" data-unit="歳">' +
-        '<input type="number" class="child-age" placeholder="例：5" min="0" max="17" step="1">' +
+        '<input type="number" class="child-age" placeholder="例：5" min="0" max="17" step="1" style="background:var(--white)">' +
       '</div>' +
     '</div>' +
     '<button class="remove-btn" onclick="removeChild(' + childCount + ')">削除</button>';
@@ -637,7 +728,7 @@ function calculate() {
 
   const box = document.getElementById('result-box');
   box.style.display = 'block';
-  setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
 document.addEventListener('keydown', function(e) {
