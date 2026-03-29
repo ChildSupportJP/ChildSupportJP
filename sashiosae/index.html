@@ -732,7 +732,7 @@ body {
         </div>
         <div id="warn_q1" class="warn hidden">
           <strong>申し訳ありませんが、このアプリは債務名義を有していない方専用です。</strong><br>
-          公正証書等の債務名義をお持ちの場合は、通常の<strong>強制執行</strong>の手続きをご利用ください。詳しくは専門家や裁判所にご相談ください。
+          公正証書等の債務名義をお持ちの場合は、このツールをご利用できません。弁護士または裁判所にご相談されることをお勧めします。
         </div>
       </div>
 
@@ -756,7 +756,7 @@ body {
         </div>
         <div id="warn_q2" class="warn hidden">
           <strong>このアプリのご利用には、あらかじめ第三債務者（勤務先など）の特定が必要です。</strong><br>
-          相手の勤務先が分からない場合は、裁判所の「ワンストップ執行手続」をご利用ください。
+          相手の勤務先が分からない場合は、「財産開示書類 作成ツール」をご利用ください。
         </div>
       </div>
 
@@ -1692,7 +1692,6 @@ document.addEventListener('DOMContentLoaded', function() {
 var _fontCache = null;
 var FONT_NAME  = 'MPLUS1p';
 
-// 【修正】確実に読み込める、軽量な日本語TTFフォント(MPLUS1p)を使用
 async function loadFont(){
   if(_fontCache) return _fontCache;
   var urls = [
@@ -1714,7 +1713,6 @@ async function loadFont(){
   return null;
 }
 
-// 【修正】安全なBase64変換処理
 function arrayBufferToBase64(buffer) {
   var binary = '';
   var bytes = new Uint8Array(buffer);
@@ -1822,7 +1820,6 @@ function collectData(){
     var fsY    = gi('fs_year_'  + n);
     var fsM    = gi('fs_month_' + n);
     
-    // 【修正】開始年月が未入力(0)の場合は将来分の債権として追加しない
     if(fsY === 0 || fsM === 0) return;
 
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
@@ -1875,7 +1872,6 @@ function collectData(){
     var payDay  = isYes ? globalPayDay : null;
     var monthly = isYes ? gi('monthly_amt_' + n) : 20000;
     
-    // 【修正】金額が未入力(0)の場合も追加しない
     if(isYes && monthly === 0) return;
 
     futureClaims.push({
@@ -1953,7 +1949,6 @@ function makePdfHelper(pdf, FN) {
     sp(0.3); txC(s, 13); sp(0.5);
   }
   
-  // 【修正】チェック済みの場合は四角を塗りつぶす（■）
   function checkbox(isChecked, txt, indMM){
     var ind = indMM || 0;
     var sym = isChecked ? '■' : '□';
@@ -1970,7 +1965,7 @@ function makeWordHelper() {
   var html = '';
   function tx(s, indMM, sz) {
     var sizePt = sz || 10.5;
-    var indentPt = indMM ? (indMM * 2.83465) : 0; // 1mm ≈ 2.83465pt
+    var indentPt = indMM ? (indMM * 2.83465) : 0;
     html += '<p style="font-size:' + sizePt + 'pt; margin-left:' + indentPt + 'pt; text-align: left;">' + esc(s || '') + '</p>';
   }
   function txR(s, sz) {
@@ -1982,7 +1977,7 @@ function makeWordHelper() {
     html += '<p style="font-size:' + sizePt + 'pt; text-align: center;">' + esc(s || '') + '</p>';
   }
   function sp(n) {
-    var heightPt = (n || 1) * 16; // 1行分を約16ptとして計算
+    var heightPt = (n || 1) * 16;
     html += '<div style="height:' + heightPt + 'pt;"></div>';
   }
   function docTitle(s) {
@@ -1992,7 +1987,6 @@ function makeWordHelper() {
   function newPage() {
     html += '<br clear="all" style="page-break-before:always" />';
   }
-  // 【修正】Word出力時もチェック済みの場合は（■）
   function checkbox(isChecked, txt, indMM){ tx((isChecked ? '■' : '□') + '　' + txt, indMM); }
   function getHtml() { return html; }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
