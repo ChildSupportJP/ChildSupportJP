@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com; img-src 'self' data:;">
 <title>債権差押命令申立書 自動生成システム｜養育費サポートJP</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
@@ -1099,17 +1100,17 @@ function loadData(event) {
           onChildNameChange(n);
           onChildBirthChange(n);
 
-          elById('fs_year_' + n).value = c.fs_year || '';
-          elById('fs_month_' + n).value = c.fs_month || '';
+          if (elById('fs_year_' + n)) elById('fs_year_' + n).value = c.fs_year || '';
+          if (elById('fs_month_' + n)) elById('fs_month_' + n).value = c.fs_month || '';
           if (elById('monthly_amt_' + n)) elById('monthly_amt_' + n).value = c.monthly_amt || '';
 
           var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]');
           radios.forEach(r => { if (r.value === c.fe_type) r.checked = true; });
           onFutureEndTypeChange(n);
 
-          elById('fe_year_' + n).value = c.fe_year || '';
-          elById('fe_month_' + n).value = c.fe_month || '';
-          elById('fe_age_val_' + n).value = c.fe_age_val || '18';
+          if (elById('fe_year_' + n)) elById('fe_year_' + n).value = c.fe_year || '';
+          if (elById('fe_month_' + n)) elById('fe_month_' + n).value = c.fe_month || '';
+          if (elById('fe_age_val_' + n)) elById('fe_age_val_' + n).value = c.fe_age_val || '18';
           calcAgeEnd(n);
         });
       }
@@ -1119,9 +1120,9 @@ function loadData(event) {
         data.claimsYesData.forEach(c => {
           addClaim('yes');
           var id = claimsYes[claimsYes.length - 1];
-          elById('cy_year_' + id).value = c.year || '';
-          elById('cy_month_' + id).value = c.month || '';
-          elById('cy_amt_' + id).value = c.amt || '';
+          if (elById('cy_year_' + id)) elById('cy_year_' + id).value = c.year || '';
+          if (elById('cy_month_' + id)) elById('cy_month_' + id).value = c.month || '';
+          if (elById('cy_amt_' + id)) elById('cy_amt_' + id).value = c.amt || '';
         });
       }
 
@@ -1130,9 +1131,9 @@ function loadData(event) {
         data.claimsNoData.forEach(c => {
           addClaim('no');
           var id = claimsNo[claimsNo.length - 1];
-          elById('cn_year_' + id).value = c.year || '';
-          elById('cn_month_' + id).value = c.month || '';
-          elById('cn_amt_' + id).value = c.amt || '';
+          if (elById('cn_year_' + id)) elById('cn_year_' + id).value = c.year || '';
+          if (elById('cn_month_' + id)) elById('cn_month_' + id).value = c.month || '';
+          if (elById('cn_amt_' + id)) elById('cn_amt_' + id).value = c.amt || '';
         });
       }
 
@@ -1691,55 +1692,50 @@ document.addEventListener('DOMContentLoaded', function() {
 var _fontCache = null;
 var FONT_NAME  = 'MPLUS1p';
 
-async function loadFont() {
-  if (_fontCache !== null) return _fontCache;
-
+// 【修正】確実に読み込める、軽量な日本語TTFフォント(MPLUS1p)を使用
+async function loadFont(){
+  if(_fontCache) return _fontCache;
   var urls = [
     'https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf',
     'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mplus1p/MPLUS1p-Regular.ttf'
   ];
-
   for (var i = 0; i < urls.length; i++) {
     try {
-      console.info('フォント取得試行:', urls[i]);
       var res = await fetch(urls[i]);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       var buf = await res.arrayBuffer();
-      if (buf.byteLength < 100000) throw new Error('ファイルサイズが小さすぎます: ' + buf.byteLength);
+      if (buf.byteLength < 100000) throw new Error('File too small');
       _fontCache = buf;
-      console.info('フォント取得成功:', urls[i], '(' + (buf.byteLength / 1024).toFixed(0) + ' KB)');
       return _fontCache;
     } catch (e) {
-      console.warn('フォント取得失敗 (' + urls[i] + '):', e.message);
+      console.warn('Font fetch failed:', urls[i]);
     }
   }
-
-  console.warn('すべてのCDNからのフォント取得に失敗しました。デフォルトフォントで続行します。');
-  _fontCache = false;
-  return _fontCache;
+  return null;
 }
 
+// 【修正】安全なBase64変換処理
 function arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
+  var binary = '';
+  var bytes = new Uint8Array(buffer);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return btoa(binary);
+  return window.btoa(binary);
 }
 
-function registerFont(pdf, fontBuffer) {
-  if (!fontBuffer) return false;
+function registerFont(pdf, buf){
+  if(!buf) return false;
   try {
-    var b64 = arrayBufferToBase64(fontBuffer);
+    var b64 = arrayBufferToBase64(buf);
     pdf.addFileToVFS('MPLUS1p-Regular.ttf', b64);
     pdf.addFont('MPLUS1p-Regular.ttf', FONT_NAME, 'normal');
     pdf.setFont(FONT_NAME, 'normal');
     return true;
-  } catch (e) {
-    console.warn('jsPDF フォント登録失敗:', e.message);
-    return false;
+  } catch(e){ 
+    console.error('Font register failed:', e);
+    return false; 
   }
 }
 
@@ -1791,6 +1787,7 @@ function collectData(){
     });
   });
   var childrenNames = children.map(function(c){ return c.name; }).join('、');
+  if(!childrenNames) childrenNames = '　　';
 
   var certFee   = gi('cert_fee');
   var postage   = gi('postage');
@@ -1824,6 +1821,10 @@ function collectData(){
     var n      = i + 1;
     var fsY    = gi('fs_year_'  + n);
     var fsM    = gi('fs_month_' + n);
+    
+    // 【修正】開始年月が未入力(0)の場合は将来分の債権として追加しない
+    if(fsY === 0 || fsM === 0) return;
+
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
     var feType = radios.length > 0 ? radios[0].value : 'specific';
     var endText = '';
@@ -1859,7 +1860,7 @@ function collectData(){
           endReiwaY   = ry;
           endM        = d.getMonth() + 1;
         }
-        endText = `${child.name}（生年月日${bLabel}）の${age}歳の誕生日の前日${prevDayText ? '（'+prevDayText+'）' : ''}`;
+        endText = `${child.name}（生年月日${bLabel||'未入力'}）の${age}歳の誕生日の前日${prevDayText ? '（'+prevDayText+'）' : ''}`;
       }
 
       if (isYes && birth) {
@@ -1873,6 +1874,9 @@ function collectData(){
 
     var payDay  = isYes ? globalPayDay : null;
     var monthly = isYes ? gi('monthly_amt_' + n) : 20000;
+    
+    // 【修正】金額が未入力(0)の場合も追加しない
+    if(isYes && monthly === 0) return;
 
     futureClaims.push({
       childName : child.name,
@@ -1949,7 +1953,14 @@ function makePdfHelper(pdf, FN) {
     sp(0.3); txC(s, 13); sp(0.5);
   }
   
-  return { tx: tx, txR: txR, txC: txC, sp: sp, docTitle: docTitle, newPage: newPage, footer: footer, setF: setF, getY: function(){ return y; } };
+  // 【修正】チェック済みの場合は四角を塗りつぶす（■）
+  function checkbox(isChecked, txt, indMM){
+    var ind = indMM || 0;
+    var sym = isChecked ? '■' : '□';
+    tx(sym + '　' + txt, ind);
+  }
+  
+  return { tx: tx, txR: txR, txC: txC, sp: sp, docTitle: docTitle, newPage: newPage, footer: footer, checkbox: checkbox, setF: setF, getY: function(){ return y; } };
 }
 
 /* ============================================================
@@ -1960,15 +1971,15 @@ function makeWordHelper() {
   function tx(s, indMM, sz) {
     var sizePt = sz || 10.5;
     var indentPt = indMM ? (indMM * 2.83465) : 0; // 1mm ≈ 2.83465pt
-    html += '<p style="font-size:' + sizePt + 'pt; margin-left:' + indentPt + 'pt; text-align: left;">' + (s || '') + '</p>';
+    html += '<p style="font-size:' + sizePt + 'pt; margin-left:' + indentPt + 'pt; text-align: left;">' + esc(s || '') + '</p>';
   }
   function txR(s, sz) {
     var sizePt = sz || 10.5;
-    html += '<p style="font-size:' + sizePt + 'pt; text-align: right;">' + (s || '') + '</p>';
+    html += '<p style="font-size:' + sizePt + 'pt; text-align: right;">' + esc(s || '') + '</p>';
   }
   function txC(s, sz) {
     var sizePt = sz || 10.5;
-    html += '<p style="font-size:' + sizePt + 'pt; text-align: center;">' + (s || '') + '</p>';
+    html += '<p style="font-size:' + sizePt + 'pt; text-align: center;">' + esc(s || '') + '</p>';
   }
   function sp(n) {
     var heightPt = (n || 1) * 16; // 1行分を約16ptとして計算
@@ -1981,8 +1992,11 @@ function makeWordHelper() {
   function newPage() {
     html += '<br clear="all" style="page-break-before:always" />';
   }
+  // 【修正】Word出力時もチェック済みの場合は（■）
+  function checkbox(isChecked, txt, indMM){ tx((isChecked ? '■' : '□') + '　' + txt, indMM); }
   function getHtml() { return html; }
-  return { tx: tx, txR: txR, txC: txC, sp: sp, docTitle: docTitle, newPage: newPage, footer: footer, getHtml: getHtml };
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  return { tx: tx, txR: txR, txC: txC, sp: sp, docTitle: docTitle, newPage: newPage, footer: footer, checkbox: checkbox, getHtml: getHtml };
 }
 
 /* ============================================================
@@ -2004,7 +2018,7 @@ function buildDoc1(h, d){
   h.sp(1);
   h.tx('申立人は，債務者に対し，別紙担保権・被担保債権・請求債権目録記載の債権を有しているが，債務者がその支払をしないので，債務者が第三債務者に対して有する別紙差押債権目録記載の債権の差押命令を求める。');
   h.sp(0.5);
-  h.tx('■　第三債務者に対する陳述催告の申立て（民事執行法第１４７条１項）をする。');
+  h.checkbox(true, '第三債務者に対する陳述催告の申立て（民事執行法第１４７条１項）をする。', 0);
   h.sp(1.5);
   h.tx('添 付 書 類');
   h.sp(0.3);
