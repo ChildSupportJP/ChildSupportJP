@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:;">
 <title>養育費合意書 作成ツール｜養育費サポートJP</title>
 <meta name="description" content="離婚時や養育費の取り決めを新しく行う際に交わす「合意書」をブラウザ上で簡単に無料作成できます。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com" integrity="sha384-xyz...=" crossorigin="anonymous"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -43,9 +44,9 @@
     }
   }
 </script>
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js" integrity="sha384-jKziE0R7iZtF8H0uL7T8yI4E/TWeA40Drdh2O9cIe2Q4R9Z0xK/Ue/u3XbX6z/xM"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" integrity="sha384-yP//M9bY1fHtwH7U/jD5jE6YyR0/1oM6XjX+VqL9K+bZ8G0m6T0Z0m0m2m1+9y+0"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js" integrity="sha384-xL38u5G/B3rA2a/t2Xm3+1Q0H3/PZ1V9+Y2X/Z/K/w6M2z8sZ/X5G3v3K0/G1v1E" crossorigin="anonymous"></script>
 </head>
 <body class="bg-bg text-ink font-sans antialiased">
 <div id="root"></div>
