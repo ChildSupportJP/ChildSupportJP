@@ -419,6 +419,8 @@ body {
   font-family: inherit;
   transition: all .2s;
   flex-shrink: 0;
+  height: 44px;
+  align-self: flex-end;
 }
 .btn-remove-claim:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 .claims-count { font-size: 12px; color: var(--mid); text-align: right; margin-top: 6px; }
@@ -1307,7 +1309,7 @@ function buildFutureCard(idx){
   var badgeText = birth ? (function(b){ var bd=new Date(b); return '生年月日: '+bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日（自動参照）'; })(birth) : '生年月日未入力';
   var payInfo = isYes
     ? '<div class="row mt12"><div class="fg"><label>月額（円）<span class="req">*</span></label><input type="number" id="monthly_amt_' + idx + '" placeholder="50000" min="1" style="max-width:200px"></div></div>'
-    : '<div class="info" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>';
+    : '<div class="info-green" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>';
   var ageOptions = '';
   for(var a=1; a<=22; a++) ageOptions += '<option value="' + a + '"' + (a===18?' selected':'') + '>' + a + '歳</option>';
   var div = document.createElement('div');
@@ -1515,9 +1517,14 @@ function collectData(){
   children.forEach(function(child, idx){
     var n = idx + 1;
     var fsY = gi('fs_year_' + n), fsM = gi('fs_month_' + n);
+    
+    // 【修正】開始年月が未入力の場合は将来分の債権として追加しない
+    if(fsY === 0 || fsM === 0) return;
+
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
     var feType = radios.length > 0 ? radios[0].value : 'specific';
     var endText = '', endReiwaY = 0, endM = 0;
+    
     if(feType === 'specific'){
       var feY=gi('fe_year_'+n), feM=gi('fe_month_'+n);
       endReiwaY=toReiwa(feY); endM=feM;
@@ -1531,11 +1538,16 @@ function collectData(){
       } else {
         var bLabel='', prevDayText='';
         if(birth){ var bd=new Date(birth); bLabel=bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日'; var d2=new Date(birth); d2.setFullYear(d2.getFullYear()+age); d2.setDate(d2.getDate()-1); var ry2=toReiwa(d2.getFullYear()); prevDayText='令和'+ry2+'年'+(d2.getMonth()+1)+'月'+d2.getDate()+'日'; endReiwaY=ry2; endM=d2.getMonth()+1; }
-        endText=(child.name||'子')+'（生年月日'+bLabel+'）の'+age+'歳の誕生日の前日'+(prevDayText?'（'+prevDayText+'）':'');
+        endText=(child.name||'子')+'（生年月日'+(bLabel||'未入力')+'）の'+age+'歳の誕生日の前日'+(prevDayText?'（'+prevDayText+'）':'');
       }
     }
+    
     var monthly = isYes ? gi('monthly_amt_'+n) : 20000;
     var payDay  = isYes ? globalPayDay : null;
+    
+    // 【修正】金額が未入力(0)の場合も追加しない
+    if(isYes && monthly === 0) return;
+
     futureClaims.push({childName:child.name, fsReiwaY:toReiwa(fsY), fsM:fsM, endText:endText, endReiwaY:endReiwaY, endM:endM, payDay:payDay, monthly:monthly});
   });
 
@@ -1559,7 +1571,7 @@ var PDF_ML=25, PDF_MR=18, PDF_MT=30, PDF_MB=22;
 var PDF_PW=210, PDF_PH=297, PDF_FS=10.5;
 var LINE_H = (PDF_PH-PDF_MT-PDF_MB)/30;
 var TEXT_W = PDF_PW-PDF_ML-PDF_MR;
-var FONT_NAME = 'MPLUS1p';
+var FONT_NAME = 'NotoSansJP';
 
 function makePdfHelper(pdf, FN){
   var y=PDF_MT, pageNum=1;
@@ -1677,13 +1689,16 @@ function buildDoc1(h, d){
   h.sp(0.3);
   h.tx('１　一般先取特権を有することの立証資料');
   if(d.isYes){
-    h.tx('□\u3000担保権を証する文書\u3000\u3000甲第１号証', 6);
+    // 【修正】checkbox関数で出力
+    h.checkbox(true, '担保権を証する文書　　　　　甲第１号証', 6);
   } else {
-    h.tx('□\u3000戸籍全部事項証明書・住民票\u3000甲第１号証', 6);
+    // 【修正】checkbox関数で出力
+    h.checkbox(true, '戸籍全部事項証明書・住民票　甲第１号証', 6);
   }
   h.sp(0.3);
   h.tx('２　民事執行法１９７条２項２号の主張をする場合');
-  h.tx('□\u3000財産調査結果報告書及び添付資料\u3000甲第２号証～甲第３号証', 6);
+  // 【修正】checkbox関数で出力
+  h.checkbox(true, '財産調査結果報告書及び添付資料　甲第２号証～甲第３号証', 6);
 }
 
 /* ===================== 書類2: 当事者目録 ===================== */
@@ -1822,58 +1837,24 @@ function buildDoc4(h, d){
 
 /* ===================== フォント ===================== */
 var _fontCache = null;
-var FONT_NAME  = 'MPLUS1p';
-
-async function loadFont() {
-  if (_fontCache !== null) return _fontCache;
-
-  var urls = [
-    'https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf',
-    'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mplus1p/MPLUS1p-Regular.ttf'
-  ];
-
-  for (var i = 0; i < urls.length; i++) {
-    try {
-      console.info('フォント取得試行:', urls[i]);
-      var res = await fetch(urls[i]);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      var buf = await res.arrayBuffer();
-      if (buf.byteLength < 100000) throw new Error('ファイルサイズが小さすぎます: ' + buf.byteLength);
-      _fontCache = buf;
-      console.info('フォント取得成功:', urls[i], '(' + (buf.byteLength / 1024).toFixed(0) + ' KB)');
-      return _fontCache;
-    } catch (e) {
-      console.warn('フォント取得失敗 (' + urls[i] + '):', e.message);
-    }
-  }
-
-  console.warn('すべてのCDNからのフォント取得に失敗しました。デフォルトフォントで続行します。');
-  _fontCache = false;
-  return _fontCache;
-}
-
-function arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-function registerFont(pdf, fontBuffer) {
-  if (!fontBuffer) return false;
+async function loadFont(){
+  if(_fontCache) return _fontCache;
   try {
-    var b64 = arrayBufferToBase64(fontBuffer);
-    pdf.addFileToVFS('MPLUS1p-Regular.ttf', b64);
-    pdf.addFont('MPLUS1p-Regular.ttf', FONT_NAME, 'normal');
-    pdf.setFont(FONT_NAME, 'normal');
+    var resp = await fetch('https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5/files/noto-sans-jp-japanese-400-normal.woff');
+    if(!resp.ok) throw new Error('fetch failed');
+    var ab = await resp.arrayBuffer();
+    _fontCache = ab;
+    return ab;
+  } catch(e){ return null; }
+}
+function registerFont(pdf, buf){
+  if(!buf) return false;
+  try {
+    var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+    pdf.addFileToVFS('NotoSansJP.ttf', b64);
+    pdf.addFont('NotoSansJP.ttf', FONT_NAME, 'normal');
     return true;
-  } catch (e) {
-    console.warn('jsPDF フォント登録失敗:', e.message);
-    return false;
-  }
+  } catch(e){ return false; }
 }
 
 /* ===================== 生成処理 ===================== */
