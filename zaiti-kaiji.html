@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com; img-src 'self' data:;">
 <title>財産開示手続申立書 自動生成システム｜養育費サポートJP</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
@@ -1270,7 +1271,6 @@ function collectData(){
     var n = idx + 1;
     var fsY = gi('fs_year_' + n), fsM = gi('fs_month_' + n);
     
-    // 【修正】開始年月が未入力(0)の場合は将来分の債権として追加しない
     if(fsY === 0 || fsM === 0) return;
 
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
@@ -1297,7 +1297,6 @@ function collectData(){
     var monthly = isYes ? gi('monthly_amt_'+n) : 20000;
     var payDay  = isYes ? globalPayDay : null;
     
-    // 【修正】形成養育費で金額が未入力(0)の場合も追加しない
     if(isYes && monthly === 0) return;
 
     futureClaims.push({childName:child.name, fsReiwaY:toReiwa(fsY), fsM:fsM, endText:endText, endReiwaY:endReiwaY, endM:endM, payDay:payDay, monthly:monthly});
@@ -1345,7 +1344,6 @@ function makePdfHelper(pdf, FN){
   function docTitle(s){ sp(0.3); txC(s,13); sp(0.5); }
   function checkbox(isChecked, txt, indMM){
     var ind = indMM || 0;
-    // 【修正】チェック済みの場合は四角を塗りつぶす（■）
     var sym = isChecked ? '■' : '□';
     tx(sym + '　' + txt, ind);
   }
@@ -1365,7 +1363,6 @@ function makeWordHelper(){
   function docTitle(s){ sp(0.3); txC(s,13); sp(0.5); }
   function footer(){}
   function newPage(){ html+='<br clear="all" style="page-break-before:always"/>'; }
-  // 【修正】Word出力時もチェック済みの場合は（■）
   function checkbox(isChecked, txt, indMM){ tx((isChecked ? '■' : '□') + '　' + txt, indMM); }
   function getHtml(){ return html; }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1582,7 +1579,6 @@ function buildDoc4(h, d){
 var _fontCache = null;
 var FONT_NAME  = 'MPLUS1p';
 
-// 【修正】確実に読み込める、軽量な日本語TTFフォント(MPLUS1p)を使用
 async function loadFont(){
   if(_fontCache) return _fontCache;
   var urls = [
@@ -1604,7 +1600,6 @@ async function loadFont(){
   return null;
 }
 
-// 【修正】安全なBase64変換処理（Maximum call stack size exceeded 回避）
 function arrayBufferToBase64(buffer) {
   var binary = '';
   var bytes = new Uint8Array(buffer);
