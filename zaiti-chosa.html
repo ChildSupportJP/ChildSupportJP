@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com; img-src 'self' data:;">
 <title>財産調査結果報告書 自動生成システム｜養育費サポートJP</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
@@ -109,13 +110,24 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
 .record-example { background: #f5f5f0; border-left: 3px solid #ccc; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 12px; color: var(--mid); margin-top: 8px; line-height: 1.7; }
 .record-example strong { color: var(--ink); }
+
+/* スマホ用レスポンシブデザイン */
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; display: flex; overflow-x: auto; padding: 16px 0; border-right: none; border-bottom: 2px solid var(--light); }
+  .sidebar-title { display: none; }
+  .sidebar-step { flex-direction: column; gap: 6px; font-size: 12px; padding: 10px 16px; text-align: center; flex-shrink: 0; border-left: none; border-bottom: 4px solid transparent; }
+  .sidebar-step.active { border-left-color: transparent; border-bottom-color: var(--secondary); }
+  .main { padding: 24px 16px 60px; }
+  .row .fg.narrow { flex: 0 0 100px; }
+}
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-top">
-    <a class="back-link" href="#">
+    <a class="back-link" href="index.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
       メインメニューに戻る
     </a>
@@ -147,7 +159,6 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
   <div class="main">
 
-    <!-- 保存・読込 -->
     <div class="card" style="padding:20px 28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
       <div>
         <h3 style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:4px;">入力データの一時保存・読込</h3>
@@ -166,7 +177,6 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
       </div>
     </div>
 
-    <!-- STEP 1: 基本情報 -->
     <div class="card" id="step1">
       <div class="card-title"><span>基本情報</span><span class="badge">STEP 1</span></div>
 
@@ -193,11 +203,9 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
       </div>
     </div>
 
-    <!-- STEP 2: 不動産 -->
     <div class="card" id="step3">
       <div class="card-title"><span>不動産の調査結果</span><span class="badge">STEP 2</span></div>
 
-      <!-- 2 住所地不動産 -->
       <div class="sec">2　債務者の住所地の不動産</div>
       <div class="choice-group">
         <label class="choice-card">
@@ -214,7 +222,6 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
         <div class="fg mt12"><label>被担保債権額（円）</label><input type="number" id="addr_realty_debt" placeholder="5000000"></div>
       </div>
 
-      <!-- 3 その他の場所の不動産 -->
       <div class="sec">3　その他の場所の不動産</div>
       <p class="note" style="margin-bottom:8px">※6か月以内の転居がある場合は、ア又はイを選択したうえ旧住所も必ず記載してください。</p>
       <div class="choice-group">
@@ -267,7 +274,6 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
       </div>
     </div>
 
-    <!-- STEP 4: 給与 -->
     <div class="card" id="step4">
       <div class="card-title"><span>給与の調査結果</span><span class="badge">STEP 3</span></div>
 
@@ -326,7 +332,6 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
       </div>
     </div>
 
-    <!-- STEP 5: 預貯金 -->
     <div class="card" id="step5">
       <div class="card-title"><span>預貯金の調査結果</span><span class="badge">STEP 4</span></div>
 
@@ -375,7 +380,6 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
       </div>
     </div>
 
-    <!-- STEP 6: 動産・その他 -->
     <div class="card" id="step6">
       <div class="card-title"><span>動産・その他財産の調査結果</span><span class="badge">STEP 5</span></div>
 
@@ -612,23 +616,55 @@ var PDF_ML=25, PDF_MR=18, PDF_MT=30, PDF_MB=22;
 var PDF_PW=210, PDF_PH=297, PDF_FS=10.5;
 var LINE_H=(PDF_PH-PDF_MT-PDF_MB)/30;
 var TEXT_W=PDF_PW-PDF_ML-PDF_MR;
-var FONT_NAME='NotoSansJP';
-var _fontCache=null;
 
+var _fontCache = null;
+var FONT_NAME  = 'MPLUS1p';
+
+// 確実に読み込める、軽量な日本語TTFフォント(MPLUS1p)を使用
 async function loadFont(){
   if(_fontCache) return _fontCache;
-  try {
-    var resp=await fetch('https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5/files/noto-sans-jp-japanese-400-normal.woff');
-    if(!resp.ok) throw new Error('fetch failed');
-    var ab=await resp.arrayBuffer(); _fontCache=ab; return ab;
-  } catch(e){ return null; }
+  var urls = [
+    'https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf',
+    'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mplus1p/MPLUS1p-Regular.ttf'
+  ];
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      var res = await fetch(urls[i]);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var buf = await res.arrayBuffer();
+      if (buf.byteLength < 100000) throw new Error('File too small');
+      _fontCache = buf;
+      return _fontCache;
+    } catch (e) {
+      console.warn('Font fetch failed:', urls[i]);
+    }
+  }
+  return null;
 }
-function registerFont(pdf,buf){
+
+// 安全なBase64変換処理
+function arrayBufferToBase64(buffer) {
+  var binary = '';
+  var bytes = new Uint8Array(buffer);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
+
+function registerFont(pdf, buf){
   if(!buf) return false;
   try {
-    var b64=btoa(String.fromCharCode.apply(null,new Uint8Array(buf)));
-    pdf.addFileToVFS('NotoSansJP.ttf',b64); pdf.addFont('NotoSansJP.ttf',FONT_NAME,'normal'); return true;
-  } catch(e){ return false; }
+    var b64 = arrayBufferToBase64(buf);
+    pdf.addFileToVFS('MPLUS1p-Regular.ttf', b64);
+    pdf.addFont('MPLUS1p-Regular.ttf', FONT_NAME, 'normal');
+    pdf.setFont(FONT_NAME, 'normal');
+    return true;
+  } catch(e){ 
+    console.error('Font register failed:', e);
+    return false; 
+  }
 }
 
 function makePdfHelper(pdf,FN){
