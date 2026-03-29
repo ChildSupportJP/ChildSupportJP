@@ -746,8 +746,8 @@ body {
 
 <script>
 /* ===================== 定数・グローバル ===================== */
-var agmtType    = null;
-var divorceAfter = null;
+var agmtType    = null;   // 'yes'=形成養育費 / 'no'=法定養育費
+var divorceAfter = null;  // true=R8.4.1以降離婚 / false=以前
 var childCount  = 0;
 var MAX_CHILDREN = 4;
 var claimsYes  = [];
@@ -1265,13 +1265,12 @@ function collectData(){
   var pastTotal = pastClaims.reduce(function(s,c){ return s+c.amt; }, 0);
   var claimTotal = pastTotal + execCost;
 
-  // 将来分（未入力の場合は除外する処理を追加）
   var futureClaims = [];
   children.forEach(function(child, idx){
     var n = idx + 1;
     var fsY = gi('fs_year_' + n), fsM = gi('fs_month_' + n);
     
-    // 開始年または月が未入力(0)の場合は将来分の債権として追加しない
+    // 【修正】開始年月が未入力(0)の場合は将来分の債権として追加しない
     if(fsY === 0 || fsM === 0) return;
 
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
@@ -1298,7 +1297,7 @@ function collectData(){
     var monthly = isYes ? gi('monthly_amt_'+n) : 20000;
     var payDay  = isYes ? globalPayDay : null;
     
-    // 金額が未入力(0)の場合も追加しない
+    // 【修正】形成養育費で金額が未入力(0)の場合も追加しない
     if(isYes && monthly === 0) return;
 
     futureClaims.push({childName:child.name, fsReiwaY:toReiwa(fsY), fsM:fsM, endText:endText, endReiwaY:endReiwaY, endM:endM, payDay:payDay, monthly:monthly});
@@ -1324,7 +1323,7 @@ var PDF_ML=25, PDF_MR=18, PDF_MT=30, PDF_MB=22;
 var PDF_PW=210, PDF_PH=297, PDF_FS=10.5;
 var LINE_H = (PDF_PH-PDF_MT-PDF_MB)/30;
 var TEXT_W = PDF_PW-PDF_ML-PDF_MR;
-var FONT_NAME = 'NotoSansJP';
+var FONT_NAME = 'MPLUS1p';
 
 function makePdfHelper(pdf, FN){
   var y=PDF_MT, pageNum=1;
@@ -1344,9 +1343,9 @@ function makePdfHelper(pdf, FN){
   function txC(s,sz){ setF(sz||PDF_FS); var str=String(s||''); chk(1); pdf.text(str,(PDF_PW-pdf.getTextWidth(str))/2,y); y+=LINE_H; }
   function sp(n){ y+=LINE_H*(n||1); }
   function docTitle(s){ sp(0.3); txC(s,13); sp(0.5); }
-  // 【修正】チェックボックスを正しく表示する処理
   function checkbox(isChecked, txt, indMM){
     var ind = indMM || 0;
+    // 【修正】チェック済みの場合は四角を塗りつぶす（■）
     var sym = isChecked ? '■' : '□';
     tx(sym + '　' + txt, ind);
   }
@@ -1366,7 +1365,7 @@ function makeWordHelper(){
   function docTitle(s){ sp(0.3); txC(s,13); sp(0.5); }
   function footer(){}
   function newPage(){ html+='<br clear="all" style="page-break-before:always"/>'; }
-  // 【修正】Word用のチェックボックス出力
+  // 【修正】Word出力時もチェック済みの場合は（■）
   function checkbox(isChecked, txt, indMM){ tx((isChecked ? '■' : '□') + '　' + txt, indMM); }
   function getHtml(){ return html; }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1581,22 +1580,31 @@ function buildDoc4(h, d){
 
 /* ===================== フォント ===================== */
 var _fontCache = null;
-var FONT_NAME  = 'NotoSansJP';
+var FONT_NAME  = 'MPLUS1p';
 
+// 【修正】確実に読み込める、軽量な日本語TTFフォント(MPLUS1p)を使用
 async function loadFont(){
   if(_fontCache) return _fontCache;
-  try {
-    var resp = await fetch('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notosansjp/NotoSansJP-Regular.ttf');
-    if(!resp.ok) {
-        resp = await fetch('https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP-Regular.ttf');
+  var urls = [
+    'https://raw.githubusercontent.com/google/fonts/main/ofl/mplus1p/MPLUS1p-Regular.ttf',
+    'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/mplus1p/MPLUS1p-Regular.ttf'
+  ];
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      var res = await fetch(urls[i]);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var buf = await res.arrayBuffer();
+      if (buf.byteLength < 100000) throw new Error('File too small');
+      _fontCache = buf;
+      return _fontCache;
+    } catch (e) {
+      console.warn('Font fetch failed:', urls[i]);
     }
-    if(!resp.ok) throw new Error('fetch failed');
-    var ab = await resp.arrayBuffer();
-    _fontCache = ab;
-    return ab;
-  } catch(e){ return null; }
+  }
+  return null;
 }
 
+// 【修正】安全なBase64変換処理（Maximum call stack size exceeded 回避）
 function arrayBufferToBase64(buffer) {
   var binary = '';
   var bytes = new Uint8Array(buffer);
@@ -1611,11 +1619,14 @@ function registerFont(pdf, buf){
   if(!buf) return false;
   try {
     var b64 = arrayBufferToBase64(buf);
-    pdf.addFileToVFS('NotoSansJP.ttf', b64);
-    pdf.addFont('NotoSansJP.ttf', FONT_NAME, 'normal');
+    pdf.addFileToVFS('MPLUS1p-Regular.ttf', b64);
+    pdf.addFont('MPLUS1p-Regular.ttf', FONT_NAME, 'normal');
     pdf.setFont(FONT_NAME, 'normal');
     return true;
-  } catch(e){ return false; }
+  } catch(e){ 
+    console.error('Font register failed:', e);
+    return false; 
+  }
 }
 
 /* ===================== 生成処理 ===================== */
