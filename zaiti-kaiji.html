@@ -276,17 +276,7 @@ body {
   color: #9d462f;
   margin-top: 12px;
 }
-.info {
-  background: var(--secondary-light);
-  border-left: 4px solid var(--secondary);
-  padding: 14px 18px;
-  border-radius: 0 12px 12px 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1f6b5a;
-  margin-top: 12px;
-}
-.info-green {
+.info, .info-green {
   background: var(--secondary-light);
   border-left: 4px solid var(--secondary);
   padding: 14px 18px;
@@ -301,23 +291,8 @@ body {
 /* precheck */
 .precheck-block { margin-top: 24px; }
 .precheck-divider { height: 2px; background: var(--light); border-radius: 2px; margin: 24px 0; }
-.precheck-q {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-.precheck-num {
-  background: var(--secondary);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 20px;
-  flex-shrink: 0;
-}
+.precheck-q { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+.precheck-num { background: var(--secondary); color: #fff; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 20px; flex-shrink: 0; }
 .precheck-btns { display: flex; gap: 12px; flex-wrap: wrap; }
 .step1-btn {
   flex: 1;
@@ -354,74 +329,18 @@ body {
 
 /* children */
 .children-container, .claims-container, .future-container { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
-.child-card, .future-card {
-  background: #fff;
-  border: 2px solid var(--light);
-  border-radius: var(--r);
-  padding: 20px 24px;
-  position: relative;
-}
+.child-card, .future-card { background: #fff; border: 2px solid var(--light); border-radius: var(--r); padding: 20px 24px; position: relative; }
 .child-card-header, .future-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .child-num { font-size: 13px; font-weight: 700; color: var(--secondary); background: var(--secondary-light); padding: 4px 14px; border-radius: 20px; }
-.btn-remove-child {
-  background: var(--white);
-  border: 2px solid var(--light);
-  border-radius: 20px;
-  padding: 6px 16px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--mid);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .2s;
-}
+.btn-remove-child { background: var(--white); border: 2px solid var(--light); border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 700; color: var(--mid); cursor: pointer; font-family: inherit; transition: all .2s; }
 .btn-remove-child:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-.btn-add-child, .btn-add-claim {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: none;
-  border: 2px dashed #d1c8c5;
-  border-radius: 16px;
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--mid);
-  cursor: pointer;
-  font-family: inherit;
-  width: 100%;
-  transition: all .2s;
-  margin-top: 8px;
-}
+.btn-add-child, .btn-add-claim { display: flex; align-items: center; justify-content: center; gap: 8px; background: none; border: 2px dashed #d1c8c5; border-radius: 16px; padding: 14px 20px; font-size: 14px; font-weight: 700; color: var(--mid); cursor: pointer; font-family: inherit; width: 100%; transition: all .2s; margin-top: 8px; }
 .btn-add-child:hover, .btn-add-claim:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
 .btn-add-child:disabled, .btn-add-claim:disabled { opacity: .4; cursor: not-allowed; }
 
-.claim-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  background: #faf8f6;
-  border: 2px solid var(--light);
-  border-radius: 16px;
-  padding: 16px 20px;
-}
+.claim-row { display: flex; align-items: flex-end; gap: 12px; background: #faf8f6; border: 2px solid var(--light); border-radius: 16px; padding: 16px 20px; }
 .claim-row .fg { margin-bottom: 0; }
-.btn-remove-claim {
-  background: var(--white);
-  border: 2px solid var(--light);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--mid);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .2s;
-  flex-shrink: 0;
-  height: 44px;
-  align-self: flex-end;
-}
+.btn-remove-claim { background: var(--white); border: 2px solid var(--light); border-radius: 12px; padding: 10px 14px; font-size: 14px; font-weight: 700; color: var(--mid); cursor: pointer; font-family: inherit; transition: all .2s; flex-shrink: 0; height: 44px; align-self: flex-end; }
 .btn-remove-claim:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 .claims-count { font-size: 12px; color: var(--mid); text-align: right; margin-top: 6px; }
 .claims-count.at-limit { color: var(--primary); font-weight: 700; }
@@ -430,121 +349,21 @@ body {
 .future-child-label { font-size: 14px; font-weight: 700; color: var(--secondary); }
 .birth-ref-badge { font-size: 11px; background: var(--secondary-light); color: var(--secondary-dark); padding: 4px 12px; border-radius: 20px; }
 .future-sub-radios { display: flex; gap: 10px; flex-wrap: wrap; }
-.sub-radio-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 10px 16px;
-  border: 2px solid var(--light);
-  border-radius: 12px;
-  transition: all .2s;
-  background: #faf8f6;
-}
-.sub-radio-card:has(input:checked) { border-color: var(--secondary); background: var(--secondary-light); }
-.sub-radio-card input[type=radio] { accent-color: var(--secondary); width: 16px; height: 16px; flex-shrink: 0; }
-
-/* 要件チェック */
-.reqs-box {
-  background: #faf8f6;
-  border: 2px solid var(--light);
-  border-radius: var(--r);
-  padding: 20px 28px;
-  margin-top: 12px;
-}
-.req-group { margin-bottom: 24px; }
-.req-group:last-child { margin-bottom: 0; }
-.req-group-title { font-size: 13px; font-weight: 700; color: var(--mid); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--light); }
-.req-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 14px;
-  border: 2px solid var(--light);
-  border-radius: 12px;
-  background: #fff;
-  margin-bottom: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all .2s;
-}
-.req-item:has(input:checked) { border-color: var(--secondary); background: var(--secondary-light); }
-.req-item input[type=checkbox], .req-item input[type=radio] { accent-color: var(--secondary); width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
-.req-sub { margin-left: 28px; display: none; }
-.req-sub.visible { display: block; }
-.req-sub .req-item { margin-top: 6px; }
 
 /* agmt section */
-.agmt-section {
-  border: 2px solid var(--light);
-  border-radius: var(--r);
-  padding: 24px 28px;
-  margin-top: 20px;
-  background: #faf8f6;
-}
+.agmt-section { border: 2px solid var(--light); border-radius: var(--r); padding: 24px 28px; margin-top: 20px; background: #faf8f6; }
 .agmt-section.agmt-yes { border-color: var(--secondary); background: var(--secondary-light); }
 .agmt-section.agmt-no  { border-color: var(--warning); background: var(--warning-light); }
-.agmt-label {
-  font-size: 13px;
-  font-weight: 700;
-  padding: 6px 16px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
-  background: var(--white);
-}
+.agmt-label { font-size: 13px; font-weight: 700; padding: 6px 16px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; background: var(--white); }
 .agmt-yes .agmt-label { color: var(--secondary); border: 2px solid var(--secondary); }
 .agmt-no  .agmt-label { color: var(--warning); border: 2px solid var(--warning); }
 
-/* save btn */
-.save-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border: 2px solid var(--light);
-  border-radius: 12px;
-  background: var(--white);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--mid);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .2s;
-}
+/* save btn & submit */
+.save-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 2px solid var(--light); border-radius: 12px; background: var(--white); font-size: 13px; font-weight: 700; color: var(--mid); cursor: pointer; font-family: inherit; transition: all .2s; }
 .save-btn:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
-
-/* submit */
-.submit-area {
-  background: var(--secondary-light);
-  border: 2px solid var(--secondary);
-  border-radius: var(--r);
-  padding: 32px 36px;
-  text-align: center;
-}
+.submit-area { background: var(--secondary-light); border: 2px solid var(--secondary); border-radius: var(--r); padding: 32px 36px; text-align: center; }
 .submit-note { font-size: 13px; color: #1f6b5a; font-weight: 700; margin-bottom: 8px; }
-.btn-gen {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 18px 28px;
-  border-radius: 16px;
-  border: none;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  background: var(--secondary);
-  color: #fff;
-  transition: all .2s;
-  box-shadow: 0 4px 16px rgba(108,184,169,.3);
-}
+.btn-gen { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 18px 28px; border-radius: 16px; border: none; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; background: var(--secondary); color: #fff; transition: all .2s; box-shadow: 0 4px 16px rgba(108,184,169,.3); }
 .btn-gen:hover { background: var(--secondary-dark); transform: translateY(-2px); }
 .btn-gen:disabled { background: var(--light); color: var(--mid); cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -612,7 +431,7 @@ body {
       </div>
 
       <div class="info" style="margin-top:0">
-        このシステムは<strong>離婚済みで・差し押さえる財産が不明で・債務名義を持っていない方</strong>が、ワンストップ執行手続（財産開示＋差押命令みなし申立て）において<strong>先取特権（形成養育費または法定養育費）</strong>に基づく財産開示手続申立書を作成するためのものです。まず以下の確認を行ってください。
+        このシステムは<strong>離婚済みで・差し押さえる財産が不明で・債務名義を持っていない方</strong>が、ワンストップ執行手続（財産開示＋差押命令みなし申立て）において<strong>先取特権（形成養育費または法定養育費）</strong>に基づく財産開示手続申立書を作成するためのものです。
       </div>
 
       <div class="precheck-block" id="pc_q1">
@@ -653,7 +472,7 @@ body {
           </button>
         </div>
         <div id="warn_q2" class="warn hidden">
-          相手の勤務先の情報がすでに分かっている場合は、<strong>「給与差押え書類 作成ツール」</strong>をご利用ください。そちらではワンストップ手続を使わずに直接差押命令を申し立てることができます。
+          相手の勤務先の情報がすでに分かっている場合は、<strong>「給与差押え書類 作成ツール」</strong>をご利用ください。
         </div>
       </div>
 
@@ -703,8 +522,7 @@ body {
           </label>
         </div>
         <div id="warn_q4_no" class="warn hidden">
-          <strong>法定養育費は令和8年4月1日以降に離婚された方のみ利用可能です。</strong><br>
-          令和8年3月31日以前に離婚された場合、法定養育費の申立てはできません。
+          <strong>法定養育費は令和8年4月1日以降に離婚された方のみ利用可能です。</strong>
         </div>
       </div>
     </div>
@@ -719,7 +537,6 @@ body {
       <div class="fg">
         <label>申立先裁判所名<span class="req">*</span></label>
         <input type="text" id="court_name" placeholder="例：東京地方裁判所">
-        <p class="note">※相手方（債務者）の住所を管轄する地方裁判所です。</p>
       </div>
       <div class="row mt12">
         <div class="fg narrow">
@@ -744,13 +561,12 @@ body {
           <tr id="koseki_row" class="hidden"><td>戸籍全部事項証明書交付手数料（円）</td><td><input type="number" id="koseki_fee" value="450" onchange="updateExecCostDisplay()"></td></tr>
           <tr><td>住民票の写し交付手数料（円）</td><td><input type="number" id="jumin_fee" value="300" onchange="updateExecCostDisplay()"></td></tr>
           <tr>
-            <td>連絡用郵便切手代（円）<br><span style="font-size:11px;font-weight:normal;">※裁判所によって異なります</span></td>
+            <td>連絡用郵便切手代（円）</td>
             <td><input type="number" id="postage" value="3320" onchange="updateExecCostDisplay()"></td>
           </tr>
           <tr class="cost-total-row"><td>執行費用合計</td><td><strong id="exec_cost_disp">6,220円</strong></td></tr>
         </table>
       </div>
-      <p class="note" style="margin-top:8px">※差押命令事件の手数料（4,000円）は、差し押さえるべき債権を特定できたときに別途納付します。申立て時には不要です。</p>
     </div>
 
     <div class="card hidden" id="step3">
@@ -779,10 +595,6 @@ body {
           <label>電話番号</label>
           <input type="text" id="cr_tel" placeholder="090-0000-0000">
         </div>
-        <div class="fg">
-          <label>FAX番号（任意）</label>
-          <input type="text" id="cr_fax" placeholder="03-0000-0000">
-        </div>
       </div>
 
       <div class="sec">債務者（相手方）</div>
@@ -794,7 +606,6 @@ body {
         <div class="fg">
           <label>住所（送達場所）<span class="req">*</span></label>
           <input type="text" id="dr_addr" placeholder="東京都渋谷区〇〇〇丁目〇番〇号">
-          <p class="note">※取得した住民票の住所を入力してください。</p>
         </div>
       </div>
       <div class="fg mt12">
@@ -827,21 +638,8 @@ body {
           <input type="text" id="dr_old_addr" placeholder="">
         </div>
       </div>
-      <div class="row mt12">
-        <div class="fg">
-          <label>旧姓（振り仮名）</label>
-          <input type="text" id="dr_old_name" placeholder="">
-        </div>
-        <div class="fg">
-          <label>通称（振り仮名）</label>
-          <input type="text" id="dr_tsuushou" placeholder="">
-        </div>
-      </div>
 
       <div class="sec">第三者（情報提供命令の対象・市区町村）</div>
-      <div class="info" style="margin-top:0">
-        ワンストップ執行手続では、財産開示で財産が判明しなかった場合、裁判所から市区町村に情報提供命令が発令されます。通常は<strong>債務者の住民票所在の市区町村</strong>が対象となります。
-      </div>
       <div class="row mt12">
         <div class="fg zip">
           <label>郵便番号</label>
@@ -865,9 +663,6 @@ body {
 
       <div id="divorce_date_section" class="hidden">
         <div class="sec">離婚日（法定養育費の計算基準）</div>
-        <div class="info" style="margin-top:0">
-          法定養育費は<strong>離婚日から</strong>発生します。日割り計算の基準となるため正確に入力してください。
-        </div>
         <div class="row mt12">
           <div class="fg narrow">
             <label>離婚年（西暦）<span class="req">*</span></label>
@@ -896,7 +691,6 @@ body {
       <button class="btn-add-child" id="btn_add_child" onclick="addChild()" type="button">
         ＋ 子どもを追加する
       </button>
-      <p class="note mt8">※ここで入力した生年月日は将来分の計算に自動的に使用されます。</p>
 
       <div class="sec">過去の未払い分（確定期限が到来している債権）</div>
 
@@ -908,9 +702,6 @@ body {
             <select id="global_pay_day_yes"></select>
           </div>
         </div>
-        <div class="info" style="margin-top:0">
-          発生月ごとに1件の債権として追加します。<strong>2026年4月1日以降</strong>に発生した月分のみ対象です。
-        </div>
         <div class="claims-container" id="claims_yes_container"></div>
         <button class="btn-add-claim" id="btn_add_claim_yes" onclick="addClaim('yes')" type="button">
           ＋ 未払月を追加する
@@ -920,9 +711,6 @@ body {
 
       <div id="past_no_area" class="agmt-section agmt-no hidden">
         <span class="agmt-label">✦ 法定養育費（月額2万円×子の人数）</span>
-        <div class="info" style="margin-top:0">
-          法定養育費は子１人あたり月２万円です。初月は日割り計算となります。
-        </div>
         <div class="claims-container" id="claims_no_container"></div>
         <button class="btn-add-claim" id="btn_add_claim_no" onclick="addClaim('no')" type="button">
           ＋ 未払月を追加する（初期値2万円）
@@ -931,9 +719,6 @@ body {
       </div>
 
       <div class="sec">将来分（確定期限が到来していない各定期金債権）</div>
-      <div class="info" style="margin-top:0">
-        登録した子ども1人につき1つの設定枠が表示されます。
-      </div>
       <div class="future-container" id="future_container">
         <p class="note" style="color:var(--mid);text-align:center;padding:16px 0">子の情報を登録すると、ここに将来分の設定欄が表示されます。</p>
       </div>
@@ -961,8 +746,8 @@ body {
 
 <script>
 /* ===================== 定数・グローバル ===================== */
-var agmtType    = null;   // 'yes'=形成養育費 / 'no'=法定養育費
-var divorceAfter = null;  // true=R8.4.1以降離婚 / false=以前
+var agmtType    = null;
+var divorceAfter = null;
 var childCount  = 0;
 var MAX_CHILDREN = 4;
 var claimsYes  = [];
@@ -979,15 +764,11 @@ function hideEl(id){ var e=elById(id); if(e) e.classList.add('hidden'); }
 function isHiddenEl(id){ var e=elById(id); return !e || e.classList.contains('hidden'); }
 function fmt(n){ return Number(n).toLocaleString('ja-JP'); }
 function toReiwa(y){ return y - 2018; }
-function 西暦to令和(y){ return y - 2018; }
 function kigo(i){ return ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ'][i] || (i+1)+''; }
 
 /* ===================== 執行費用計算 ===================== */
 function calcExecCost(){
-  var base = 2000
-    + (gi('cert_fee'))
-    + (gi('postage'))
-    + (gi('jumin_fee'));
+  var base = 2000 + gi('cert_fee') + gi('postage') + gi('jumin_fee');
   if (agmtType === 'no') base += gi('koseki_fee');
   return base;
 }
@@ -1026,61 +807,44 @@ function updateNav(){
   });
 }
 
-/* ===================== フロー処理 ===================== */
 function resetPreBtns(ids){
   ids.forEach(function(id){ var e=elById(id); if(e) e.classList.remove('selected-ok','selected-ng'); });
 }
 
-// Q1: 離婚時期（令和8年4月1日以降か否か）
 function handleQ1(ans){
   divorceAfter = (ans === 'yes');
   resetPreBtns(['btn_q1_yes','btn_q1_no']);
   elById(ans === 'yes' ? 'btn_q1_yes' : 'btn_q1_no').classList.add('selected-ok');
   showEl('pc_q2');
   resetPreBtns(['btn_q2_yes','btn_q2_no']);
-  hideEl('warn_q2');
-  hideEl('pc_q3'); hideEl('pc_q4');
-  hideMainForms();
+  hideEl('warn_q2'); hideEl('pc_q3'); hideEl('pc_q4'); hideMainForms();
   elById('pc_q2').scrollIntoView({behavior:'smooth',block:'nearest'});
   updateNav();
 }
 
-// Q2: 差し押さえる財産を特定できているか
-// 「できている」→NG（別システム案内）、「できていない」→次へ
 function handleQ2(ans){
   resetPreBtns(['btn_q2_yes','btn_q2_no']);
   if(ans === 'yes'){
     elById('btn_q2_yes').classList.add('selected-ng');
-    showEl('warn_q2');
-    hideEl('pc_q3'); hideEl('pc_q4');
-    hideMainForms();
+    showEl('warn_q2'); hideEl('pc_q3'); hideEl('pc_q4'); hideMainForms();
   } else {
     elById('btn_q2_no').classList.add('selected-ok');
-    hideEl('warn_q2');
-    showEl('pc_q3');
+    hideEl('warn_q2'); showEl('pc_q3');
     resetPreBtns(['btn_q3_yes','btn_q3_no']);
-    hideEl('warn_q3');
-    hideEl('pc_q4');
-    hideMainForms();
+    hideEl('warn_q3'); hideEl('pc_q4'); hideMainForms();
     elById('pc_q3').scrollIntoView({behavior:'smooth',block:'nearest'});
   }
   updateNav();
 }
 
-// Q3: 債務名義を持っているか
-// 「持っている」→NG（別システム案内）、「持っていない」→次へ
 function handleQ3(ans){
   resetPreBtns(['btn_q3_yes','btn_q3_no']);
   if(ans === 'yes'){
     elById('btn_q3_yes').classList.add('selected-ng');
-    showEl('warn_q3');
-    hideEl('pc_q4');
-    hideMainForms();
+    showEl('warn_q3'); hideEl('pc_q4'); hideMainForms();
   } else {
     elById('btn_q3_no').classList.add('selected-ok');
-    hideEl('warn_q3');
-    showEl('pc_q4');
-    // 離婚以前の場合、法定養育費ラジオを無効化
+    hideEl('warn_q3'); showEl('pc_q4');
     var radNoEl = document.querySelector('input[name="agmt_type"][value="no"]');
     if(radNoEl){
       if(!divorceAfter){ radNoEl.disabled = true; showEl('warn_q4_no'); }
@@ -1092,7 +856,6 @@ function handleQ3(ans){
   updateNav();
 }
 
-// Q4: 養育費の種別選択
 function handleQ4(ans){
   hideEl('warn_q4_no');
   if(ans === 'no' && !divorceAfter){
@@ -1113,15 +876,11 @@ function handleQ4(ans){
 function applyAgmtType(val){
   agmtType = val;
   if(val === 'no'){
-    showEl('koseki_row');
-    showEl('divorce_date_section');
-    hideEl('past_yes_area');
-    showEl('past_no_area');
+    showEl('koseki_row'); showEl('divorce_date_section');
+    hideEl('past_yes_area'); showEl('past_no_area');
   } else {
-    hideEl('koseki_row');
-    hideEl('divorce_date_section');
-    showEl('past_yes_area');
-    hideEl('past_no_area');
+    hideEl('koseki_row'); hideEl('divorce_date_section');
+    showEl('past_yes_area'); hideEl('past_no_area');
   }
   updateExecCostDisplay();
   showEl('step2'); showEl('step3'); showEl('step4'); showEl('step_submit');
@@ -1136,7 +895,6 @@ function hideMainForms(){
   elById('btn_gen_pdf').disabled = true;
   elById('btn_gen_word').disabled = true;
 }
-
 
 /* ===================== 子供フォーム ===================== */
 function addChild(){
@@ -1160,7 +918,6 @@ function addChild(){
       '<div class="fg w2">' +
         '<label>生年月日<span class="req">*</span></label>' +
         '<input type="date" id="child_birth_' + idx + '" onchange="onChildBirthChange(' + idx + ')">' +
-        '<p class="note">将来分の終期（満年齢計算）に自動使用されます</p>' +
       '</div>' +
     '</div>';
   container.appendChild(div);
@@ -1206,7 +963,7 @@ function onChildBirthChange(idx){
   var badge = elById('future_birth_badge_' + idx);
   var birth = gv('child_birth_' + idx);
   if(badge){
-    if(birth){ var d=new Date(birth); badge.textContent='生年月日: '+d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日（自動参照）'; }
+    if(birth){ var d=new Date(birth); badge.textContent='生年月日: '+d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'; }
     else { badge.textContent='生年月日未入力'; }
   }
   calcAgeEnd(idx);
@@ -1306,7 +1063,7 @@ function buildFutureCard(idx){
   var labelText = childName ? childName + '（第' + idx + '子）' : '第' + idx + '子';
   var isYes = (agmtType === 'yes');
   var birth = gv('child_birth_' + idx);
-  var badgeText = birth ? (function(b){ var bd=new Date(b); return '生年月日: '+bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日（自動参照）'; })(birth) : '生年月日未入力';
+  var badgeText = birth ? (function(b){ var bd=new Date(b); return '生年月日: '+bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日'; })(birth) : '生年月日未入力';
   var payInfo = isYes
     ? '<div class="row mt12"><div class="fg"><label>月額（円）<span class="req">*</span></label><input type="number" id="monthly_amt_' + idx + '" placeholder="50000" min="1" style="max-width:200px"></div></div>'
     : '<div class="info-green" style="margin-top:8px">毎月末日限り <strong>20,000円</strong>（法定養育費・固定）</div>';
@@ -1331,7 +1088,7 @@ function buildFutureCard(idx){
       '<div style="font-size:12px;font-weight:700;color:var(--mid);margin-bottom:8px">終期の指定方法</div>' +
       '<div class="future-sub-radios">' +
         '<label class="sub-radio-card"><input type="radio" name="fe_type_' + idx + '" value="specific" checked onchange="onFutureEndTypeChange(' + idx + ')"><span>A: 特定の年月を直接入力</span></label>' +
-        '<label class="sub-radio-card"><input type="radio" name="fe_type_' + idx + '" value="age" onchange="onFutureEndTypeChange(' + idx + ')"><span>B: 子が満○歳に達する日まで（生年月日自動参照）</span></label>' +
+        '<label class="sub-radio-card"><input type="radio" name="fe_type_' + idx + '" value="age" onchange="onFutureEndTypeChange(' + idx + ')"><span>B: 子が満○歳に達する日まで</span></label>' +
       '</div>' +
       '<div id="fe_specific_' + idx + '" style="margin-top:8px">' +
         '<div class="row">' +
@@ -1347,9 +1104,8 @@ function buildFutureCard(idx){
           '<select id="fe_age_val_' + idx + '">' + ageOptions + '</select></div>' +
           '<div class="fg"><label>生年月日（自動参照）</label>' +
           '<div id="fe_birth_ref_' + idx + '" style="padding:11px 14px;border:2px solid var(--light);border-radius:12px;background:#faf8f6;font-size:14px;color:var(--ink);">' +
-            (birth ? (function(b){ var bd=new Date(b); return bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日'; })(birth) : '子の情報から自動取得（未入力）') +
-          '</div>' +
-          '<p class="note">子の情報（上部）で入力した生年月日を自動参照します</p></div>' +
+            (birth ? (function(b){ var bd=new Date(b); return bd.getFullYear()+'年'+(bd.getMonth()+1)+'月'+bd.getDate()+'日'; })(birth) : '未入力') +
+          '</div></div>' +
         '</div>' +
         '<div id="fe_age_calc_' + idx + '" class="info" style="margin-top:8px;display:none">計算結果：</div>' +
       '</div>' +
@@ -1370,7 +1126,6 @@ function onFutureEndTypeChange(idx){
   else { hideEl('fe_specific_' + idx); showEl('fe_age_' + idx); calcAgeEnd(idx); }
 }
 
-/* ===================== 支払期日セレクト初期化 ===================== */
 (function(){
   var sel = elById('global_pay_day_yes');
   if(!sel) return;
@@ -1485,7 +1240,6 @@ function collectData(){
 
   var globalPayDay = gv('global_pay_day_yes');
 
-  // 子
   var children = [];
   var childrenNames = '';
   for(var i=1; i<=childCount; i++){
@@ -1496,7 +1250,6 @@ function collectData(){
   childrenNames = children.map(function(c){ return c.name||'（氏名未入力）'; }).join('・');
   if(!childrenNames) childrenNames = '　　';
 
-  // 過去分
   var pastClaims = [];
   if(isYes){
     claimsYes.forEach(function(id){
@@ -1512,13 +1265,13 @@ function collectData(){
   var pastTotal = pastClaims.reduce(function(s,c){ return s+c.amt; }, 0);
   var claimTotal = pastTotal + execCost;
 
-  // 将来分
+  // 将来分（未入力の場合は除外する処理を追加）
   var futureClaims = [];
   children.forEach(function(child, idx){
     var n = idx + 1;
     var fsY = gi('fs_year_' + n), fsM = gi('fs_month_' + n);
     
-    // 【修正】開始年月が未入力の場合は将来分の債権として追加しない
+    // 開始年または月が未入力(0)の場合は将来分の債権として追加しない
     if(fsY === 0 || fsM === 0) return;
 
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
@@ -1545,7 +1298,7 @@ function collectData(){
     var monthly = isYes ? gi('monthly_amt_'+n) : 20000;
     var payDay  = isYes ? globalPayDay : null;
     
-    // 【修正】金額が未入力(0)の場合も追加しない
+    // 金額が未入力(0)の場合も追加しない
     if(isYes && monthly === 0) return;
 
     futureClaims.push({childName:child.name, fsReiwaY:toReiwa(fsY), fsM:fsM, endText:endText, endReiwaY:endReiwaY, endM:endM, payDay:payDay, monthly:monthly});
@@ -1591,10 +1344,11 @@ function makePdfHelper(pdf, FN){
   function txC(s,sz){ setF(sz||PDF_FS); var str=String(s||''); chk(1); pdf.text(str,(PDF_PW-pdf.getTextWidth(str))/2,y); y+=LINE_H; }
   function sp(n){ y+=LINE_H*(n||1); }
   function docTitle(s){ sp(0.3); txC(s,13); sp(0.5); }
-  function checkbox(chk,txt,indMM){
-    var ind=indMM||0;
-    var sym=chk?'■':'□';
-    tx(sym+'\u3000'+txt, ind);
+  // 【修正】チェックボックスを正しく表示する処理
+  function checkbox(isChecked, txt, indMM){
+    var ind = indMM || 0;
+    var sym = isChecked ? '■' : '□';
+    tx(sym + '　' + txt, ind);
   }
   return {tx:tx, txR:txR, txC:txC, sp:sp, docTitle:docTitle, newPage:newPage, footer:footer, checkbox:checkbox, getY:function(){ return y; }};
 }
@@ -1612,7 +1366,8 @@ function makeWordHelper(){
   function docTitle(s){ sp(0.3); txC(s,13); sp(0.5); }
   function footer(){}
   function newPage(){ html+='<br clear="all" style="page-break-before:always"/>'; }
-  function checkbox(chk,txt,indMM){ tx((chk?'■':'□')+'\u3000'+txt, indMM); }
+  // 【修正】Word用のチェックボックス出力
+  function checkbox(isChecked, txt, indMM){ tx((isChecked ? '■' : '□') + '　' + txt, indMM); }
   function getHtml(){ return html; }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   return {tx:tx, txR:txR, txC:txC, sp:sp, docTitle:docTitle, newPage:newPage, footer:footer, checkbox:checkbox, getHtml:getHtml};
@@ -1623,20 +1378,20 @@ function buildDoc1(h, d){
   var typeSuffix = d.isYes ? '先取特権（形成養育費）' : '先取特権（法定養育費）';
   h.docTitle('財 産 開 示 手 続 申 立 書（ワンストップ・' + typeSuffix + '）');
   h.sp(0.5);
-  h.tx(d.court + '\u3000\u3000御中');
+  h.tx(d.court + '　　御中');
   h.sp(0.3);
   h.txR('令和' + d.appReiwa + '年' + d.appM + '月' + d.appD + '日');
   h.sp(0.3);
-  h.txR('申立人　' + d.crName + '\u3000\u24CD');
+  h.txR('申立人　' + d.crName + '　印');
   h.sp(0.2);
-  h.txR('\u3000\u3000\u3000\u3000\u3000' + (d.crAddr || ''));
-  if(d.crTel) h.txR('電\u3000話\u3000' + d.crTel);
-  if(d.crFax) h.txR('ＦＡＸ\u3000' + d.crFax);
+  h.txR('　　　　　' + (d.crAddr || ''));
+  if(d.crTel) h.txR('電　話　' + d.crTel);
+  if(d.crFax) h.txR('ＦＡＸ　' + d.crFax);
   h.sp(0.8);
-  h.tx('当事者\u3000\u3000\u3000別紙目録記載のとおり', 8);
-  h.tx('担保権\u3000\u3000\u3000別紙目録記載のとおり', 8);
-  h.tx('被担保債権\u3000別紙目録記載のとおり', 8);
-  h.tx('請求債権\u3000\u3000別紙目録記載のとおり', 8);
+  h.tx('当事者　　　別紙目録記載のとおり', 8);
+  h.tx('担保権　　　別紙目録記載のとおり', 8);
+  h.tx('被担保債権　別紙目録記載のとおり', 8);
+  h.tx('請求債権　　別紙目録記載のとおり', 8);
   h.sp(0.8);
   h.tx('　申立人は、債務者に対し、別紙担保権・被担保債権・請求債権目録記載の債権を有しているが、債務者がその支払をせず、下記の要件に該当するので、別紙担保権・被担保債権・請求債権目録記載の一般先取特権に基づき、債務者について財産開示手続の実施を求める。');
   h.sp(0.5);
@@ -1645,7 +1400,6 @@ function buildDoc1(h, d){
   h.tx('　また、民事執行法１９３条２項、１６７条の１７第１項１号により申立てをしたものとみなされた差押命令において、差し押さえるべき債権は別紙差押債権目録記載のとおりである（なお、同目録中「第三債務者」とあるのは、民事執行法２０６条１項各号に規定する債権に関し、債務者に支払をする者をいう。）。');
   h.sp(0.8);
 
-  // 陳述催告（常に「する」で固定）
   h.tx('（以下に該当する場合は、□に✓又は■を記入してください。）');
   h.sp(0.3);
   h.checkbox(true, 'この差押命令の申立事件において、民事執行法１９３条２項、１４７条１項に基づく第三債務者に対する陳述催告の申立てをする。', 2);
@@ -1654,7 +1408,6 @@ function buildDoc1(h, d){
   h.txC('記');
   h.sp(0.5);
 
-  // 197条2項（初回申立て前提で２号を自動選択）
   h.tx('１　民事執行法１９７条２項の要件（該当する□に✔又は■を記入してください。）');
   h.sp(0.3);
   h.checkbox(false, '強制執行又は担保権の実行における配当等の手続（本件申立ての日より６月以上前に終了したものを除く。）において、当該先取特権の被担保債権の完全な弁済を得ることができなかった（１号）。', 4);
@@ -1662,7 +1415,6 @@ function buildDoc1(h, d){
   h.checkbox(true, '知れている財産に対する担保権の実行を実施しても、当該先取特権の被担保債権の完全な弁済を得られない（２号）。', 4);
   h.sp(0.8);
 
-  // 197条3項（初回申立て前提で「知らない」を自動選択）
   h.tx('２　民事執行法１９７条３項の要件（該当する□に✔又は■を記入してください。）');
   h.sp(0.3);
   h.tx('　債務者が、本件申立ての日前３年以内に財産開示期日においてその財産について陳述したことを', 4);
@@ -1672,7 +1424,6 @@ function buildDoc1(h, d){
   h.checkbox(false, '知っている。', 8);
   h.sp(0.8);
 
-  // 添付書類（種別に応じて自動出力）
   h.tx('（添付書類）（該当する□に✔又は■を記入してください。）');
   h.sp(0.3);
   h.checkbox(true, '債務者の住民票　　　　　　　１通', 4);
@@ -1684,46 +1435,42 @@ function buildDoc1(h, d){
   h.checkbox(true, '財産調査結果報告書及び添付資料　１通', 4);
   h.sp(0.8);
 
-  // 証拠書類（甲号証番号を自動割り当て）
   h.tx('（証拠書類）（該当する□に✔又は■を記入してください。）');
   h.sp(0.3);
   h.tx('１　一般先取特権を有することの立証資料');
   if(d.isYes){
-    // 【修正】checkbox関数で出力
     h.checkbox(true, '担保権を証する文書　　　　　甲第１号証', 6);
   } else {
-    // 【修正】checkbox関数で出力
     h.checkbox(true, '戸籍全部事項証明書・住民票　甲第１号証', 6);
   }
   h.sp(0.3);
   h.tx('２　民事執行法１９７条２項２号の主張をする場合');
-  // 【修正】checkbox関数で出力
   h.checkbox(true, '財産調査結果報告書及び添付資料　甲第２号証～甲第３号証', 6);
 }
 
 /* ===================== 書類2: 当事者目録 ===================== */
 function buildDoc2(h, d){
-  h.docTitle('当\u3000事\u3000者\u3000目\u3000録（ワンストップ）');
-  h.tx('〒' + d.crZip + '\u3000' + d.crAddr + '\u3000（送達場所）');
-  h.tx('申立人（債権者）\u3000' + d.crName);
-  if(d.crTel) h.tx('（連絡先）\u3000電話\u3000' + d.crTel);
+  h.docTitle('当　事　者　目　録（ワンストップ）');
+  h.tx('〒' + d.crZip + '　' + d.crAddr + '　（送達場所）');
+  h.tx('申立人（債権者）　' + d.crName);
+  if(d.crTel) h.tx('（連絡先）　電話　' + d.crTel);
   h.sp(1);
-  h.tx('〒' + d.drZip + '\u3000' + d.drAddr);
-  h.tx('債\u3000務\u3000者\u3000\u3000' + d.drName);
+  h.tx('〒' + d.drZip + '　' + d.drAddr);
+  h.tx('債　務　者　　' + d.drName);
   h.sp(0.8);
-  h.docTitle('当\u3000事\u3000者\u3000目\u3000録（ワンストップ）');
+  h.docTitle('当　事　者　目　録（ワンストップ）');
   h.tx('《債務者の特定に資する事項》');
   h.sp(0.3);
-  h.tx('（１）氏名の振り仮名\u3000' + (d.drKana||'\u3000\u3000\u3000\u3000\u3000\u3000\u3000'));
-  h.tx('（２）生年月日\u3000\u3000\u3000\u3000' + (d.drBirth||'\u3000\u3000\u3000\u3000\u3000\u3000\u3000'));
-  h.tx('（３）性別\u3000\u3000\u3000\u3000\u3000\u3000' + (d.drGender||'\u3000\u3000\u3000'));
-  h.tx('（４）旧住所\u3000\u3000\u3000\u3000' + (d.drOldAddr||'\u3000\u3000\u3000\u3000\u3000\u3000\u3000'));
-  h.tx('（５）旧姓（振り仮名）\u3000' + (d.drOldName||'\u3000\u3000\u3000\u3000'));
-  h.tx('（６）通称（振り仮名）\u3000' + (d.drTsuushou||'\u3000\u3000\u3000\u3000'));
+  h.tx('（１）氏名の振り仮名　' + (d.drKana||'　　　　　　　'));
+  h.tx('（２）生年月日　　　　' + (d.drBirth||'　　　　　　　'));
+  h.tx('（３）性別　　　　　　' + (d.drGender||'　　　'));
+  h.tx('（４）旧住所　　　　　' + (d.drOldAddr||'　　　　　　　'));
+  h.tx('（５）旧姓（振り仮名）　' + (d.drOldName||'　　　　'));
+  h.tx('（６）通称（振り仮名）　' + (d.drTsuushou||'　　　　'));
   h.sp(1);
-  h.tx('〒' + d.tdZip + '\u3000' + d.tdAddr);
-  h.tx('\u3000\u3000\u3000\u3000第\u3000三\u3000者\u3000\u3000' + d.tdCorp);
-  if(d.tdRep) h.tx('\u3000\u3000\u3000\u3000代表者\u3000' + d.tdRep);
+  h.tx('〒' + d.tdZip + '　' + d.tdAddr);
+  h.tx('　　　　第　三　者　　' + d.tdCorp);
+  if(d.tdRep) h.tx('　　　　代表者　' + d.tdRep);
 }
 
 /* ===================== 書類3: 担保権・被担保債権・請求債権目録 ===================== */
@@ -1734,7 +1481,6 @@ function buildDoc3(h, d){
   h.txC('（扶養義務等に係る定期金債権）');
   h.sp(0.8);
 
-  // 1 担保権
   h.tx('１　担保権');
   if(d.isYes){
     h.tx('債権者、債務者間の子' + d.childrenNames + 'について民法７６６条の規定に基づく下記２記載の債権に係る、民法３０６条３号に基づく一般先取特権', 6);
@@ -1743,13 +1489,12 @@ function buildDoc3(h, d){
   }
   h.sp(0.8);
 
-  // 2 被担保債権
   h.tx('２　被担保債権');
-  h.tx('（１）確定期限が到来している債権\u3000金' + fmt(d.pastTotal) + '円', 6);
+  h.tx('（１）確定期限が到来している債権　金' + fmt(d.pastTotal) + '円', 6);
   d.pastClaims.forEach(function(c, i){
     var sym = kigo(i);
     var ry = toReiwa(c.year);
-    h.tx(sym + '\u3000金' + fmt(c.amt) + '円', 12);
+    h.tx(sym + '　金' + fmt(c.amt) + '円', 12);
     if(d.isYes){
       h.tx('ただし、債権者、債務者間の子' + d.childrenNames + 'についての令和' + ry + '年' + c.month + '月分の養育費の未払分', 18);
       h.tx('（支払期毎月' + (d.globalPayDay==='末日'?'末日':''+d.globalPayDay+'日') + '）', 18);
@@ -1763,23 +1508,22 @@ function buildDoc3(h, d){
     var sym = kigo(i);
     if(d.isYes){
       var pdText = (fc.payDay==='末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-      h.tx(sym + '\u3000令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつの養育費', 12);
+      h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつの養育費', 12);
     } else {
-      h.tx(sym + '\u3000令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）', 12);
+      h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつの法定養育費（最後の月につき日割計算）', 12);
     }
   });
   h.sp(0.8);
 
-  // 3 請求債権
   h.tx('３　請求債権');
-  h.tx('（１）確定期限が到来している債権\u3000合計金' + fmt(d.claimTotal) + '円', 6);
+  h.tx('（１）確定期限が到来している債権　合計金' + fmt(d.claimTotal) + '円', 6);
   h.tx('上記２（１）記載の債権及び差押命令の申立てにおける執行費用', 12);
-  h.tx('執行費用\u3000金' + fmt(d.execCost) + '円', 12);
-  h.tx('（内訳）本申立手数料\u3000金２，０００円', 18);
-  if(!d.isYes) h.tx('戸籍全部事項証明書交付手数料\u3000金' + fmt(d.kosekiFee) + '円', 18);
-  h.tx('住民票の写し交付手数料\u3000金' + fmt(d.juminFee) + '円', 18);
-  h.tx('資格証明書交付手数料\u3000金' + fmt(d.certFee) + '円', 18);
-  h.tx('連絡用郵便切手代\u3000金' + fmt(d.postage) + '円', 18);
+  h.tx('執行費用　金' + fmt(d.execCost) + '円', 12);
+  h.tx('（内訳）本申立手数料　金２，０００円', 18);
+  if(!d.isYes) h.tx('戸籍全部事項証明書交付手数料　金' + fmt(d.kosekiFee) + '円', 18);
+  h.tx('住民票の写し交付手数料　金' + fmt(d.juminFee) + '円', 18);
+  h.tx('資格証明書交付手数料　金' + fmt(d.certFee) + '円', 18);
+  h.tx('連絡用郵便切手代　金' + fmt(d.postage) + '円', 18);
   h.sp(0.5);
   h.tx('（２）確定期限が到来していない各定期金債権', 6);
   h.tx('上記２（２）の債権', 12);
@@ -1787,29 +1531,29 @@ function buildDoc3(h, d){
 
 /* ===================== 書類4: 差押債権目録 ===================== */
 function buildDoc4(h, d){
-  h.docTitle('差\u3000押\u3000債\u3000権\u3000目\u3000録');
-  h.tx('１\u3000金' + fmt(d.claimTotal) + '円（担保権・被担保債権・請求債権目録記載の３（１））');
+  h.docTitle('差　押　債　権　目　録');
+  h.tx('１　金' + fmt(d.claimTotal) + '円（担保権・被担保債権・請求債権目録記載の３（１））');
   h.sp(0.5);
 
   if(d.futureClaims.length === 0){
-    h.tx('２\u3000（将来分の定期金債権の情報が入力されていません）');
+    h.tx('２　（将来分の定期金債権の情報が入力されていません）');
   } else if(d.futureClaims.length === 1){
     var fc = d.futureClaims[0];
     if(d.isYes){
       var pdText = (fc.payDay==='末日')?'毎月末日限り':('毎月'+fc.payDay+'日限り');
-      h.tx('２\u3000令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
+      h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
     } else {
-      h.tx('２\u3000令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
+      h.tx('２　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））');
     }
   } else {
-    h.tx('２\u3000下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
+    h.tx('２　下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
     d.futureClaims.forEach(function(fc, i){
       var sym = kigo(i);
       if(d.isYes){
         var pdText = (fc.payDay==='末日')?'毎月末日限り':('毎月'+fc.payDay+'日限り');
-        h.tx(sym + '\u3000令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（' + (fc.childName||'子') + '分）', 6);
+        h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、' + pdText + '金' + fmt(fc.monthly) + '円ずつ（' + (fc.childName||'子') + '分）', 6);
       } else {
-        h.tx(sym + '\u3000令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（' + (fc.childName||'子') + '分）', 6);
+        h.tx(sym + '　令和' + fc.fsReiwaY + '年' + fc.fsM + '月から' + fc.endText + 'まで、毎月末日限り金２万円ずつ（' + (fc.childName||'子') + '分）', 6);
       }
     });
   }
@@ -1824,35 +1568,52 @@ function buildDoc4(h, d){
   h.tx('２　賞与債権（夏季、冬季、期末、勤勉手当、その他の賞与の性質を有するものを含む。）の額から所得税、住民税及び社会保険料を差し引いた残額の２分の１（ただし、上記税金等を控除した残額が６６万円を超えるときは、その残額から３３万円を控除した金額）');
   h.sp(0.5);
   h.tx('一覧表');
-  h.tx('支払期\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000政令で定める額', 6);
-  h.tx('毎月\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000３３０，０００円', 6);
-  h.tx('毎半月\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000１６５，０００円', 6);
-  h.tx('毎旬\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000１１０，０００円', 6);
-  h.tx('月の整数倍の期間ごと\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000３３０，０００円に当該倍数を乗じた額', 6);
-  h.tx('毎日\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000１１，０００円', 6);
-  h.tx('その他の期間\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000１１，０００円に当該期間の日数を乗じた額', 6);
+  h.tx('支払期　　　　　　　　　　　　政令で定める額', 6);
+  h.tx('毎月　　　　　　　　　　　　　３３０，０００円', 6);
+  h.tx('毎半月　　　　　　　　　　　　１６５，０００円', 6);
+  h.tx('毎旬　　　　　　　　　　　　　１１０，０００円', 6);
+  h.tx('月の整数倍の期間ごと　　　　　３３０，０００円に当該倍数を乗じた額', 6);
+  h.tx('毎日　　　　　　　　　　　　　１１，０００円', 6);
+  h.tx('その他の期間　　　　　　　　　１１，０００円に当該期間の日数を乗じた額', 6);
   h.sp(0.5);
   h.tx('　なお、１及び２により弁済しないうちに退職したときは、退職金から所得税及び住民税を控除した残額の４分の１にして、１及び２と合計して頭書金額に満つるまで。');
 }
 
 /* ===================== フォント ===================== */
 var _fontCache = null;
+var FONT_NAME  = 'NotoSansJP';
+
 async function loadFont(){
   if(_fontCache) return _fontCache;
   try {
-    var resp = await fetch('https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5/files/noto-sans-jp-japanese-400-normal.woff');
+    var resp = await fetch('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/notosansjp/NotoSansJP-Regular.ttf');
+    if(!resp.ok) {
+        resp = await fetch('https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP-Regular.ttf');
+    }
     if(!resp.ok) throw new Error('fetch failed');
     var ab = await resp.arrayBuffer();
     _fontCache = ab;
     return ab;
   } catch(e){ return null; }
 }
+
+function arrayBufferToBase64(buffer) {
+  var binary = '';
+  var bytes = new Uint8Array(buffer);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
+
 function registerFont(pdf, buf){
   if(!buf) return false;
   try {
-    var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+    var b64 = arrayBufferToBase64(buf);
     pdf.addFileToVFS('NotoSansJP.ttf', b64);
     pdf.addFont('NotoSansJP.ttf', FONT_NAME, 'normal');
+    pdf.setFont(FONT_NAME, 'normal');
     return true;
   } catch(e){ return false; }
 }
@@ -1926,8 +1687,6 @@ async function generate(format){
     btnTxtWord.textContent = origWord;
   }
 }
-
-// 支払期日セレクト初期化済み
 </script>
 </body>
 </html>
