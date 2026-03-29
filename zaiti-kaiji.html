@@ -92,6 +92,9 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 .warn { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 14px 18px; border-radius: 0 12px 12px 0; font-size: 13px; color: #9d462f; margin-top: 12px; }
 .note { font-size: 12px; color: var(--mid); margin-top: 6px; line-height: 1.6; }
 
+.record-example { background: #f5f5f0; border-left: 3px solid #ccc; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 12px; color: var(--mid); margin-top: 8px; line-height: 1.7; user-select: text; }
+.record-example strong { color: var(--ink); }
+
 /* save btn */
 .save-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 2px solid var(--light); border-radius: 12px; background: var(--white); font-size: 13px; font-weight: 700; color: var(--mid); cursor: pointer; transition: all .2s; }
 .save-btn:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
@@ -156,7 +159,7 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
     <span class="header-icon">📋</span>
     <div class="header-text">
       <h1>財産開示書類 作成ツール</h1>
-      <p>ワンストップ執行手続・先取特権・疎明資料連番対応</p>
+      <p>ワンストップ執行手続・先取特権対応</p>
     </div>
   </div>
 </header>
@@ -385,7 +388,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
         <label class="choice-card"><input type="radio" name="other_realty" value="unknown" onchange="onOtherRealtyChange()"><div>ウ：次の理由により調査できなかった</div></label>
         <div id="other_realty_unknown_detail" class="detail-area hidden">
-          <div class="fg"><label>調査できなかった理由</label><textarea id="other_realty_reason" placeholder="例：婚姻中に居住していた住宅は離婚の際に売却した。その他に不動産を所有しているとの情報は聞いたことがない。"></textarea></div>
+          <div class="fg">
+            <label>調査できなかった理由</label>
+            <textarea id="other_realty_reason"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>婚姻中に居住していた住宅は離婚の際に売却した。その他に不動産を所有しているとの情報は聞いたことがない。</div>
+          </div>
         </div>
       </div>
 
@@ -408,7 +415,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
         <label class="choice-card"><input type="radio" name="salary" value="investigated" onchange="onSalaryChange()"><div>イ：調査を行ったが、現在の勤務先が判明しなかった</div></label>
         <div id="salary_investigated_detail" class="detail-area hidden">
-          <div class="fg"><label>調査の方法</label><textarea id="salary_inv_method" placeholder="例：婚姻中の債務者の勤務先に電話連絡したところ、令和○年○月頃に退職していた。"></textarea></div>
+          <div class="fg">
+            <label>調査の方法</label>
+            <textarea id="salary_inv_method"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>婚姻中の債務者の勤務先に電話連絡したところ、令和○年○月頃に退職していた。その後の再就職先は把握していない。</div>
+          </div>
         </div>
         <div id="ev_salary_inv" class="ev-group hidden">
           <label class="ev-item"><input type="checkbox" id="ev_salary_inv_a" value="債務者の勤務先に関する調査報告書その他の疎明資料">債務者の勤務先に関する調査報告書その他の疎明資料</label>
@@ -416,7 +427,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
         <label class="choice-card"><input type="radio" name="salary" value="unknown" onchange="onSalaryChange()"><div>ウ：次の理由により調査できなかった</div></label>
         <div id="salary_unknown_detail" class="detail-area hidden">
-          <div class="fg"><label>調査できなかった理由</label><textarea id="salary_reason" placeholder="例：取引当時、債務者は学生であったので勤務先情報を把握できなかった。その後も就職したとの情報は入手しておらず、調べるすべはない。"></textarea></div>
+          <div class="fg">
+            <label>調査できなかった理由</label>
+            <textarea id="salary_reason"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>取引当時、債務者は学生であったので勤務先情報を把握できなかった。その後も就職したとの情報は入手しておらず、調べるすべはない。</div>
+          </div>
         </div>
       </div>
     </div>
@@ -440,7 +455,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
         <label class="choice-card"><input type="radio" name="deposit" value="investigated" onchange="onDepositChange()"><div>イ：調査を行ったが、預貯金口座が見つからなかった</div></label>
         <div id="deposit_investigated_detail" class="detail-area hidden">
-          <div class="fg"><label>調査の方法</label><textarea id="deposit_inv_method" placeholder="例：婚姻当時の取引銀行（○○銀行）に問い合わせたところ、既に口座は解約されていた。"></textarea></div>
+          <div class="fg">
+            <label>調査の方法</label>
+            <textarea id="deposit_inv_method"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>婚姻当時の取引銀行（○○銀行）に問い合わせたところ、既に口座は解約されていた。その他の金融機関の情報は把握していない。</div>
+          </div>
         </div>
         <div id="ev_deposit_inv" class="ev-group hidden">
           <label class="ev-item"><input type="checkbox" id="ev_deposit_inv_a" value="債務者の預貯金に関する調査報告書その他の疎明資料">債務者の預貯金に関する調査報告書その他の疎明資料</label>
@@ -448,7 +467,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
         <label class="choice-card"><input type="radio" name="deposit" value="unknown" onchange="onDepositChange()"><div>ウ：次の理由により調査できなかった</div></label>
         <div id="deposit_unknown_detail" class="detail-area hidden">
-          <div class="fg"><label>調査できなかった理由</label><textarea id="deposit_reason" placeholder="例：婚姻当時から債務者が管理しており、口座の情報を知ることはできなかった。"></textarea></div>
+          <div class="fg">
+            <label>調査できなかった理由</label>
+            <textarea id="deposit_reason"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>婚姻当時から債務者が管理しており、口座の情報を知ることはできなかった。婚姻当時に共同して使っていた口座は、離婚時に解約した。</div>
+          </div>
         </div>
       </div>
 
@@ -457,7 +480,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
         <label class="choice-card"><input type="radio" name="movable" value="unknown" onchange="onMovableChange()"><div>ア：動産については知らない</div></label>
         <label class="choice-card"><input type="radio" name="movable" value="known" onchange="onMovableChange()"><div>イ：私の知っている債務者の動産は次のとおりである</div></label>
         <div id="movable_known_detail" class="detail-area hidden">
-          <div class="fg"><label>動産の品名・数量等</label><textarea id="movable_detail" placeholder="例：〇〇 1個（〇万円相当）"></textarea></div>
+          <div class="fg">
+            <label>動産の品名・数量等</label>
+            <textarea id="movable_detail"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>〇〇 1個（〇万円相当）</div>
+          </div>
         </div>
         <div id="ev_movable_known" class="ev-group hidden">
           <label class="ev-item"><input type="checkbox" id="ev_movable_known_a" value="動産執行の執行調書謄本（写し）">動産執行の執行調書謄本（写し）</label>
@@ -471,7 +498,11 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
         <label class="choice-card"><input type="radio" name="other_asset" value="unknown" onchange="onOtherAssetChange()"><div>ア：その他の財産については知らない</div></label>
         <label class="choice-card"><input type="radio" name="other_asset" value="known" onchange="onOtherAssetChange()"><div>イ：私の知っている債務者のその他の財産は次のとおりである</div></label>
         <div id="other_asset_known_detail" class="detail-area hidden">
-          <div class="fg"><label>財産の種類・額等</label><textarea id="other_asset_detail" placeholder="例：〇〇生命保険（保険金額〇〇円）"></textarea></div>
+          <div class="fg">
+            <label>財産の種類・額等</label>
+            <textarea id="other_asset_detail"></textarea>
+            <div class="record-example"><strong>記載例：</strong><br>〇〇生命保険（保険金額〇〇円）、〇〇株式会社株式〇〇株</div>
+          </div>
         </div>
         <div id="ev_other_asset_known" class="ev-group hidden">
           <label class="ev-item"><input type="checkbox" id="ev_other_asset_known_a" value="債務者のその他の財産に関する調査報告書その他の疎明資料">債務者のその他の財産に関する調査報告書その他の疎明資料</label>
@@ -481,8 +512,7 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 
     <div class="card hidden" id="step_submit" style="background:transparent; border:none; box-shadow:none; padding:0;">
       <div class="submit-area">
-        <p class="submit-note">内容をよく確認のうえ、専門家（弁護士・司法書士等）へのご相談をお勧めします</p>
-        <div class="row" style="margin-top:16px; gap:20px;">
+        <div class="row" style="gap:20px;">
           <button class="btn-gen" id="btn_gen_pdf" type="button" disabled onclick="generate('pdf')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
             <span id="btn_txt_pdf">PDF で出力する（全5書類）</span>
