@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E3XNF3Q3PJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-E3XNF3Q3PJ');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com; img-src 'self' data:;">
@@ -470,6 +461,79 @@ body {
   color: var(--primary);
 }
 
+/* ========== 開発者プロフィール ========== */
+.creator-section {
+  margin-bottom: 50px;
+}
+.creator-section h2 {
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 30px;
+  text-align: center;
+}
+.creator-card {
+  background: var(--white);
+  border: 2px solid var(--light);
+  border-radius: var(--r);
+  padding: 32px 30px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto;
+}
+.creator-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+.creator-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.creator-name span {
+  font-size: 13px;
+  color: var(--mid);
+  font-weight: normal;
+  margin-left: 8px;
+}
+.creator-msg {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+.creator-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--white);
+  color: #559f91;
+  border: 2px solid var(--secondary);
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.creator-link:hover {
+  background: var(--secondary);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
 .disclaimer {
   background: var(--white);
   border-left: 6px solid var(--warning);
@@ -522,6 +586,7 @@ body {
 </style>
 </head>
 <body>
+
 <header class="hero">
   <svg class="hero-ill" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
     <circle cx="60" cy="60" r="60" fill="#fff" opacity="0.6"/>
@@ -713,6 +778,24 @@ body {
       <summary><span class="q-icon">Q</span>私の個別のケースについて、「計算ツール」の金額相談や、書類のチェックなど、法律相談に乗ってもらえますか？</summary>
       <div class="faq-answer"><span class="a-icon">A.</span>申し訳ありませんが、当サイトは書類作成などの「補助ツール」を提供するものであり、個別の事案に対する法的なアドバイス（法律相談）や作成した書類のチェック等は行っておりません。具体的な金額の妥当性や、個別のご事情については、お近くの弁護士や法テラス、または家庭裁判所にご相談されることをお勧めいたします。</div>
     </details>
+  </section>
+
+  <section class="creator-section">
+    <h2>開発者について</h2>
+    <div class="creator-card">
+      <div class="creator-icon">👨‍💻</div>
+      <div class="creator-name">
+        大江 哲平<span>（弁護士）</span>
+      </div>
+      <p class="creator-msg">
+        「こどもの権利である養育費が、複雑な法律手続きの壁によって諦められてしまう現状を変えたい」という思いから、この無料ツールを個人で開発・運営しています。<br>
+        2026年の法改正の詳しい解説や、ツールの活用事例などについては、noteでも発信しています。
+      </p>
+      <a href="https://note.com/childsupportjp" target="_blank" rel="noopener noreferrer" class="creator-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        noteクリエイターページを見る
+      </a>
+    </div>
   </section>
 
   <section class="disclaimer">
