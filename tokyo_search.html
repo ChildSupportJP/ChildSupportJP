@@ -366,9 +366,9 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             リンク切れの場合の探し方
         </div>
-        <p>自治体のWebサイトがリニューアルされた影響で、リンク先のページが移動したり、エラーになってしまう場合があります。その際は、お手数ですがGoogle等の検索窓で以下のキーワードを入力して最新のページをお探しください。</p>
+        <p>自治体のWebサイトがリニューアルされた影響等で、リンク先のページが移動・統合されてエラーになる場合があります。その際は、お手数ですがGoogle等の検索窓で以下のキーワードを入力して最新のページをお探しください。</p>
         <div class="notice-box-keyword">
-            「〇〇区（市・町・村） 養育費確保支援事業」 または 「〇〇区（市・町・村） 養育費 補助」
+            「〇〇区（市・町・村） 養育費確保支援事業」 または 「〇〇区（市・町・村） ひとり親家庭 支援」
         </div>
     </div>
 
@@ -404,7 +404,7 @@
 </footer>
 
 <script>
-    // 東京都 全62区市町村（23区・26市・5町・8村） 詳細URL対応・リンク修正版
+    // 東京都 全62区市町村（23区・26市・5町・8村） 詳細URL・補助金なし市町村の注記対応版
     const db = [
         /* --- 23区 --- */
         { city: "千代田区", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：50,000円（保証料等）", url: "https://www.city.chiyoda.lg.jp/koho/kosodate/kosodate/hitorioya/teate/yoikuhi-shien.html" },
@@ -442,22 +442,24 @@
         { city: "調布市", title: "養育費確保支援事業補助金", outline: "公正証書の作成費用や初回保証料などの経費を補助します。", limit: "上限：要確認", url: "https://www.city.chofu.lg.jp/050030/p029029.html" },
         { city: "町田市", title: "養育費確保支援補助金", outline: "養育費の取り決めに要する公正証書等の作成費用や初回保証料を助成します。", limit: "上限：要確認", url: "https://kosodate-machida.tokyo.jp/soshiki/4/5/7/11400.html" },
         { city: "小金井市", title: "養育費確保支援事業補助金", outline: "公正証書等の作成経費や、保証会社との初回保証料等を助成しています。", limit: "上限：要確認", url: "https://www.city.koganei.lg.jp/kosodatekyoiku/N84/youikuhikakuhosiennj.html" },
-        { city: "小平市", title: "養育費・親子交流支援", outline: "養育費の取り決め支援や関連する各種相談窓口をご案内しています。", limit: "上限：要確認", url: "https://www.city.kodaira.tokyo.jp/kurashi/061/061086.html" },
         { city: "日野市", title: "養育費確保サポート事業", outline: "公正証書等の作成費用、および保証会社との初回保証料等を補助します。", limit: "上限：要確認", url: "https://www.city.hino.lg.jp/kosodate/shien/hitorioya/1023456/index.html" },
-        { city: "東村山市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当、相談窓口などをご案内しています。", limit: "上限：要確認", url: "https://www.city.higashimurayama.tokyo.jp/kosodate/hitorioya/1004128.html" },
         { city: "国分寺市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当、相談窓口などをご案内しています。", limit: "上限：要確認", url: "https://www.city.kokubunji.tokyo.jp/kurashi/kodomo/hitorioya/index.html" },
         { city: "国立市", title: "養育費確保支援補助金", outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.kunitachi.tokyo.jp/soshiki/Dept04/Div02/Sec01/gyomu/kunisapo/hitorioya/9262.html" },
-        { city: "福生市", title: "ひとり親家庭への支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。", limit: "上限：要確認", url: "https://www.city.fussa.tokyo.jp/life/child/single/index.html" },
         { city: "狛江市", title: "養育費確保支援事業助成金", outline: "養育費の取り決めに要する公正証書等の作成費用や初回保証料を助成します。", limit: "上限：要確認", url: "https://komae-kosodate.net/article_docs/208.html" },
-        { city: "東大和市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。", limit: "上限：要確認", url: "https://www.city.higashiyamato.lg.jp/kosodate/hitorioya/1004128.html" },
         { city: "清瀬市", title: "養育費確保支援事業補助金", outline: "養育費に関する公正証書等の作成に要した公証人手数料、戸籍抄本等取得経費を補助します。", limit: "公正証書等作成：43,000円 / 戸籍等：7,600円", url: "https://www.city.kiyose.lg.jp/kosodatekyouiku/kosodatehojo/hitorioyakateihojo/1010160.html" },
-        { city: "東久留米市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。", limit: "上限：要確認", url: "https://www.city.higashikurume.lg.jp/kosodate/hitorioya/1025531.html" },
-        { city: "武蔵村山市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。", limit: "上限：要確認", url: "https://www.city.musashimurayama.lg.jp/kosodate/hitorioya/1019688.html" },
         { city: "多摩市", title: "養育費確保支援事業", outline: "公正証書等の作成費用のほか、保証会社との初回保証料などを助成しています。", limit: "上限：要確認", url: "https://www.city.tama.lg.jp/kosodate/1008019/1008037/1008150/1008153/1014399.html" },
         { city: "稲城市", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費や、保証会社との初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.inagi.tokyo.jp/kosodate/kosodate/1004338/1004399/1012241.html" },
-        { city: "羽村市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。", limit: "上限：要確認", url: "https://www.city.hamura.tokyo.jp/0000017112.html" },
-        { city: "あきる野市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。", limit: "上限：要確認", url: "https://www.city.akiruno.tokyo.jp/0000015541.html" },
         { city: "西東京市", title: "養育費確保サポート", outline: "養育費の継続的な履行を支援するため、公正証書作成費用や保証契約の初回保証料の一部を助成します。", limit: "上限：要確認", url: "https://www.city.nishitokyo.lg.jp/kosodate/hitorioyakatei/youikuhikakuhosienn.html" },
+
+        /* --- 以下、直接の補助金制度がない市（相談窓口等を案内） --- */
+        { city: "小平市", title: "養育費・親子交流支援", outline: "養育費の取り決め支援や関連する各種相談窓口をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.kodaira.tokyo.jp/kurashi/061/061086.html" },
+        { city: "東村山市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当、相談窓口などをご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.higashimurayama.tokyo.jp/kosodate/hojo/hitorioya/index.html" },
+        { city: "福生市", title: "ひとり親家庭への支援", outline: "ひとり親家庭向けの各種支援制度や相談窓口をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.fussa.tokyo.jp/life/child/single/index.html" },
+        { city: "東大和市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.higashiyamato.lg.jp/kosodatekyoiku/kosodate/1003193/index.html" },
+        { city: "東久留米市", title: "各種手当・助成（ひとり親家庭等）", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.higashikurume.lg.jp/kurashi/kosodate/teate/index.html" },
+        { city: "武蔵村山市", title: "ひとり親家庭の支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.musashimurayama.lg.jp/kosodate/teate/hitorioya/index.html" },
+        { city: "羽村市", title: "手当・助成・支援（子育て・教育）", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.hamura.tokyo.jp/0000000201.html" },
+        { city: "あきる野市", title: "ひとり親家庭への支援", outline: "ひとり親家庭向けの各種支援制度や手当をご案内しています。（※現在のところ公正証書作成等に対する直接の補助金制度は確認できません）", limit: "上限：補助金なし（相談支援等）", url: "https://www.city.akiruno.tokyo.jp/category/2-6-4-0-0.html" },
 
         /* --- 町村部（5町・8村） --- */
         ...["瑞穂町", "日の出町", "奥多摩町", "大島町", "八丈町", "檜原村", "利島村", "新島村", "神津島村", "三宅村", "御蔵島村", "青ヶ島村", "小笠原村"].map(town => ({
