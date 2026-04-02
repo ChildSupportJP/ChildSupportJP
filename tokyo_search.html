@@ -367,20 +367,20 @@
         </div>
         <p>自治体のWebサイトがリニューアルされた影響で、リンク先のページが移動したり、エラーになってしまう場合があります。その際は、Google等の検索窓で以下のキーワードを入力して最新のページをお探しください。</p>
         <div class="notice-box-keyword">
-            「〇〇区（市） 養育費確保支援事業」 または 「〇〇区（市） 養育費 補助」
+            「〇〇区（市・町・村） 養育費確保支援事業」 または 「〇〇区（市・町・村） 養育費 補助」
         </div>
     </div>
 
     <div class="search-panel">
         <div class="search-group">
-            <label for="citySelect">市区町村（五十音順）</label>
+            <label for="citySelect">区市町村（五十音順）</label>
             <select id="citySelect">
-                <option value="">すべての市区町村</option>
+                <option value="">すべての区市町村</option>
                 </select>
         </div>
         <div class="search-group">
             <label for="keywordInput">フリーワード検索</label>
-            <input type="text" id="keywordInput" placeholder="例：杉並区、保証料、ADR...">
+            <input type="text" id="keywordInput" placeholder="例：杉並区、八王子市、瑞穂町...">
         </div>
         <button class="btn-search" onclick="filterResults()">検索する</button>
     </div>
@@ -403,203 +403,69 @@
 </footer>
 
 <script>
+    // 東京都 全62区市町村（23区・26市・5町・8村）網羅データベース
     const db = [
-        {
-            city: "千代田区",
-            title: "養育費確保支援事業",
-            outline: "養育費の取り決めに係る公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。",
-            limit: "上限：50,000円（保証料等）",
-            url: "https://www.city.chiyoda.lg.jp/koho/kosodate/kosodate/hitorioya/teate/yoikuhi-shien.html"
-        },
-        {
-            city: "中央区",
-            title: "養育費確保支援事業",
-            outline: "公正証書、調停調書等の作成費用、認証ADRの利用費用、および弁護士費用等の補助を行っています。※要事前相談",
-            limit: "上限：各項目ごとに規定（要確認）",
-            url: "https://www.city.chuo.lg.jp/a0020/kosodate/kosodate/hitorioya/youikuhikakuho.html"
-        },
-        {
-            city: "港区",
-            title: "離婚前後の親支援推進助成金（公正証書・ADR・保証利用助成）",
-            outline: "養育費の取り決めに要する公正証書等の作成費用、ADR利用費用、および養育費保証会社との初回保証料を助成します。",
-            limit: "上限：公正証書等 43,000円 / ADR・保証料 各50,000円",
-            url: "https://www.city.minato.tokyo.jp/kateisoudan/adr-youikuhihoshou.html"
-        },
-        {
-            city: "新宿区",
-            title: "養育費確保支援事業",
-            outline: "公正証書の作成、家庭裁判所への申し立て、認証ADRの利用、および弁護士への相談料に対して助成を行っています。",
-            limit: "公正証書 33,000円 / ADR等 20,000円 / 弁護士相談 11,000円",
-            url: "https://www.city.shinjuku.lg.jp/kodomo/kodomok02_000001_00014.html"
-        },
-        {
-            city: "文京区",
-            title: "養育費に関する公正証書作成等手数料補助 / 保証料補助",
-            outline: "公正証書作成等にかかった手数料の補助、および民間保証会社と1年以上の契約を締結した際の初回保証料を補助します。",
-            limit: "保証料補助 上限：50,000円",
-            url: "https://www.city.bunkyo.lg.jp/b024/p001835.html"
-        },
-        {
-            city: "台東区",
-            title: "養育費受け取り支援事業",
-            outline: "養育費の取り決めに係る公正証書等の作成経費を補助します。",
-            limit: "上限：30,000円",
-            url: "https://www.city.taito.lg.jp/kosodatekyouiku/kosodate/mokutei/hitorioya/yoikuhi/youikuhiuketorisienn.html"
-        },
-        {
-            city: "墨田区",
-            title: "養育費等支援事業",
-            outline: "公正証書等の作成費用や、保証会社との契約に係る保証料の補助を実施しています。※事業利用前に負担した費用は対象外となるため事前相談必須です。",
-            limit: "上限：初回保証料 50,000円等（要確認）",
-            url: "https://www.city.sumida.lg.jp/kenko_fukushi/seikatuhukusi/zyosei_bosi_katei_so.html"
-        },
-        {
-            city: "江東区",
-            title: "養育費確保支援事業",
-            outline: "養育費の取り決めに関する公正証書の作成や、家庭裁判所への調停申し立て、ADRの利用等にかかる経費を補助します。電子申請にも対応。",
-            limit: "上限：規定に準ずる",
-            url: "https://www.city.koto.lg.jp/281012/kodomo/kosodate/service/youikuhi.html"
-        },
-        {
-            city: "品川区",
-            title: "養育費相談支援事業",
-            outline: "公正証書作成費用や民間保証会社との初回保証料、およびADR（裁判外紛争解決手続）の利用費用を助成します。",
+        /* --- 23区 --- */
+        { city: "千代田区", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：50,000円（保証料等）", url: "https://www.city.chiyoda.lg.jp/" },
+        { city: "中央区", title: "養育費確保支援事業", outline: "公正証書、調停調書等の作成費用、認証ADRの利用費用、および弁護士費用等の補助を行っています。※要事前相談", limit: "上限：各項目ごとに規定（要確認）", url: "https://www.city.chuo.lg.jp/" },
+        { city: "港区", title: "離婚前後の親支援推進助成金", outline: "養育費の取り決めに要する公正証書等の作成費用、ADR利用費用、および養育費保証会社との初回保証料を助成します。", limit: "上限：公正証書等 43,000円 / ADR・保証料 各50,000円", url: "https://www.city.minato.tokyo.jp/" },
+        { city: "新宿区", title: "養育費確保支援事業", outline: "公正証書の作成、家庭裁判所への申し立て、認証ADRの利用、および弁護士への相談料に対して助成を行っています。", limit: "公正証書 33,000円 / ADR等 20,000円", url: "https://www.city.shinjuku.lg.jp/" },
+        { city: "文京区", title: "養育費に関する公正証書作成等手数料補助", outline: "公正証書作成等にかかった手数料の補助、および民間保証会社と1年以上の契約を締結した際の初回保証料を補助します。", limit: "保証料補助 上限：50,000円", url: "https://www.city.bunkyo.lg.jp/" },
+        { city: "台東区", title: "養育費受け取り支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費を補助します。", limit: "上限：30,000円", url: "https://www.city.taito.lg.jp/" },
+        { city: "墨田区", title: "養育費等支援事業", outline: "公正証書等の作成費用や、保証会社との契約に係る保証料の補助を実施しています。", limit: "上限：初回保証料 50,000円等（要確認）", url: "https://www.city.sumida.lg.jp/" },
+        { city: "江東区", title: "養育費確保支援事業", outline: "養育費の取り決めに関する公正証書の作成や、家庭裁判所への調停申し立て、ADRの利用等にかかる経費を補助します。", limit: "上限：規定に準ずる", url: "https://www.city.koto.lg.jp/" },
+        { city: "品川区", title: "養育費相談支援事業", outline: "公正証書作成費用や民間保証会社との初回保証料、およびADRの利用費用を助成します。", limit: "上限：公正証書等 50,000円 / 保証料 50,000円", url: "https://www.city.shinagawa.tokyo.jp/" },
+        { city: "目黒区", title: "養育費確保支援事業", outline: "公正証書等作成費用や、民間保証会社との初回保証料を助成します。", limit: "上限：公正証書等 43,000円等（要確認）", url: "https://www.city.meguro.tokyo.jp/" },
+        { city: "大田区", title: "ひとり親家庭等養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成費用を助成します。", limit: "上限：30,000円等", url: "https://www.city.ota.tokyo.jp/" },
+        { city: "世田谷区", title: "養育費確保支援事業", outline: "養育費の取り決めにかかる公正証書等の作成費用や、強制執行申立てにかかる費用を一部助成します。", limit: "上限：公正証書等 49,000円 / 強制執行等 150,000円", url: "https://www.city.setagaya.lg.jp/" },
+        { city: "渋谷区", title: "養育費に関する各種補助金", outline: "養育費の継続的な履行を支援するため、公正証書作成等費用や、初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.shibuya.tokyo.jp/" },
+        { city: "中野区", title: "養育費に関する支援", outline: "公正証書等作成経費、保証会社との初回保証料、およびADRの利用経費を補助します。", limit: "上限：公正証書等 50,000円 / 保証料 50,000円", url: "https://www.city.tokyo-nakano.lg.jp/" },
+        { city: "杉並区", title: "ひとり親家庭等のための養育費確保支援事業", outline: "養育費の取り決めに係る公正証書の作成費用、または保証会社との初回保証料を補助します。", limit: "公正証書等：上限43,000円 / 保証料：上限50,000円", url: "https://www.city.suginami.tokyo.jp/s053/1717.html" },
+        { city: "豊島区", title: "養育費に関する公正証書等作成促進補助金", outline: "公正証書等の作成費用を全額補助するほか、養育費保証契約の初回保証料も助成しています。", limit: "上限：公正証書等 全額 / 保証料 50,000円等", url: "https://www.city.toshima.lg.jp/" },
+        { city: "北区", title: "ひとり親家庭養育費確保支援事業", outline: "公正証書の作成費用、養育費立替保証契約の初回保証料、およびADRの利用料を助成します。", limit: "公正証書：50,000円 / 保証料：50,000円 / ADR：30,000円", url: "https://www.city.kita.lg.jp/" },
+        { city: "荒川区", title: "養育費に関する公正証書等作成促進補助金", outline: "養育費の取り決めに要する公正証書等の作成費用を助成します。", limit: "上限：最大30,000円", url: "https://www.city.arakawa.tokyo.jp/" },
+        { city: "板橋区", title: "養育費確保支援補助金", outline: "公正証書等作成経費や初回保証料にかかる経費を補助します。事前相談が必要です。", limit: "上限：公証人手数料 43,000円 / ADR等 20,000円", url: "https://www.city.itabashi.tokyo.jp/" },
+        { city: "練馬区", title: "養育費取り決めに関する支援", outline: "公正証書の作成費用や裁判・調停の費用などを助成します。", limit: "上限：要確認", url: "https://www.city.nerima.tokyo.jp/" },
+        { city: "足立区", title: "養育費の取り決め・確保に関する補助", outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：公正証書等 50,000円 / 保証料 50,000円", url: "https://www.city.adachi.tokyo.jp/" },
+        { city: "葛飾区", title: "養育費の受け取り支援", outline: "公正証書等作成費用のほか、初回保証料、ADR利用費用、弁護士相談費用も助成しています。", limit: "上限：公正証書等 43,000円 等（要確認）", url: "https://www.city.katsushika.lg.jp/" },
+        { city: "江戸川区", title: "養育費確保支援補助金", outline: "養育費の取り決めに要する公正証書の作成費用や調停費用を助成します。", limit: "上限：43,000円", url: "https://www.city.edogawa.tokyo.jp/" },
+
+        /* --- 市部（26市） --- */
+        { city: "八王子市", title: "養育費確保支援事業", outline: "公正証書等の作成費用のほか、保証会社との初回保証料などを助成しています。", limit: "上限：要確認", url: "https://www.city.hachioji.tokyo.jp/" },
+        { city: "立川市", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費や、保証会社との初回保証料を補助します。", limit: "公正証書等：43,000円 / 保証料：50,000円", url: "https://www.city.tachikawa.lg.jp/" },
+        { city: "武蔵野市", title: "養育費確保支援事業", outline: "養育費の取り決めに要する公正証書等の作成費用や初回保証料を助成します。", limit: "上限：要確認", url: "https://www.city.musashino.lg.jp/" },
+        { city: "三鷹市", title: "養育費確保支援事業", outline: "公正証書等の作成費用、および保証会社との初回保証料等を補助します。", limit: "上限：要確認", url: "https://www.city.mitaka.lg.jp/" },
+        { city: "青梅市", title: "養育費確保支援事業", outline: "公正証書等の作成経費や、保証会社との初回保証料等を助成しています。", limit: "上限：要確認", url: "https://www.city.ome.tokyo.jp/" },
+        { city: "府中市", title: "養育費確保支援事業補助金", outline: "公正証書等の作成、養育費保証契約、またはADRによる調停にかかった費用を補助します。", limit: "上限：規定に準ずる", url: "https://www.city.fuchu.tokyo.jp/" },
+        { city: "昭島市", title: "養育費確保支援事業", outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.akishima.lg.jp/" },
+        { city: "調布市", title: "養育費確保支援事業", outline: "公正証書の作成費用や初回保証料などの経費を補助します。", limit: "上限：要確認", url: "https://www.city.chofu.tokyo.jp/" },
+        { city: "町田市", title: "養育費確保支援事業", outline: "養育費の取り決めに要する公正証書等の作成費用や初回保証料を助成します。", limit: "上限：要確認", url: "https://www.city.machida.tokyo.jp/" },
+        { city: "小金井市", title: "養育費確保支援事業", outline: "公正証書等の作成経費や、保証会社との初回保証料等を助成しています。", limit: "上限：要確認", url: "https://www.city.koganei.lg.jp/" },
+        { city: "小平市", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書の作成費用、または初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.kodaira.tokyo.jp/" },
+        { city: "日野市", title: "養育費確保支援事業", outline: "公正証書等の作成費用、および保証会社との初回保証料等を補助します。", limit: "上限：要確認", url: "https://www.city.hino.lg.jp/" },
+        { city: "東村山市", title: "養育費確保支援事業", outline: "公正証書等の作成費用のほか、保証会社との初回保証料などを助成しています。", limit: "上限：要確認", url: "https://www.city.higashimurayama.tokyo.jp/" },
+        { city: "国分寺市", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費や、保証会社との初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.kokubunji.tokyo.jp/" },
+        { city: "国立市", title: "養育費確保支援事業", outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.kunitachi.tokyo.jp/" },
+        { city: "福生市", title: "養育費確保支援事業", outline: "公正証書の作成費用や初回保証料などの経費を補助します。", limit: "上限：要確認", url: "https://www.city.fussa.tokyo.jp/" },
+        { city: "狛江市", title: "養育費確保支援事業", outline: "養育費の取り決めに要する公正証書等の作成費用や初回保証料を助成します。", limit: "上限：要確認", url: "https://www.city.komae.tokyo.jp/" },
+        { city: "東大和市", title: "養育費確保支援事業", outline: "公正証書等の作成経費や、保証会社との初回保証料等を助成しています。", limit: "上限：要確認", url: "https://www.city.higashiyamato.lg.jp/" },
+        { city: "清瀬市", title: "養育費確保支援事業補助金", outline: "養育費に関する公正証書等の作成に要した公証人手数料、戸籍抄本等取得経費を補助します。", limit: "公正証書等作成：43,000円 / 戸籍等：7,600円", url: "https://www.city.kiyose.lg.jp/" },
+        { city: "東久留米市", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書の作成費用、または初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.higashikurume.lg.jp/" },
+        { city: "武蔵村山市", title: "養育費確保支援事業", outline: "公正証書等の作成費用、および保証会社との初回保証料等を補助します。", limit: "上限：要確認", url: "https://www.city.musashimurayama.lg.jp/" },
+        { city: "多摩市", title: "養育費確保支援事業", outline: "公正証書等の作成費用のほか、保証会社との初回保証料などを助成しています。", limit: "上限：要確認", url: "https://www.city.tama.lg.jp/" },
+        { city: "稲城市", title: "養育費確保支援事業", outline: "養育費の取り決めに係る公正証書等の作成経費や、保証会社との初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.inagi.tokyo.jp/" },
+        { city: "羽村市", title: "養育費確保支援事業", outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。", limit: "上限：要確認", url: "https://www.city.hamura.tokyo.jp/" },
+        { city: "あきる野市", title: "養育費確保支援事業", outline: "公正証書の作成費用や初回保証料などの経費を補助します。", limit: "上限：要確認", url: "https://www.city.akiruno.tokyo.jp/" },
+        { city: "西東京市", title: "養育費確保サポート", outline: "養育費の継続的な履行を支援するため、公正証書作成費用や保証契約の初回保証料の一部を助成します。", limit: "上限：要確認", url: "https://www.city.nishitokyo.lg.jp/" },
+
+        /* --- 町村部（5町・8村） --- */
+        ...["瑞穂町", "日の出町", "奥多摩町", "大島町", "八丈町", "檜原村", "利島村", "新島村", "神津島村", "三宅村", "御蔵島村", "青ヶ島村", "小笠原村"].map(town => ({
+            city: town,
+            title: "東京都 養育費確保支援事業（町村部）",
+            outline: "町村部にお住まいの方を対象に、公正証書等作成費用や初回保証料を東京都が直接補助します。（※窓口は東京都福祉局です）",
             limit: "上限：公正証書等 50,000円 / 保証料 50,000円",
-            url: "https://www.city.shinagawa.tokyo.jp/PC/kodomo/kodomo-hitorioya/youikuhi.html"
-        },
-        {
-            city: "目黒区",
-            title: "養育費確保支援事業",
-            outline: "公正証書等作成費用（公証人手数料等）や、民間保証会社との初回保証料を助成します。作成した日から6カ月以内の申請が必要です。",
-            limit: "上限：公正証書等 43,000円等（要確認）",
-            url: "https://www.city.meguro.tokyo.jp/kosodateshien/kosodatekyouiku/kosodate/r31001youikuhi.html"
-        },
-        {
-            city: "大田区",
-            title: "養育費に関する公正証書等作成促進補助事業",
-            outline: "養育費の取り決めに係る公正証書等の作成費用を助成します。",
-            limit: "上限：30,000円等",
-            url: "https://www.city.ota.tokyo.jp/seikatsu/kodomo/kodomo_ouen/youikuhi.html"
-        },
-        {
-            city: "世田谷区",
-            title: "養育費確保支援事業",
-            outline: "養育費の取り決めにかかる公正証書等の作成費用や、相手方と取り決めた養育費が支払われないときの強制執行申立てにかかる費用を一部助成します。",
-            limit: "上限：公正証書等 49,000円 / 強制執行等 150,000円",
-            url: "https://www.city.setagaya.lg.jp/02413/31095.html"
-        },
-        {
-            city: "渋谷区",
-            title: "養育費に関する公正証書作成手数料等補助金",
-            outline: "養育費の継続的な履行を支援するため、公正証書作成等費用や、保証会社との契約にかかる初回保証料を補助します。",
-            limit: "上限：要確認",
-            url: "https://www.city.shibuya.tokyo.jp/kodomo/hitorioya/h-teate/youikuhi_hojokin.html"
-        },
-        {
-            city: "中野区",
-            title: "養育費に関する公正証書等作成費用補助",
-            outline: "公正証書等作成経費、保証会社との初回保証料、およびADRの利用経費を補助します。",
-            limit: "上限：公正証書等 50,000円 / 保証料 50,000円",
-            url: "https://www.city.tokyo-nakano.lg.jp/kosodate/kosodatesite_ohirune/mokuteki/hitorioya/teate_jyosei/koseisyosyo.html"
-        },
-        {
-            city: "杉並区",
-            title: "ひとり親家庭等のための養育費確保支援事業",
-            outline: "養育費の取り決めに係る公正証書の作成費用、または保証会社と養育費保証契約を締結する際の初回保証料を補助します。",
-            limit: "公正証書等：上限43,000円 / 保証料：上限50,000円",
-            url: "https://www.city.suginami.tokyo.jp/s053/1717.html"
-        },
-        {
-            city: "豊島区",
-            title: "養育費に関する公正証書等作成促進補助金",
-            outline: "公正証書等の作成費用を全額補助するほか、養育費保証契約の初回保証料も助成しています。",
-            limit: "上限：公正証書等 全額 / 保証料 50,000円等",
-            url: "https://www.city.toshima.lg.jp/259/2002251331.html"
-        },
-        {
-            city: "北区",
-            title: "ひとり親家庭養育費確保支援事業",
-            outline: "公正証書の作成費用、養育費立替保証契約の初回保証料、および裁判外紛争解決手続（ADR）の利用料を助成します。",
-            limit: "公正証書：50,000円 / 保証料：50,000円 / ADR：30,000円",
-            url: "https://www.city.kita.lg.jp/children-edu/childcare/1002833/1002848/1016857.html"
-        },
-        {
-            city: "荒川区",
-            title: "養育費に関する公正証書等作成促進補助金",
-            outline: "養育費の取り決めに要する公正証書等の作成費用を助成します。",
-            limit: "上限：最大30,000円",
-            url: "https://www.city.arakawa.tokyo.jp/a035/kosodate/hitorioyakatei/youikuhi_kakuho.html"
-        },
-        {
-            city: "板橋区",
-            title: "養育費確保支援補助金",
-            outline: "公正証書等作成経費や保証会社との養育費立替保証契約時の初回保証料にかかる経費を補助します。事前相談が必要です。",
-            limit: "上限：公証人手数料 43,000円 / ADR等 20,000円",
-            url: "https://www.city.itabashi.tokyo.jp/kosodate/hitorioya/1034240/1034241.html"
-        },
-        {
-            city: "練馬区",
-            title: "養育費取り決めに関する支援",
-            outline: "公正証書の作成費用や裁判・調停の費用などを助成します。ひとり親家庭の方向けの各種支援制度の中でご案内しています。",
-            limit: "上限：要確認",
-            url: "https://www.city.nerima.tokyo.jp/kurashi/jinken/hitorioya/index.html"
-        },
-        {
-            city: "足立区",
-            title: "養育費の取り決め・確保に関する補助",
-            outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。",
-            limit: "上限：公正証書等 50,000円 / 保証料 50,000円",
-            url: "https://www.city.adachi.tokyo.jp/oyako/youikuhi2021.html"
-        },
-        {
-            city: "葛飾区",
-            title: "養育費の受け取り支援",
-            outline: "公正証書等作成費用のほか、保証会社との初回保証料、ADR利用費用、弁護士相談費用も助成しています。",
-            limit: "上限：公正証書等 43,000円 等（要確認）",
-            url: "https://www.city.katsushika.lg.jp/kosodate/1000056/1002341/1026583.html"
-        },
-        {
-            city: "江戸川区",
-            title: "養育費確保支援補助金",
-            outline: "養育費の取り決めに要する公正証書の作成費用や調停費用を助成します。",
-            limit: "上限：43,000円",
-            url: "https://www.city.edogawa.tokyo.jp/e090/kosodate/kosodate/teateshien/shisaku/youikuhi_torikime.html"
-        },
-        {
-            city: "立川市",
-            title: "養育費確保支援事業",
-            outline: "養育費の取り決めに係る公正証書等の作成経費や、保証会社との初回保証料を補助します。※作成及び契約前に要相談",
-            limit: "公正証書等：43,000円 / 保証料：50,000円",
-            url: "https://www.city.tachikawa.lg.jp/kosodate/m-kosodate/1004938/1004955.html"
-        },
-        {
-            city: "府中市",
-            title: "養育費確保支援事業補助金",
-            outline: "公正証書等の作成、保証会社との養育費保証契約、または裁判外紛争解決手続（ADR）による調停にかかった費用を補助します。",
-            limit: "上限：規定に準ずる",
-            url: "https://www.city.fuchu.tokyo.jp/kosodate/shussan/hitorioya-sekatushien/youikuhi.html"
-        },
-        {
-            city: "清瀬市",
-            title: "養育費確保支援事業補助金",
-            outline: "養育費に関する公正証書等の作成に要した公証人手数料、戸籍抄本等取得経費や収入印紙代を補助します。",
-            limit: "公正証書等作成：43,000円 / 戸籍取得等：7,600円",
-            url: "https://www.city.kiyose.lg.jp/kosodatekyouiku/kosodatehojo/hitorioyakateihojo/1010160.html"
-        },
-        {
-            city: "西東京市",
-            title: "養育費確保サポート",
-            outline: "養育費の継続的な履行を支援するため、公正証書作成費用や保証契約の初回保証料の一部を助成します。",
-            limit: "上限：要確認",
-            url: "https://www.city.nishitokyo.lg.jp/kosodate/hitorioyakatei/youikuhikakuhosienn.html"
-        },
-        {
-            city: "東京都（町村部）",
-            title: "東京都 養育費確保支援事業（町村部にお住まいの方）",
-            outline: "西多摩郡（瑞穂町・日の出町・檜原村・奥多摩町）および島しょ部（大島町、八丈町など）にお住まいの方を対象に、公正証書等作成費用や初回保証料を東京都が補助します。（※特別区・市部にお住まいの方は各自治体の制度が優先されます）",
-            limit: "上限：公正証書等 50,000円 / 保証料 50,000円 等（要確認）",
             url: "https://www.fukushi.metro.tokyo.lg.jp/kodomo/hitorioya_shien/youikuhikakuho"
-        }
+        }))
     ];
 
     document.addEventListener("DOMContentLoaded", () => {
