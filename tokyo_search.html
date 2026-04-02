@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東京都 養育費関連助成金検索 - 養育費サポートJP</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #4a403d;        /* 温かみのある焦げ茶色 */
+            --mid: #857c7a;        /* 優しいグレーブラウン */
+            --light: #e8e0de;      /* 境界線などの薄い色 */
+            --bg: #fdfcf9;         /* ほんのり温かいアイボリー（背景） */
+            --white: #ffffff;
+            --primary: #f48c71;    /* コーラルピンク */
+            --primary-light: #fff3f0;
+            --secondary: #6cb8a9;  /* ミントグリーン */
+            --secondary-light: #f0f9f7;
+            --warning: #eaaa58;    /* マスタードイエロー */
+            --warning-light: #fdf7f0;
+            --r: 24px;             /* 角丸 */
+            --shadow: 0 8px 24px rgba(74, 64, 61, 0.06), 0 2px 6px rgba(74, 64, 61, 0.04);
+            --shadow-hover: 0 12px 32px rgba(74, 64, 61, 0.12), 0 4px 10px rgba(74, 64, 61, 0.06);
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 共通ヘッダー */
+        .site-header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--light);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .site-header .logo {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+        .site-header .nav-link {
+            color: var(--mid);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+        .site-header .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto 60px;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .breadcrumb {
+            font-size: 0.85em;
+            color: var(--mid);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* ページタイトル（ヒーローエリア風） */
+        .page-header {
+            background: var(--primary-light);
+            padding: 40px 20px;
+            border-radius: var(--r);
+            margin-bottom: 40px;
+            text-align: center;
+            border: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -30px;
+            width: 120px; height: 120px;
+            background: var(--white);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        .page-header h1 {
+            color: var(--primary);
+            font-size: 1.6em;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+        .page-header p {
+            color: var(--ink);
+            font-size: 0.95em;
+            margin: 0;
+            font-weight: 700;
+        }
+        .last-updated {
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: var(--mid);
+            background: var(--white);
+            padding: 4px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--light);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 検索パネル */
+        .search-panel {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--r);
+            border: 2px solid var(--light);
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            box-shadow: var(--shadow);
+        }
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-group label {
+            font-size: 0.9em;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+        .search-group select, .search-group input {
+            padding: 14px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            font-size: 1em;
+            background-color: var(--bg);
+            transition: all 0.2s ease;
+            font-family: inherit;
+            color: var(--ink);
+        }
+        .search-group select:focus, .search-group input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background-color: var(--white);
+        }
+        .btn-search {
+            padding: 14px 32px;
+            background-color: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 52px;
+            box-shadow: 0 4px 12px rgba(108, 184, 169, 0.3);
+        }
+        .btn-search:hover {
+            background-color: #559f91;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 184, 169, 0.4);
+        }
+
+        /* 検索結果エリア */
+        .result-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--light);
+        }
+        .result-count {
+            font-weight: 700;
+            color: var(--ink);
+        }
+        
+        .card {
+            background: var(--white);
+            border: 2px solid var(--light);
+            border-radius: var(--r);
+            padding: 30px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.8em;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+        .card h3 {
+            margin: 0;
+            color: var(--ink);
+            font-size: 1.4em;
+        }
+        .card-title {
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            font-size: 1.1em;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--light);
+        }
+        .card p {
+            margin: 0 0 20px 0;
+            color: var(--mid);
+            font-size: 0.95em;
+        }
+        .limit-box {
+            background: var(--warning-light);
+            color: #96692b;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-bottom: 24px;
+            border: 2px solid var(--warning);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .btn-link {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary);
+            text-decoration: none;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9em;
+            border: 2px solid var(--primary);
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .btn-link:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 140, 113, 0.3);
+        }
+        
+        .no-result {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: var(--r);
+            border: 2px dashed var(--light);
+            color: var(--mid);
+            display: none;
+        }
+
+        /* フッター */
+        .site-footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--mid);
+            font-size: 0.85em;
+            border-top: 1px solid var(--light);
+            background: var(--white);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <a href="./index.html" class="logo">養育費サポートJP</a>
+    <a href="./index.html" class="nav-link">＜ トップページへ戻る</a>
+</header>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="./index.html">トップ</a> ＞ 東京都の助成金検索
+    </div>
+
+    <div class="page-header">
+        <h1>東京都 養育費関連助成金 検索</h1>
+        <p>都内各区市町村の公正証書作成・保証料補助に関する制度一覧</p>
+        <div class="last-updated">最終更新日：2026年4月2日</div>
+    </div>
+
+    <div class="search-panel">
+        <div class="search-group">
+            <label for="citySelect">市区町村（五十音順）</label>
+            <select id="citySelect">
+                <option value="">すべての市区町村</option>
+                </select>
+        </div>
+        <div class="search-group">
+            <label for="keywordInput">フリーワード検索</label>
+            <input type="text" id="keywordInput" placeholder="例：杉並区、保証料、ADR...">
+        </div>
+        <button class="btn-search" onclick="filterResults()">検索する</button>
+    </div>
+
+    <div class="result-info">
+        <div class="result-count" id="resultCount">すべての助成金を表示しています</div>
+    </div>
+
+    <div id="resultsContainer">
+        </div>
+    
+    <div class="no-result" id="noResult">
+        <p style="margin:0; font-weight:bold; font-size:1.1em; color:var(--ink);">該当する助成金情報が見つかりませんでした。</p>
+        <p style="margin:12px 0 0 0; font-size:0.9em;">別の条件でお試しください。<br>※掲載されていない自治体でも制度を実施している場合があります。各自治体のHPをご確認ください。</p>
+    </div>
+</div>
+
+<footer class="site-footer">
+    &copy; 2026 養育費サポートJP
+</footer>
+
+<script>
+    const db = [
+        {
+            city: "千代田区",
+            title: "養育費確保支援事業",
+            outline: "養育費の取り決めに係る公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。",
+            limit: "上限：50,000円（保証料等）",
+            url: "https://www.city.chiyoda.lg.jp/koho/kosodate/kosodate/hitorioya/teate/yoikuhi-shien.html"
+        },
+        {
+            city: "中央区",
+            title: "養育費確保支援事業",
+            outline: "公正証書、調停調書等の作成費用、認証ADRの利用費用、および弁護士費用等の補助を行っています。※要事前相談",
+            limit: "上限：各項目ごとに規定（要確認）",
+            url: "https://www.city.chuo.lg.jp/a0020/kosodate/kosodate/hitorioya/youikuhikakuho.html"
+        },
+        {
+            city: "港区",
+            title: "離婚前後の親支援推進助成金（公正証書・ADR・保証利用助成）",
+            outline: "養育費の取り決めに要する公正証書等の作成費用、ADR利用費用、および養育費保証会社との初回保証料を助成します。",
+            limit: "上限：公正証書等 43,000円 / ADR・保証料 各50,000円",
+            url: "https://www.city.minato.tokyo.jp/kateisoudan/adr-youikuhihoshou.html"
+        },
+        {
+            city: "新宿区",
+            title: "養育費確保支援事業",
+            outline: "公正証書の作成、家庭裁判所への申し立て、認証ADRの利用、および弁護士への相談料に対して助成を行っています。",
+            limit: "公正証書 33,000円 / ADR等 20,000円 / 弁護士相談 11,000円",
+            url: "https://www.city.shinjuku.lg.jp/kodomo/kodomok02_000001_00014.html"
+        },
+        {
+            city: "文京区",
+            title: "養育費に関する公正証書作成等手数料補助 / 保証料補助",
+            outline: "公正証書作成等にかかった手数料の補助、および民間保証会社と1年以上の契約を締結した際の初回保証料を補助します。",
+            limit: "保証料補助 上限：50,000円",
+            url: "https://www.city.bunkyo.lg.jp/b024/p001835.html"
+        },
+        {
+            city: "墨田区",
+            title: "養育費等支援事業",
+            outline: "公正証書等の作成費用や、保証会社との契約に係る保証料の補助を実施しています。※事業利用前に負担した費用は対象外となるため事前相談必須です。",
+            limit: "上限：初回保証料 50,000円等（要確認）",
+            url: "https://www.city.sumida.lg.jp/kenko_fukushi/seikatuhukusi/zyosei_bosi_katei_so.html"
+        },
+        {
+            city: "江東区",
+            title: "養育費確保支援事業",
+            outline: "養育費の取り決めに関する公正証書の作成や、家庭裁判所への調停申し立て、ADRの利用等にかかる経費を補助します。電子申請にも対応。",
+            limit: "上限：規定に準ずる",
+            url: "https://www.city.koto.lg.jp/281012/kodomo/kosodate/service/youikuhi.html"
+        },
+        {
+            city: "目黒区",
+            title: "養育費確保支援事業",
+            outline: "公正証書等作成費用（公証人手数料等）や、民間保証会社との初回保証料を助成します。作成した日から6カ月以内の申請が必要です。",
+            limit: "上限：公正証書等 43,000円等（要確認）",
+            url: "https://www.city.meguro.tokyo.jp/kosodateshien/kosodatekyouiku/kosodate/r31001youikuhi.html"
+        },
+        {
+            city: "世田谷区",
+            title: "養育費確保支援事業",
+            outline: "養育費の取り決めにかかる公正証書等の作成費用や、相手方と取り決めた養育費が支払われないときの強制執行申立てにかかる費用を一部助成します。",
+            limit: "上限：公正証書等 49,000円 / 強制執行等 150,000円",
+            url: "https://www.city.setagaya.lg.jp/02413/31095.html"
+        },
+        {
+            city: "渋谷区",
+            title: "養育費に関する公正証書作成手数料等補助金",
+            outline: "養育費の継続的な履行を支援するため、公正証書作成等費用や、保証会社との契約にかかる初回保証料を補助します。",
+            limit: "上限：要確認",
+            url: "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/1d7ef0cb67164691acc2a0dd7f5e6c8f/youikuhi_tesuuryouhojo_annnai_20260401_.pdf"
+        },
+        {
+            city: "杉並区",
+            title: "ひとり親家庭等のための養育費確保支援事業",
+            outline: "養育費の取り決めに係る公正証書の作成費用、または保証会社と養育費保証契約を締結する際の初回保証料を補助します。",
+            limit: "公正証書等：上限43,000円 / 保証料：上限50,000円",
+            url: "https://www.city.suginami.tokyo.jp/s053/1717.html"
+        },
+        {
+            city: "北区",
+            title: "ひとり親家庭養育費確保支援事業",
+            outline: "公正証書の作成費用、養育費立替保証契約の初回保証料、および裁判外紛争解決手続（ADR）の利用料を助成します。",
+            limit: "公正証書：50,000円 / 保証料：50,000円 / ADR：30,000円",
+            url: "https://www.city.kita.lg.jp/children-edu/childcare/1002833/1002848/1016857.html"
+        },
+        {
+            city: "板橋区",
+            title: "養育費確保支援補助金",
+            outline: "公正証書等作成経費や保証会社との養育費立替保証契約時の初回保証料にかかる経費を補助します。事前相談が必要です。",
+            limit: "上限：公証人手数料 43,000円 / ADR等 20,000円",
+            url: "https://www.city.itabashi.tokyo.jp/kosodate/hitorioya/1034240/1034241.html"
+        },
+        {
+            city: "立川市",
+            title: "養育費確保支援事業",
+            outline: "養育費の取り決めに係る公正証書等の作成経費や、保証会社との初回保証料を補助します。※作成及び契約前に要相談",
+            limit: "公正証書等：43,000円 / 保証料：50,000円",
+            url: "https://www.city.tachikawa.lg.jp/kosodate/m-kosodate/1004938/1004955.html"
+        },
+        {
+            city: "府中市",
+            title: "養育費確保支援事業補助金",
+            outline: "公正証書等の作成、保証会社との養育費保証契約、または裁判外紛争解決手続（ADR）による調停にかかった費用を補助します。",
+            limit: "上限：規定に準ずる",
+            url: "https://www.city.fuchu.tokyo.jp/kosodate/shussan/hitorioya-sekatushien/youikuhi.html"
+        },
+        {
+            city: "清瀬市",
+            title: "養育費確保支援事業補助金",
+            outline: "養育費に関する公正証書等の作成に要した公証人手数料、戸籍抄本等取得経費や収入印紙代を補助します。",
+            limit: "公正証書等作成：43,000円 / 戸籍取得等：7,600円",
+            url: "https://www.city.kiyose.lg.jp/kosodatekyouiku/kosodatehojo/hitorioyakateihojo/1010160.html"
+        },
+        {
+            city: "西東京市",
+            title: "養育費確保サポート",
+            outline: "養育費の継続的な履行を支援するため、公正証書作成費用や保証契約の初回保証料の一部を助成します。",
+            limit: "上限：要確認",
+            url: "https://www.city.nishitokyo.lg.jp/kosodate/hitorioyakatei/youikuhikakuhosienn.html"
+        }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initCities();
+        renderResults(db); 
+    });
+
+    function initCities() {
+        const citySelect = document.getElementById('citySelect');
+        const cities = [...new Set(db.map(item => item.city))].sort((a, b) => a.localeCompare(b, 'ja'));
+        
+        cities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            citySelect.appendChild(option);
+        });
+    }
+
+    function filterResults() {
+        const cityValue = document.getElementById('citySelect').value;
+        const keyword = document.getElementById('keywordInput').value.toLowerCase();
+
+        const filteredDb = db.filter(item => {
+            const matchCity = cityValue === "" || item.city === cityValue;
+            const searchText = `${item.city} ${item.title} ${item.outline}`.toLowerCase();
+            const matchKeyword = keyword === "" || searchText.includes(keyword);
+
+            return matchCity && matchKeyword;
+        });
+
+        renderResults(filteredDb);
+    }
+
+    function renderResults(data) {
+        const container = document.getElementById('resultsContainer');
+        const noResult = document.getElementById('noResult');
+        const countDisplay = document.getElementById('resultCount');
+        
+        container.innerHTML = ''; 
+
+        if (data.length === 0) {
+            noResult.style.display = 'block';
+            countDisplay.textContent = '該当する助成金は0件です';
+            return;
+        }
+
+        noResult.style.display = 'none';
+        countDisplay.textContent = `${data.length}件の自治体情報が見つかりました`;
+
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="badge">東京都</span>
+                    <h3>${item.city}</h3>
+                </div>
+                <div class="card-title">${item.title}</div>
+                <p>${item.outline}</p>
+                <div class="limit-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span>${item.limit}</span>
+                </div>
+                <a href="${item.url}" target="_blank" class="btn-link">公式ページで詳細・申請方法を確認する ＞</a>
+            `;
+            container.appendChild(card);
+        });
+    }
+</script>
+
+</body>
+</html>
