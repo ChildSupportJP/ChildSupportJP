@@ -93,7 +93,7 @@
             background: var(--primary-light);
             padding: 40px 20px;
             border-radius: var(--r);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-align: center;
             border: 2px solid var(--primary);
             position: relative;
@@ -131,6 +131,41 @@
             border: 1px solid var(--light);
             position: relative;
             z-index: 1;
+        }
+
+        /* リンク切れに関する注意書き */
+        .notice-box {
+            background: var(--white);
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border-top: 1px solid var(--light);
+            border-right: 1px solid var(--light);
+            border-bottom: 1px solid var(--light);
+        }
+        .notice-box-title {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.05em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .notice-box p {
+            margin: 0 0 10px 0;
+        }
+        .notice-box-keyword {
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--ink);
+            border: 1px dashed var(--mid);
+            text-align: center;
         }
 
         /* 検索パネル */
@@ -325,6 +360,17 @@
         <div class="last-updated">最終更新日：2026年4月2日</div>
     </div>
 
+    <div class="notice-box">
+        <div class="notice-box-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            リンク切れの場合の探し方
+        </div>
+        <p>自治体のWebサイトがリニューアルされた影響で、リンク先のページが移動したり、エラーになってしまう場合があります。その際は、Google等の検索窓で以下のキーワードを入力して最新のページをお探しください。</p>
+        <div class="notice-box-keyword">
+            「〇〇区（市） 養育費確保支援事業」 または 「〇〇区（市） 養育費 補助」
+        </div>
+    </div>
+
     <div class="search-panel">
         <div class="search-group">
             <label for="citySelect">市区町村（五十音順）</label>
@@ -395,10 +441,10 @@
         },
         {
             city: "台東区",
-            title: "養育費確保支援事業",
+            title: "養育費受け取り支援事業",
             outline: "養育費の取り決めに係る公正証書等の作成経費を補助します。",
             limit: "上限：30,000円",
-            url: "https://www.city.taito.lg.jp/"
+            url: "https://www.city.taito.lg.jp/kosodatekyouiku/kosodate/mokutei/hitorioya/yoikuhi/youikuhiuketorisienn.html"
         },
         {
             city: "墨田区",
@@ -416,10 +462,10 @@
         },
         {
             city: "品川区",
-            title: "養育費確保支援事業",
+            title: "養育費相談支援事業",
             outline: "公正証書作成費用や民間保証会社との初回保証料、およびADR（裁判外紛争解決手続）の利用費用を助成します。",
             limit: "上限：公正証書等 50,000円 / 保証料 50,000円",
-            url: "https://www.city.shinagawa.tokyo.jp/"
+            url: "https://www.city.shinagawa.tokyo.jp/PC/kodomo/kodomo-hitorioya/youikuhi.html"
         },
         {
             city: "目黒区",
@@ -430,10 +476,10 @@
         },
         {
             city: "大田区",
-            title: "ひとり親家庭等養育費確保支援事業",
+            title: "養育費に関する公正証書等作成促進補助事業",
             outline: "養育費の取り決めに係る公正証書等の作成費用を助成します。",
-            limit: "上限：30,000円",
-            url: "https://www.city.ota.tokyo.jp/"
+            limit: "上限：30,000円等",
+            url: "https://www.city.ota.tokyo.jp/seikatsu/kodomo/kodomo_ouen/youikuhi.html"
         },
         {
             city: "世田谷区",
@@ -447,14 +493,14 @@
             title: "養育費に関する公正証書作成手数料等補助金",
             outline: "養育費の継続的な履行を支援するため、公正証書作成等費用や、保証会社との契約にかかる初回保証料を補助します。",
             limit: "上限：要確認",
-            url: "https://files.city.shibuya.tokyo.jp/assets/12995aba8b194961be709ba879857f70/1d7ef0cb67164691acc2a0dd7f5e6c8f/youikuhi_tesuuryouhojo_annnai_20260401_.pdf"
+            url: "https://www.city.shibuya.tokyo.jp/kodomo/hitorioya/h-teate/youikuhi_hojokin.html"
         },
         {
             city: "中野区",
-            title: "養育費確保支援事業",
+            title: "養育費に関する公正証書等作成費用補助",
             outline: "公正証書等作成経費、保証会社との初回保証料、およびADRの利用経費を補助します。",
             limit: "上限：公正証書等 50,000円 / 保証料 50,000円",
-            url: "https://www.city.tokyo-nakano.lg.jp/"
+            url: "https://www.city.tokyo-nakano.lg.jp/kosodate/kosodatesite_ohirune/mokuteki/hitorioya/teate_jyosei/koseisyosyo.html"
         },
         {
             city: "杉並区",
@@ -465,10 +511,10 @@
         },
         {
             city: "豊島区",
-            title: "養育費確保支援事業",
+            title: "養育費に関する公正証書等作成促進補助金",
             outline: "公正証書等の作成費用を全額補助するほか、養育費保証契約の初回保証料も助成しています。",
-            limit: "上限：公正証書等 全額 / 保証料 50,000円",
-            url: "https://www.city.toshima.lg.jp/"
+            limit: "上限：公正証書等 全額 / 保証料 50,000円等",
+            url: "https://www.city.toshima.lg.jp/259/2002251331.html"
         },
         {
             city: "北区",
@@ -479,10 +525,10 @@
         },
         {
             city: "荒川区",
-            title: "養育費確保支援事業",
+            title: "養育費に関する公正証書等作成促進補助金",
             outline: "養育費の取り決めに要する公正証書等の作成費用を助成します。",
             limit: "上限：最大30,000円",
-            url: "https://www.city.arakawa.tokyo.jp/"
+            url: "https://www.city.arakawa.tokyo.jp/a035/kosodate/hitorioyakatei/youikuhi_kakuho.html"
         },
         {
             city: "板橋区",
@@ -493,31 +539,31 @@
         },
         {
             city: "練馬区",
-            title: "養育費確保支援補助金",
-            outline: "公正証書の作成費用やADR（裁判外紛争解決手続）の利用費用などを助成します。",
+            title: "養育費取り決めに関する支援",
+            outline: "公正証書の作成費用や裁判・調停の費用などを助成します。ひとり親家庭の方向けの各種支援制度の中でご案内しています。",
             limit: "上限：要確認",
-            url: "https://www.city.nerima.tokyo.jp/"
+            url: "https://www.city.nerima.tokyo.jp/kurashi/jinken/hitorioya/index.html"
         },
         {
             city: "足立区",
-            title: "養育費確保支援事業",
+            title: "養育費の取り決め・確保に関する補助",
             outline: "公正証書等の作成経費、および保証会社との養育費保証契約における初回保証料を補助します。",
             limit: "上限：公正証書等 50,000円 / 保証料 50,000円",
-            url: "https://www.city.adachi.tokyo.jp/"
+            url: "https://www.city.adachi.tokyo.jp/oyako/youikuhi2021.html"
         },
         {
             city: "葛飾区",
-            title: "養育費確保支援事業",
+            title: "養育費の受け取り支援",
             outline: "公正証書等作成費用のほか、保証会社との初回保証料、ADR利用費用、弁護士相談費用も助成しています。",
             limit: "上限：公正証書等 43,000円 等（要確認）",
-            url: "https://www.city.katsushika.lg.jp/"
+            url: "https://www.city.katsushika.lg.jp/kosodate/1000056/1002341/1026583.html"
         },
         {
             city: "江戸川区",
-            title: "養育費確保支援事業",
-            outline: "養育費の取り決めに要する公正証書の作成費用などを助成します。",
+            title: "養育費確保支援補助金",
+            outline: "養育費の取り決めに要する公正証書の作成費用や調停費用を助成します。",
             limit: "上限：43,000円",
-            url: "https://www.city.edogawa.tokyo.jp/"
+            url: "https://www.city.edogawa.tokyo.jp/e090/kosodate/kosodate/teateshien/shisaku/youikuhi_torikime.html"
         },
         {
             city: "立川市",
