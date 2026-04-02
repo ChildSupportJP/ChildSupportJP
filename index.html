@@ -350,6 +350,36 @@ body {
   color: #9d462f;
 }
 
+/* 助成金案内ボックス（追加） */
+.subsidy-box {
+  background: var(--secondary-light);
+  border: 2px solid #a7d8ce;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.subsidy-box-title {
+  font-weight: 700;
+  color: #1f6b5a;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.subsidy-box-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #1f6b5a;
+  font-weight: 700;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.subsidy-box-link:hover {
+  color: var(--primary);
+}
+
 /* 角丸ピルボタン */
 .card-actions {
   display: flex;
@@ -684,6 +714,16 @@ body {
       <div class="card-desc">
         離婚時や、養育費の取り決めを新しく行う際に交わす「合意書」を簡単に作成できます。
       </div>
+
+      <div class="subsidy-box">
+        <div class="subsidy-box-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <span>お住まいの自治体が養育費の合意に関して助成金を設けていることがあります</span>
+        </div>
+        <div>合意書の作成費用（公証人手数料など）や、保証会社への初回保証料が補助の対象になる場合があります。</div>
+        <a href="./tokyo_search.html" target="_blank" class="subsidy-box-link">▶︎ 東京都の方の助成金一覧はこちら</a>
+      </div>
+
       <div class="card-actions">
         <a href="gouisho/" class="card-btn primary-btn">ツールを開く ＞</a>
       </div>
