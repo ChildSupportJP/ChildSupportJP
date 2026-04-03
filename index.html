@@ -279,7 +279,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   margin-bottom: 60px;
-  align-items: start; /* ← 【追加】カードを上端で揃え、高さを中身に合わせる（不自然な空白を解消） */
+  align-items: start;
 }
 
 .card {
@@ -353,7 +353,7 @@ body {
   color: #9d462f;
 }
 
-/* 助成金案内ボックス（追加） */
+/* 助成金案内ボックス */
 .subsidy-box {
   background: var(--secondary-light);
   border: 2px solid #a7d8ce;
@@ -394,7 +394,7 @@ body {
   text-decoration: none;
   text-align: center;
   padding: 14px;
-  border-radius: 50px; /* 完全に丸いボタン */
+  border-radius: 50px;
   font-weight: 700;
   font-size: 14px;
   transition: all .2s;
@@ -419,7 +419,7 @@ body {
   color: var(--ink);
 }
 
-/* FAQセクション（吹き出しスタイル） */
+/* FAQセクション */
 .faq-section {
   background: var(--white);
   border-radius: var(--r);
@@ -488,7 +488,6 @@ body {
   position: relative;
   white-space: pre-line;
 }
-/* 吹き出しのしっぽ */
 .faq-answer::before {
   content: '';
   position: absolute;
@@ -512,7 +511,7 @@ body {
   color: var(--primary);
 }
 
-/* ========== 開発者プロフィール ========== */
+/* 開発者プロフィール */
 .creator-section {
   margin-bottom: 50px;
 }
@@ -663,7 +662,7 @@ body {
       法律の専門知識がなくても、質問に答えていくだけで、相手方と合意する書類や裁判所に提出する書類（PDF/Word）を無料で自動作成できます。<br>
       まずは左の「計算ツール」で相場を知ることから始めてみましょう！
       <div class="privacy-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         入力データは端末内でのみ処理され、外部へ送信されません
       </div>
     </div>
@@ -677,7 +676,7 @@ body {
       <div class="card-title">養育費かんたん計算ツール</div>
       
       <div class="target-badge target-all">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         <div>
           <strong style="font-size: 13px;">対象：どなたでもご利用可能</strong><br>
           まずは相場（目安）を知りたい方に。
@@ -699,7 +698,7 @@ body {
       <div class="card-title">養育費合意書 作成ツール</div>
       
       <div class="target-badge target-all">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
         <div>
           <strong style="font-size: 13px;">対象：どなたでも</strong><br>
           これから離婚する方・すでに離婚した方。
@@ -707,7 +706,7 @@ body {
       </div>
 
       <div class="target-badge benefit-badge">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
         <div>
           <strong style="font-size: 13px;">【重要】先取特権の対象に</strong><br>
           2026年4月以降に作成することで、公正証書なしで強力な給与差押えが可能になります。
@@ -720,7 +719,7 @@ body {
 
       <div class="subsidy-box">
         <div class="subsidy-box-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           <span>お住まいの自治体が養育費の取り決めに関して助成金を設けていることがあります</span>
         </div>
         <div>公正証書を作る場合の作成費用や、調停の費用、保証会社への初回保証料などが補助の対象になる場合がありますので、参考にしてください。このツールは、公正証書作成には対応しておりません。</div>
@@ -739,7 +738,7 @@ body {
       <div class="card-title">給与差押え書類 作成ツール</div>
       
       <div class="target-badge target-limited">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         <div>
           <strong style="font-size: 13px;">【対象】以下のいずれか</strong><br>
           ・2026年4月以降に離婚した方<br>
@@ -763,7 +762,7 @@ body {
       <div class="card-title">財産開示書類 作成ツール</div>
       
       <div class="target-badge target-limited">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         <div>
           <strong style="font-size: 13px;">【対象】給与の差押えをしたいが、相手の勤務先の情報が不明な方</strong>
         </div>
