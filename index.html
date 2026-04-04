@@ -27,7 +27,7 @@
       "name": "どのツールから使えばいいか分かりません。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "状況に合わせて以下の順でご利用ください。\n①金額の相場（目安）を知りたい ⇒ 「計算ツール」\n②これから取り決めをする・約束を書面にしたい ⇒ 「合意書 作成ツール」\n③未払いが発生しており、相手の勤務先が分かる ⇒ 「給与差押え書類 作成ツール」\n④未払いが発生しており、相手の勤務先が分からない ⇒ 「財産開示書類 作成ツール」"
+        "text": "状況に合わせて以下の順でご利用ください。\n①一般的な疑問やルールについて質問したい ⇒ 「AIアシスタント」\n②金額の相場（目安）を知りたい ⇒ 「計算ツール」\n③これから取り決めをする・約束を書面にしたい ⇒ 「合意書 作成ツール」\n④未払いが発生しており、相手の勤務先が分かる ⇒ 「給与差押え書類 作成ツール」\n⑤未払いが発生しており、相手の勤務先が分からない ⇒ 「財産開示書類 作成ツール」"
       }
     },
     {
@@ -175,7 +175,7 @@ body {
   margin-bottom: 30px;
 }
 
-/* ▼ ロゴ用のスタイル（丸く切り抜き、画像を拡大して余白をなくす） ▼ */
+/* ▼ ロゴ用のスタイル ▼ */
 .hero-logo-wrapper {
   width: 140px;
   height: 140px;
@@ -183,7 +183,7 @@ body {
   border-radius: 50%;
   background: var(--white);
   box-shadow: 0 8px 24px rgba(244, 140, 113, 0.25);
-  overflow: hidden; /* 枠からはみ出た部分を丸く切り取る */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -194,7 +194,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.25); /* ←ここの数値を大きくするとロゴがズームされます */
+  transform: scale(1.25);
   display: block;
 }
 
@@ -212,7 +212,7 @@ body {
   align-items: flex-end;
   justify-content: center;
   gap: 16px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 .guide-char {
   width: 60px;
@@ -271,6 +271,97 @@ body {
   font-weight: 700;
   margin-top: 12px;
   border: 1px dashed #bbf7d0;
+}
+
+/* ▼ 新規追加：AIアシスタントバナー ▼ */
+.ai-banner {
+  background: var(--white);
+  border: 2px solid var(--secondary);
+  border-radius: var(--r);
+  padding: 24px 30px;
+  margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.ai-banner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(108, 184, 169, 0.15);
+}
+.ai-banner::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: -50px;
+  width: 180px;
+  height: 180px;
+  background: var(--secondary-light);
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.6;
+}
+.ai-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 1;
+}
+.ai-banner-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--secondary);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ai-banner-text h3 {
+  font-size: 18px;
+  color: var(--ink);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-beta-badge {
+  font-size: 11px;
+  background: var(--warning);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+.ai-banner-text p {
+  font-size: 13px;
+  color: var(--mid);
+  line-height: 1.6;
+}
+.ai-banner-btn {
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--secondary);
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(108, 184, 169, 0.3);
+  transition: all 0.2s;
+}
+.ai-banner-btn:hover {
+  background: #559f91;
+  box-shadow: 0 6px 16px rgba(108, 184, 169, 0.4);
 }
 
 /* カードのグリッド */
@@ -624,6 +715,21 @@ body {
   color: var(--mid);
 }
 
+/* スマホ表示の調整 */
+@media (max-width: 768px) {
+  .ai-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 20px;
+  }
+  .ai-banner-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .ai-banner-btn {
+    width: 100%;
+  }
+}
 @media (max-width: 600px) {
   .hero { padding: 40px 16px 30px; }
   .main { padding: 30px 16px; }
@@ -668,6 +774,18 @@ body {
     </div>
   </section>
 
+  <section class="ai-banner">
+    <div class="ai-banner-content">
+      <div class="ai-banner-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="ai-banner-text">
+        <h3>養育費 AIアシスタント <span class="ai-beta-badge">β版</span></h3>
+        <p>養育費の基本的なルールや手続きについて、24時間いつでもAIに質問できます。どのツールを使えばいいか迷った時や、専門用語が分からない時にご活用ください。</p>
+      </div>
+    </div>
+    <a href="ai-chat.html" class="ai-banner-btn">AIに質問する ＞</a>
+  </section>
   <section class="grid">
     <div class="card">
       <div class="card-icon mint">
@@ -785,10 +903,11 @@ body {
     <details class="faq-item">
       <summary><span class="q-icon">Q</span>どのツールから使えばいいか分かりません。</summary>
       <div class="faq-answer"><span class="a-icon">A.</span>状況に合わせて以下の順でご利用ください。
-①金額の相場（目安）を知りたい ⇒ 「計算ツール」
-②これから取り決めをする・約束を書面にしたい ⇒ 「合意書 作成ツール」
-③未払いが発生しており、相手の勤務先が分かる ⇒ 「給与差押え書類 作成ツール」
-④未払いが発生しており、相手の勤務先が分からない ⇒ 「財産開示書類 作成ツール」</div>
+①一般的な疑問やルールについて質問したい ⇒ 「AIアシスタント」
+②金額の相場（目安）を知りたい ⇒ 「計算ツール」
+③これから取り決めをする・約束を書面にしたい ⇒ 「合意書 作成ツール」
+④未払いが発生しており、相手の勤務先が分かる ⇒ 「給与差押え書類 作成ツール」
+⑤未払いが発生しており、相手の勤務先が分からない ⇒ 「財産開示書類 作成ツール」</div>
     </details>
 
     <details class="faq-item">
