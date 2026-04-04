@@ -33,7 +33,7 @@
     height: 100vh;
   }
   
-  /* ヘッダーのレイアウトを変更（左右に要素を配置） */
+  /* ヘッダーのレイアウト */
   .header {
     background: var(--white);
     padding: 16px 20px;
@@ -54,8 +54,28 @@
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
   }
-  .header-title { font-weight: 700; font-size: 18px; }
-  .header-subtitle { font-size: 12px; color: var(--mid); }
+  .header-title { 
+    font-weight: 700; 
+    font-size: 18px; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  /* 新規追加：法改正対応バッジ */
+  .update-badge {
+    font-size: 11px;
+    background: #fff0f0;
+    color: var(--alert-crimson);
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid #fbd2c7;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .header-subtitle { font-size: 12px; color: var(--mid); margin-top: 2px; }
   
   /* トップへ戻るリンクのスタイル */
   .back-link {
@@ -198,6 +218,11 @@
     0%, 80%, 100% { transform: scale(0); }
     40% { transform: scale(1); }
   }
+
+  /* スマホでの表示調整 */
+  @media (max-width: 600px) {
+    .header-title { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
 </style>
 </head>
 <body>
@@ -208,7 +233,10 @@
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     </div>
     <div>
-      <div class="header-title">養育費 AIアシスタント</div>
+      <div class="header-title">
+        養育費 AIアシスタント
+        <span class="update-badge">2026年4月 法改正対応</span>
+      </div>
       <div class="header-subtitle">養育費に関する一般的な疑問にお答えします</div>
     </div>
   </div>
@@ -234,7 +262,7 @@
   </div>
   
   <div class="message ai">
-    <div class="bubble">こんにちは！養育費サポートJPのAIアシスタントです。<br>養育費や手続きについて、分からないことがあれば入力してください。</div>
+    <div class="bubble">こんにちは！養育費サポートJPのAIアシスタントです。<br><br><strong style="color: #c8102e;">【2026年4月1日施行の最新法改正】</strong>にも対応していますので、法定養育費や新しい給与差押えのルールなど、養育費や手続きについて分からないことがあれば入力してください。</div>
   </div>
 </div>
 
