@@ -98,6 +98,16 @@
     margin-bottom: 10px;
   }
 
+  .disclaimer-box a {
+    color: var(--secondary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .disclaimer-box a:hover {
+    text-decoration: underline;
+  }
+
   .input-area {
     background: var(--white);
     padding: 16px 20px;
@@ -167,10 +177,18 @@
 
 <div class="chat-container" id="chatContainer">
   <div class="disclaimer-box">
-    <strong>⚠️ ご利用にあたっての注意（必ずお読みください）</strong><br>
-    ・AIによる自動回答のため、内容の正確性を完全に保証するものではありません。<br>
-    ・個別の事案に対する法的なアドバイス（法律相談）を行うものではありません。最終的な判断は専門家にご相談ください。<br>
-    ・個人情報（お名前、住所、連絡先など）は絶対に入力しないでください。
+    <strong>⚠️ ご利用にあたっての注意（必ずお読みください）</strong>
+    <ul style="margin-top: 8px; margin-bottom: 12px; padding-left: 20px; line-height: 1.6;">
+      <li>AIによる自動回答のため、内容の正確性を完全に保証するものではありません。最終的な判断は専門家にご相談ください。</li>
+      <li>本アシスタントはAIを利用して回答を生成するため、質問内容の<strong>外部通信が発生</strong>します。</li>
+      <li>入力された情報の<strong>送信先は Google LLC</strong> となります。</li>
+      <li>送信されたデータは、Googleのサービス向上や<strong>AIモデルの学習に用いられる場合</strong>があります。そのため、ご自身や相手方の氏名、住所、電話番号など<strong>個人を特定できる情報は絶対に入力しないでください。</strong></li>
+    </ul>
+    <div style="margin-top: 8px; font-size: 12px;">
+      詳細なデータの取り扱いについては、以下の規約等をご確認ください。<br>
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">・Google プライバシー ポリシー</a><br>
+      <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">・Gemini API 追加利用規約</a>
+    </div>
   </div>
   
   <div class="message ai">
@@ -188,6 +206,7 @@
 </div>
 
 <script>
+// URLのタイポ（https'//...）を修正しました
 const WORKER_URL = "https://childsupport-ai.childsupportjp.workers.dev";
 
 const chatContainer = document.getElementById('chatContainer');
