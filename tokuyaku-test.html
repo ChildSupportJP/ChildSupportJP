@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>特約条項検索 プロトタイプ</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #4a403d;
+    --mid: #857c7a;
+    --light: #e8e0de;
+    --bg: #fdfcf9;
+    --white: #ffffff;
+    --primary: #f48c71;
+    --secondary: #6cb8a9;
+    --secondary-light: #f0f9f7;
+    --shadow: 0 8px 24px rgba(74, 64, 61, 0.06);
+  }
+  body {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* テスト用の特約事項入力エリア */
+  .input-section {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+  .input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .input-header label { font-weight: 700; font-size: 16px; }
+  
+  /* 検索ボタン */
+  .search-btn {
+    background: var(--secondary-light);
+    color: #1f6b5a;
+    border: 2px solid var(--secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .search-btn:hover {
+    background: var(--secondary);
+    color: var(--white);
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--light);
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  textarea:focus { border-color: var(--secondary); outline: none; }
+
+  /* ▼ モーダル（ポップアップ）のスタイル ▼ */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(74, 64, 61, 0.4);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 1000;
+    padding: 20px; box-sizing: border-box;
+  }
+  .modal-content {
+    background: var(--white);
+    width: 100%; max-width: 600px;
+    max-height: 85vh;
+    border-radius: 20px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+  }
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 2px solid var(--light);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-title { font-size: 18px; font-weight: 700; }
+  .close-modal {
+    cursor: pointer; font-size: 24px; color: var(--mid);
+    line-height: 1; transition: color 0.2s;
+  }
+  .close-modal:hover { color: var(--ink); }
+
+  .modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  /* 検索・絞り込みエリア */
+  .search-box {
+    margin-bottom: 16px;
+  }
+  .search-box input {
+    width: 100%; padding: 12px 16px;
+    border: 2px solid var(--light); border-radius: 50px;
+    font-size: 15px; box-sizing: border-box; outline: none;
+  }
+  .search-box input:focus { border-color: var(--secondary); }
+  
+  .filter-tags {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .filter-tag {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;
+    background: var(--light); color: var(--mid); cursor: pointer; transition: all 0.2s;
+  }
+  .filter-tag.active {
+    background: var(--secondary); color: var(--white);
+  }
+
+  /* 条項リスト */
+  .clause-item {
+    border: 2px solid var(--light); border-radius: 12px;
+    padding: 16px; margin-bottom: 16px; transition: border-color 0.2s;
+  }
+  .clause-item:hover { border-color: var(--secondary); }
+  .clause-item-header {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px;
+  }
+  .clause-title { font-weight: 700; font-size: 15px; color: var(--ink); }
+  .clause-text { font-size: 14px; color: var(--mid); line-height: 1.6; white-space: pre-wrap; }
+  
+  .insert-btn {
+    background: var(--primary); color: var(--white); border: none;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+  }
+  .insert-btn:hover { background: #e2765b; }
+  
+  .no-result { text-align: center; color: var(--mid); font-size: 14px; padding: 20px; display: none; }
+</style>
+</head>
+<body>
+
+<div class="input-section">
+  <div class="input-header">
+    <label>特約事項（自由記述）</label>
+    <button class="search-btn" id="openModalBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      条項例を探す
+    </button>
+  </div>
+  <textarea id="specialClauseInput" rows="6" placeholder="追加の約束事があれば入力してください。"></textarea>
+</div>
+
+<div class="modal-overlay" id="clauseModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">特約事項の条項例</div>
+      <div class="close-modal" id="closeModalBtn">&times;</div>
+    </div>
+    
+    <div class="modal-body">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="キーワードで探す（例：学費、医療費、スマホ）">
+      </div>
+      <div class="filter-tags" id="filterTags">
+        <div class="filter-tag active" data-cat="all">すべて</div>
+        <div class="filter-tag" data-cat="education">学費・進学</div>
+        <div class="filter-tag" data-cat="medical">医療費</div>
+        <div class="filter-tag" data-cat="visitation">面会交流</div>
+        <div class="filter-tag" data-cat="other">その他</div>
+      </div>
+      
+      <div id="clauseList"></div>
+      <div class="no-result" id="noResultMsg">一致する条項例が見つかりませんでした。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- 1. 法律専門家が作成する条項データ（JSON形式） ---
+const clauseData = [
+  {
+    id: 1,
+    category: "education",
+    title: "私立学校・大学への進学費用",
+    text: "甲及び乙は、子が私立学校（小学校、中学校、高等学校）又は大学等への進学を希望した場合、その進学に要する費用及び学費の負担について、別途誠実に協議して定めるものとする。"
+  },
+  {
+    id: 2,
+    category: "education",
+    title: "学習塾・習い事の費用",
+    text: "甲及び乙は、子の学習塾、予備校、各種習い事等に要する費用について、事前に双方で合意した場合には、その負担割合について別途協議して定める。"
+  },
+  {
+    id: 3,
+    category: "medical",
+    title: "高額な医療費の負担",
+    text: "子が病気又は負傷により入院、手術等を要し、通常の養育費では賄えない高額な特別医療費が発生した場合、甲及び乙は誠実に協議してその負担割合を定めるものとする。"
+  },
+  {
+    id: 4,
+    category: "medical",
+    title: "歯列矯正の費用",
+    text: "子の歯列矯正に要する費用については、医学的な必要性等を考慮の上、甲及び乙が別途協議してその負担割合を定める。"
+  },
+  {
+    id: 5,
+    category: "visitation",
+    title: "オンラインでの面会交流",
+    text: "同居親は、子が希望し、かつ子の生活状況に支障のない範囲において、スマートフォンやタブレット等を用いたビデオ通話による非同居親との面会交流（オンライン面会）を適宜認めるものとする。"
+  },
+  {
+    id: 6,
+    category: "visitation",
+    title: "写真や学校行事の共有",
+    text: "同居親は、非同居親に対し、定期的に（例：数ヶ月に1回程度）子の写真等を送付するとともに、子の学校行事（運動会、学習発表会等）の日程について事前に通知するよう努めるものとする。"
+  },
+  {
+    id: 7,
+    category: "other",
+    title: "住所・連絡先の変更通知義務",
+    text: "甲及び乙は、自身の住所、連絡先（電話番号、メールアドレス等）又は勤務先を変更したときは、遅滞なく他方に対してその旨を通知しなければならない。"
+  },
+  {
+    id: 8,
+    category: "other",
+    title: "事情変更による養育費の見直し",
+    text: "甲又は乙の収入の著しい増減、子の進学・病気など、本合意成立時には予見できなかった重大な事情の変更が生じたときは、甲及び乙は養育費の額及び支払条件の変更について誠実に協議する。"
+  }
+];
+
+// --- 2. UIの制御ロジック ---
+const openBtn = document.getElementById('openModalBtn');
+const closeBtn = document.getElementById('closeModalBtn');
+const modal = document.getElementById('clauseModal');
+const clauseList = document.getElementById('clauseList');
+const searchInput = document.getElementById('searchInput');
+const filterTags = document.querySelectorAll('.filter-tag');
+const noResultMsg = document.getElementById('noResultMsg');
+const specialClauseInput = document.getElementById('specialClauseInput');
+
+let currentCategory = 'all';
+
+// リストを描画する関数
+function renderClauses(keyword = '') {
+  clauseList.innerHTML = ''; // 一旦クリア
+  let count = 0;
+
+  clauseData.forEach(clause => {
+    // カテゴリ絞り込み
+    if (currentCategory !== 'all' && clause.category !== currentCategory) return;
+    
+    // キーワード絞り込み
+    if (keyword) {
+      const targetText = (clause.title + clause.text).toLowerCase();
+      if (!targetText.includes(keyword.toLowerCase())) return;
+    }
+
+    count++;
+    
+    // HTML要素の作成
+    const div = document.createElement('div');
+    div.className = 'clause-item';
+    div.innerHTML = `
+      <div class="clause-item-header">
+        <div class="clause-title">${clause.title}</div>
+        <button class="insert-btn" onclick="insertClause('${clause.id}')">追加する</button>
+      </div>
+      <div class="clause-text">${clause.text}</div>
+    `;
+    clauseList.appendChild(div);
+  });
+
+  // 結果が0件の場合のメッセージ
+  noResultMsg.style.display = count === 0 ? 'block' : 'none';
+}
+
+// テキストエリアに挿入する関数
+window.insertClause = function(id) {
+  const clause = clauseData.find(c => c.id == id);
+  if (!clause) return;
+
+  const currentText = specialClauseInput.value;
+  // すでに文字が入っている場合は改行を挟む
+  const newText = currentText ? currentText + '\n\n' + clause.text : clause.text;
+  
+  specialClauseInput.value = newText;
+  
+  // 挿入後、モーダルを閉じる
+  modal.style.display = 'none';
+  // テキストエリアにフォーカスを当てる
+  specialClauseInput.focus();
+};
+
+// --- イベントリスナー ---
+// モーダル開閉
+openBtn.addEventListener('click', () => {
+  modal.style.display = 'flex';
+  renderClauses(searchInput.value);
+});
+closeBtn.addEventListener('click', () => modal.style.display = 'none');
+// 背景クリックで閉じる
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) modal.style.display = 'none';
+});
+
+// キーワード検索
+searchInput.addEventListener('input', (e) => {
+  renderClauses(e.target.value);
+});
+
+// カテゴリ切り替え
+filterTags.forEach(tag => {
+  tag.addEventListener('click', () => {
+    // アクティブ状態の切り替え
+    filterTags.forEach(t => t.classList.remove('active'));
+    tag.classList.add('active');
+    
+    currentCategory = tag.getAttribute('data-cat');
+    renderClauses(searchInput.value);
+  });
+});
+
+// 初期描画
+renderClauses();
+
+</script>
+</body>
+</html>
