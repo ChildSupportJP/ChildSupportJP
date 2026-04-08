@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E3XNF3Q3PJ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -39,14 +38,6 @@
   --r: 24px;
   --shadow: 0 8px 24px rgba(74, 64, 61, 0.06), 0 2px 6px rgba(74, 64, 61, 0.04);
   --shadow-hover: 0 12px 32px rgba(74, 64, 61, 0.10), 0 4px 10px rgba(74, 64, 61, 0.05);
-
-  /* JSのクラス制御用（旧変数のマッピング） */
-  --blue: var(--secondary);
-  --blue-light: var(--secondary-light);
-  --green: var(--secondary);
-  --green-light: var(--secondary-light);
-  --red: var(--primary);
-  --red-light: var(--primary-light);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -256,7 +247,6 @@ body {
 }
 .fg input[type=text],
 .fg input[type=number],
-.fg input[type=date],
 .fg select {
   width: 100%;
   padding: 12px 14px;
@@ -503,19 +493,21 @@ body {
 }
 .claim-row .fg { margin-bottom: 0; }
 .btn-remove-claim {
-  background: var(--white);
   border: 2px solid var(--light);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 0 16px;
   font-size: 14px;
   font-weight: 700;
   color: var(--mid);
   cursor: pointer;
-  font-family: inherit;
-  transition: all .2s;
+  height: 48px;
+  background: #fff;
+  white-space: nowrap;
   flex-shrink: 0;
-  height: 44px;
-  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
 }
 .btn-remove-claim:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 .claims-count { font-size: 12px; font-weight: 700; color: var(--mid); margin-top: 4px; text-align: right; }
@@ -794,24 +786,27 @@ body {
       </div>
 
       <div class="sec">申立先裁判所・申立日</div>
-      <div class="row">
+      <div class="info" style="margin-top:0">
+        申立日に基づき、各未払い月に対する遅延損害金が申立日までの期間で自動算出されます。
+      </div>
+      <div class="row mt12">
         <div class="fg">
           <label>申立先裁判所名<span class="req">*</span></label>
           <input type="text" id="court_name" placeholder="例：東京地方裁判所">
           <p class="note">※相手方（債務者）の住所を管轄する地方裁判所です。</p>
         </div>
       </div>
-      <div class="row mt12">
+      <div class="row mt12" style="align-items: flex-end;">
         <div class="fg narrow">
-          <label>申立年（西暦）</label>
+          <label>申立年（西暦）<span class="req">*</span></label>
           <input type="number" id="app_year" placeholder="2026" min="2026">
         </div>
         <div class="fg narrow">
-          <label>月</label>
+          <label>月<span class="req">*</span></label>
           <input type="number" id="app_month" placeholder="4" min="1" max="12">
         </div>
         <div class="fg narrow">
-          <label>日</label>
+          <label>日<span class="req">*</span></label>
           <input type="number" id="app_day" placeholder="1" min="1" max="31">
         </div>
       </div>
@@ -820,12 +815,12 @@ body {
       <div class="cost-box">
         <table class="cost-table">
           <tr><td>本申立手数料</td><td><strong>4,000円</strong>（固定）</td></tr>
-          <tr><td>資格証明書交付手数料（円）</td><td><input type="number" id="cert_fee" value="600"></td></tr>
-          <tr id="koseki_row" class="hidden"><td>戸籍全部事項証明書交付手数料（円）</td><td><input type="number" id="koseki_fee" value="450"></td></tr>
-          <tr id="jumin_row" class="hidden"><td>住民票の写し交付手数料（円）</td><td><input type="number" id="jumin_fee" value="300"></td></tr>
+          <tr><td>資格証明書交付手数料（円）</td><td><input type="number" id="cert_fee" value="600" min="0"></td></tr>
+          <tr id="koseki_row" class="hidden"><td>戸籍全部事項証明書交付手数料（円）</td><td><input type="number" id="koseki_fee" value="450" min="0"></td></tr>
+          <tr id="jumin_row" class="hidden"><td>住民票の写し交付手数料（円）</td><td><input type="number" id="jumin_fee" value="300" min="0"></td></tr>
           <tr>
             <td>連絡用郵便切手代（円）<br><span style="font-size:11px;font-weight:normal;">※裁判所によって異なります</span></td>
-            <td><input type="number" id="postage" value="3320"></td>
+            <td><input type="number" id="postage" value="3320" min="0"></td>
           </tr>
           <tr class="cost-total-row"><td>執行費用合計</td><td><strong id="exec_cost_disp">7,920円</strong></td></tr>
         </table>
@@ -915,7 +910,6 @@ body {
       <button class="btn-add-child" id="btn_add_child" onclick="addChild()" type="button">
         ＋ 子どもを追加する
       </button>
-      <p class="note mt8">※ここで入力した生年月日は将来分の計算に自動的に使用されます。</p>
 
       <div class="sec">過去の未払い分（確定期限が到来している債権）</div>
       
@@ -926,6 +920,26 @@ body {
           <div class="fg narrow" style="flex: 0 0 180px;">
             <label>毎月の支払期日<span class="req">*</span></label>
             <select id="global_pay_day_yes"></select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 12px; margin-bottom: 16px;">
+          <div class="fg">
+            <label>遅延損害金の定め（特約）</label>
+            <div class="radios" style="margin-top:0;">
+              <label class="sub-radio-card">
+                <input type="radio" name="delay_rate_type" value="legal" checked onchange="toggleCustomRate()">
+                <span>定めなし（法定利率3%）</span>
+              </label>
+              <label class="sub-radio-card">
+                <input type="radio" name="delay_rate_type" value="custom" onchange="toggleCustomRate()">
+                <span>定めあり（約定利率）</span>
+              </label>
+            </div>
+          </div>
+          <div class="fg narrow hidden" id="custom_rate_fg">
+            <label>約定利率（年％）<span class="req">*</span></label>
+            <input type="number" id="custom_rate_val" placeholder="5" min="1" max="14.6" step="0.1">
           </div>
         </div>
 
@@ -944,7 +958,7 @@ body {
       <div id="past_no_area" class="agmt-section agmt-no hidden">
         <span class="agmt-label">✦ 合意なし（法定養育費）</span>
         <div class="info" style="margin-top:0">
-          法定養育費は子１人あたり月２万円です。全ての子についての未払額を合算して記入してください。
+          法定養育費は子１人あたり月２万円です。全ての子についての未払額を合算して記入してください。（法定の支払期日は毎月末日となります。また遅延損害金は法定利率3%が適用されます）
         </div>
         <div class="claims-container" id="claims_no_container"></div>
         <button class="btn-add-claim" id="btn_add_claim_no" onclick="addClaim('no')" type="button">
@@ -994,7 +1008,7 @@ function saveData() {
     'cr_zip', 'cr_addr', 'cr_name', 'cr_tel', 'cr_fax',
     'dr_zip', 'dr_addr', 'dr_name',
     'td_zip', 'td_addr', 'td_corp', 'td_rep',
-    'global_pay_day_yes'
+    'global_pay_day_yes', 'custom_rate_val'
   ];
   
   var data = {
@@ -1008,12 +1022,15 @@ function saveData() {
   basicInputIds.forEach(id => {
     data.inputs[id] = gv(id);
   });
+  
+  var delayTypeEl = document.querySelector('input[name="delay_rate_type"]:checked');
+  if(delayTypeEl) data.inputs['delay_rate_type'] = delayTypeEl.value;
 
   for (var i = 1; i <= childCount; i++) {
     var fe_type_el = document.querySelector('input[name="fe_type_' + i + '"]:checked');
     data.childrenData.push({
       name: gv('child_name_' + i),
-      birth: gv('child_birth_' + i),
+      birth: getChildBirth(i),
       fs_year: gv('fs_year_' + i),
       fs_month: gv('fs_month_' + i),
       monthly_amt: gv('monthly_amt_' + i),
@@ -1058,7 +1075,6 @@ function loadData(event) {
     try {
       var data = JSON.parse(e.target.result);
       
-      // 復元処理：状態の復元
       if (data.agmtType) {
         handleQ1('no');
         handleQ2('yes');
@@ -1075,7 +1091,7 @@ function loadData(event) {
         'cr_zip', 'cr_addr', 'cr_name', 'cr_tel', 'cr_fax',
         'dr_zip', 'dr_addr', 'dr_name',
         'td_zip', 'td_addr', 'td_corp', 'td_rep',
-        'global_pay_day_yes'
+        'global_pay_day_yes', 'custom_rate_val'
       ];
       basicInputIds.forEach(id => {
         var el = elById(id);
@@ -1083,8 +1099,13 @@ function loadData(event) {
           el.value = data.inputs[id];
         }
       });
+      
+      if (data.inputs && data.inputs['delay_rate_type']) {
+        var radios = document.querySelectorAll('input[name="delay_rate_type"]');
+        radios.forEach(r => { if (r.value === data.inputs['delay_rate_type']) r.checked = true; });
+        toggleCustomRate();
+      }
 
-      // 子ども、未払い分のクリア
       elById('children_container').innerHTML = '';
       childCount = 0;
       claimsYes = [];
@@ -1094,13 +1115,21 @@ function loadData(event) {
       updateClaimsCount('yes');
       updateClaimsCount('no');
 
-      // 子どもの復元
       if (data.childrenData) {
         data.childrenData.forEach(c => {
           addChild();
           var n = childCount;
           elById('child_name_' + n).value = c.name || '';
-          elById('child_birth_' + n).value = c.birth || '';
+          
+          if (c.birth) {
+            var parts = c.birth.split('-');
+            if (parts.length === 3) {
+              elById('cb_year_' + n).value = parseInt(parts[0]);
+              elById('cb_month_' + n).value = parseInt(parts[1]);
+              elById('cb_day_' + n).value = parseInt(parts[2]);
+            }
+          }
+
           onChildNameChange(n);
           onChildBirthChange(n);
 
@@ -1119,7 +1148,6 @@ function loadData(event) {
         });
       }
 
-      // 未払い分（合意あり）の復元
       if (data.claimsYesData) {
         data.claimsYesData.forEach(c => {
           addClaim('yes');
@@ -1130,7 +1158,6 @@ function loadData(event) {
         });
       }
 
-      // 未払い分（合意なし）の復元
       if (data.claimsNoData) {
         data.claimsNoData.forEach(c => {
           addClaim('no');
@@ -1148,7 +1175,6 @@ function loadData(event) {
       alert('ファイルの読み込みに失敗しました。正しいデータファイルを選択してください。');
       console.error(err);
     }
-    // 同じファイルを再度読めるようにクリア
     event.target.value = '';
   };
   reader.readAsText(file);
@@ -1182,8 +1208,11 @@ function toReiwa(year) { return year - 2018; }
    子の生年月日を一元取得
 ============================================================ */
 function getChildBirth(n) {
-  var el = elById('child_birth_' + n);
-  return el ? el.value : '';
+  var y = gi('cb_year_' + n), m = gi('cb_month_' + n), d = gi('cb_day_' + n);
+  if (y > 0 && m > 0 && d > 0) {
+    return y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+  }
+  return '';
 }
 
 /* ============================================================
@@ -1206,6 +1235,18 @@ function calcExecCost() {
 function updateExecCostDisplay() {
   var el = elById('exec_cost_disp');
   if (el) el.textContent = calcExecCost().toLocaleString() + '円';
+}
+
+/* ============================================================
+   遅延損害金UIトグル
+============================================================ */
+function toggleCustomRate() {
+  var typeEl = document.querySelector('input[name="delay_rate_type"]:checked');
+  if (typeEl && typeEl.value === 'custom') {
+    document.getElementById('custom_rate_fg').classList.remove('hidden');
+  } else {
+    document.getElementById('custom_rate_fg').classList.add('hidden');
+  }
 }
 
 /* ============================================================
@@ -1357,19 +1398,20 @@ function addChild() {
   div.innerHTML =
     '<div class="child-card-header">' +
       '<span class="child-num">第' + idx + '子</span>' +
-      (idx > 1 ? '<button class="btn-remove-child" type="button" onclick="removeChild(' + idx + ')">✕ 削除</button>' : '') +
+      (idx > 1 ? '<button class="btn-remove-child" type="button" onclick="deleteChild(' + idx + ')">✕ 削除</button>' : '') +
     '</div>' +
     '<div class="row">' +
       '<div class="fg">' +
         '<label>子の氏名</label>' +
         '<input type="text" id="child_name_' + idx + '" placeholder="山田 七子" oninput="onChildNameChange(' + idx + ')">' +
       '</div>' +
-      '<div class="fg w2">' +
-        '<label>生年月日<span class="req">*</span></label>' +
-        '<input type="date" id="child_birth_' + idx + '" onchange="onChildBirthChange(' + idx + ')">' +
-        '<p class="note">将来分の終期（満年齢計算）に自動使用されます</p>' +
-      '</div>' +
-    '</div>';
+    '</div>' +
+    '<div class="row" style="align-items: flex-end;">' +
+      '<div class="fg narrow"><label>生年（西暦）<span class="req">*</span></label><input type="number" id="cb_year_' + idx + '" min="1900" onchange="onChildBirthChange(' + idx + ')"></div>' +
+      '<div class="fg narrow"><label>月<span class="req">*</span></label><input type="number" id="cb_month_' + idx + '" min="1" max="12" onchange="onChildBirthChange(' + idx + ')"></div>' +
+      '<div class="fg narrow"><label>日<span class="req">*</span></label><input type="number" id="cb_day_' + idx + '" min="1" max="31" onchange="onChildBirthChange(' + idx + ')"></div>' +
+    '</div>' +
+    '<p class="note" style="margin-top:0">※将来分の終期（満年齢計算）に自動使用されます</p>';
   container.appendChild(div);
 
   var btnAdd = elById('btn_add_child');
@@ -1380,7 +1422,7 @@ function addChild() {
   rebuildFutureCards();
 }
 
-function removeChild(idx) {
+function deleteChild(idx) {
   var card = elById('child_card_' + idx);
   if (card) card.remove();
   childCount--;
@@ -1401,11 +1443,15 @@ function renumberChildren() {
     var numEl = card.querySelector('.child-num');
     if (numEl) numEl.textContent = '第' + n + '子';
     var rmBtn = card.querySelector('.btn-remove-child');
-    if (rmBtn) rmBtn.setAttribute('onclick', 'removeChild(' + n + ')');
-    var nameIn = card.querySelector('input[type=text]');
+    if (rmBtn) rmBtn.setAttribute('onclick', 'deleteChild(' + n + ')');
+    var nameIn = card.querySelector('input[id^="child_name_"]');
     if (nameIn) { nameIn.id = 'child_name_' + n; nameIn.setAttribute('oninput', 'onChildNameChange(' + n + ')'); }
-    var dateIn = card.querySelector('input[type=date]');
-    if (dateIn) { dateIn.id = 'child_birth_' + n; dateIn.setAttribute('onchange', 'onChildBirthChange(' + n + ')'); }
+    var yIn = card.querySelector('input[id^="cb_year_"]');
+    if (yIn) { yIn.id = 'cb_year_' + n; yIn.setAttribute('onchange', 'onChildBirthChange(' + n + ')'); }
+    var mIn = card.querySelector('input[id^="cb_month_"]');
+    if (mIn) { mIn.id = 'cb_month_' + n; mIn.setAttribute('onchange', 'onChildBirthChange(' + n + ')'); }
+    var dIn = card.querySelector('input[id^="cb_day_"]');
+    if (dIn) { dIn.id = 'cb_day_' + n; dIn.setAttribute('onchange', 'onChildBirthChange(' + n + ')'); }
   });
 }
 
@@ -1547,8 +1593,8 @@ function buildFutureCard(idx) {
       '<span class="future-child-label" id="future_child_label_' + idx + '">' + labelText + '</span>' +
       '<span class="birth-ref-badge" id="future_birth_badge_' + idx + '">' + badgeText + '</span>' +
     '</div>' +
-    '<div class="row">' +
-      '<div class="fg narrow"><label>未到来開始年月（西暦・年）<span class="req">*</span></label>' +
+    '<div class="row" style="align-items: flex-end;">' +
+      '<div class="fg narrow"><label>未到来開始年（西暦）<span class="req">*</span></label>' +
       '<input type="number" id="fs_year_' + idx + '" placeholder="2026" min="2026" onchange="validateFutureYear(this)"></div>' +
       '<div class="fg narrow"><label>月<span class="req">*</span></label>' +
       '<input type="number" id="fs_month_' + idx + '" placeholder="4" min="1" max="12"></div>' +
@@ -1567,7 +1613,7 @@ function buildFutureCard(idx) {
         '</label>' +
       '</div>' +
       '<div id="fe_specific_' + idx + '" style="margin-top:8px">' +
-        '<div class="row">' +
+        '<div class="row" style="align-items: flex-end;">' +
           '<div class="fg narrow"><label>最終年（西暦）<span class="req">*</span></label>' +
           '<input type="number" id="fe_year_' + idx + '" placeholder="2044" min="2026" onchange="validateFutureYear(this)"></div>' +
           '<div class="fg narrow"><label>月<span class="req">*</span></label>' +
@@ -1728,8 +1774,9 @@ function arrayBufferToBase64(buffer) {
   let binary = '';
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
+  const chunkSize = 8192;
+  for (let i = 0; i < len; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
   }
   return btoa(binary);
 }
@@ -1769,6 +1816,12 @@ function collectData(){
   var appM     = gi('app_month')  || (new Date().getMonth()+1);
   var appD     = gi('app_day')    || new Date().getDate();
   var appReiwa = 西暦to令和(appY);
+  
+  var fileDate = new Date(appY, appM - 1, appD);
+  var nextDay  = new Date(appY, appM - 1, appD + 1);
+  var nextDayRy = 西暦to令和(nextDay.getFullYear());
+  var nextDayM  = nextDay.getMonth() + 1;
+  var nextDayD  = nextDay.getDate();
 
   var crZip  = gv('cr_zip');
   var crAddr = gv('cr_addr');
@@ -1792,7 +1845,7 @@ function collectData(){
     var n = i + 1;
     children.push({
       name  : gv('child_name_'  + n) || ('第' + n + '子'),
-      birth : gv('child_birth_' + n) 
+      birth : getChildBirth(n) 
     });
   });
   var childrenNames = children.map(function(c){ return c.name; }).join('、');
@@ -1806,24 +1859,68 @@ function collectData(){
 
   var globalPayDay = gv('global_pay_day_yes');
 
+  // 遅延損害金の設定取得
+  var delayRateVal = 3;
+  var delayRateText = '民法所定の法定利率（年3％）';
+  if (isYes) {
+    var typeEl = document.querySelector('input[name="delay_rate_type"]:checked');
+    if (typeEl && typeEl.value === 'custom') {
+      var customVal = parseFloat(gv('custom_rate_val'));
+      if (!isNaN(customVal) && customVal > 0) {
+        delayRateVal = customVal;
+        delayRateText = '約定利率（年' + delayRateVal + '％）';
+      }
+    }
+  }
+  var delayRateDec = delayRateVal / 100;
+
   var pastClaims = [];
+  var delayTotal = 0;
+  
+  function processPastClaim(y, m, amt) {
+      if (y && m && amt) {
+          var dueD;
+          if (isYes) {
+              if (globalPayDay === '末日') {
+                  dueD = new Date(y, m, 0).getDate();
+              } else {
+                  dueD = parseInt(globalPayDay);
+              }
+          } else {
+              dueD = new Date(y, m, 0).getDate(); // 法定養育費は末日
+          }
+          var dueDate = new Date(y, m - 1, dueD);
+          
+          var delayAmt = 0;
+          if (dueDate < fileDate) {
+              // 支払期日の翌日から申立日までの日数を計算
+              var delayDays = Math.floor((fileDate - dueDate) / (1000 * 60 * 60 * 24));
+              // 日割計算（365日計算、端数切捨て）
+              delayAmt = Math.floor(amt * delayRateDec * delayDays / 365);
+          }
+          delayTotal += delayAmt;
+          pastClaims.push({ year: y, month: m, amt: amt, delayAmt: delayAmt, dueDate: dueDate });
+      }
+  }
+
   if (isYes) {
     claimsYes.forEach(function(id) {
       var y   = gi('cy_year_'  + id);
       var m   = gi('cy_month_' + id);
       var amt = gi('cy_amt_'   + id);
-      if (y && m && amt) pastClaims.push({ year: y, month: m, amt: amt });
+      processPastClaim(y, m, amt);
     });
   } else {
     claimsNo.forEach(function(id) {
       var y = gi('cn_year_'  + id);
       var m = gi('cn_month_' + id);
       var amt = gi('cn_amt_' + id) || 20000;
-      if (y && m) pastClaims.push({ year: y, month: m, amt: amt });
+      processPastClaim(y, m, amt);
     });
   }
+  
   var pastTotal  = pastClaims.reduce(function(s,c){ return s + c.amt; }, 0);
-  var claimTotal = pastTotal + execCost;
+  var claimTotal = pastTotal + delayTotal + execCost;
 
   var futureClaims = [];
   children.forEach(function(child, i) {
@@ -1831,7 +1928,7 @@ function collectData(){
     var fsY    = gi('fs_year_'  + n);
     var fsM    = gi('fs_month_' + n);
     
-    // 【修正】開始年月が未入力(0)の場合は将来分の債権として追加しない
+    // 開始年月が未入力(0)の場合は将来分の債権として追加しない
     if(fsY === 0 || fsM === 0) return;
 
     var radios = document.querySelectorAll('input[name="fe_type_' + n + '"]:checked');
@@ -1884,7 +1981,7 @@ function collectData(){
     var payDay  = isYes ? globalPayDay : null;
     var monthly = isYes ? gi('monthly_amt_' + n) : 20000;
     
-    // 【修正】金額が未入力(0)の場合も追加しない
+    // 金額が未入力(0)の場合も追加しない
     if(isYes && monthly === 0) return;
 
     futureClaims.push({
@@ -1901,14 +1998,16 @@ function collectData(){
 
   return {
     isYes: isYes, court: court,
-    appReiwa: appReiwa, appM: appM, appD: appD,
+    appY: appY, appReiwa: appReiwa, appM: appM, appD: appD,
+    nextDayRy: nextDayRy, nextDayM: nextDayM, nextDayD: nextDayD,
     crZip: crZip, crAddr: crAddr, crName: crName, crTel: crTel, crFax: crFax,
     drZip: drZip, drAddr: drAddr, drName: drName,
     tdZip: tdZip, tdAddr: tdAddr, tdCorp: tdCorp, tdRep: tdRep,
     children: children, childrenNames: childrenNames,
     certFee: certFee, postage: postage, kosekiFee: kosekiFee, juminFee: juminFee, execCost: execCost,
-    pastClaims: pastClaims, pastTotal: pastTotal, claimTotal: claimTotal,
-    futureClaims: futureClaims
+    pastClaims: pastClaims, pastTotal: pastTotal, delayTotal: delayTotal, claimTotal: claimTotal,
+    futureClaims: futureClaims,
+    delayRateVal: delayRateVal, delayRateText: delayRateText
   };
 }
 
@@ -1962,7 +2061,6 @@ function makePdfHelper(pdf, FN) {
     sp(0.3); txC(s, 13); sp(0.5);
   }
   
-  // 【修正】チェック済みの場合は四角を塗りつぶす（■）
   function checkbox(isChecked, txt, indMM){
     var ind = indMM || 0;
     var sym = isChecked ? '■' : '□';
@@ -1991,7 +2089,7 @@ function makeWordHelper() {
     html += '<p style="font-size:' + sizePt + 'pt; text-align: center;">' + esc(s || '') + '</p>';
   }
   function sp(n) {
-    var heightPt = (n || 1) * 16; // 1行分を約16ptとして計算
+    var heightPt = (n || 1) * 16;
     html += '<div style="height:' + heightPt + 'pt;"></div>';
   }
   function docTitle(s) {
@@ -2001,7 +2099,6 @@ function makeWordHelper() {
   function newPage() {
     html += '<br clear="all" style="page-break-before:always" />';
   }
-  // 【修正】Word出力時もチェック済みの場合は（■）
   function checkbox(isChecked, txt, indMM){ tx((isChecked ? '■' : '□') + '　' + txt, indMM); }
   function getHtml() { return html; }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -2077,17 +2174,27 @@ function buildDoc3(h, d){
   h.sp(0.8);
 
   h.tx('２　被担保債権');
-  h.tx(`（１）確定期限が到来している債権　金${fmt(d.pastTotal)}円`, 6);
+  h.tx(`（１）確定期限が到来している債権　合計金${fmt(d.pastTotal + d.delayTotal)}円`, 6);
+  
+  // 元本
+  h.tx(`ア　未払養育費元金　金${fmt(d.pastTotal)}円`, 12);
   d.pastClaims.forEach(function(c, i){
     var sym = kigo(i);
     var ry  = 西暦to令和(c.year);
-    h.tx(`${sym}　金${fmt(c.amt)}円`, 12);
+    h.tx(`（${sym}）金${fmt(c.amt)}円`, 18);
     if (d.isYes) {
-      h.tx(`ただし、債権者、債務者間の子${d.childrenNames}についての令和${ry}年${c.month}月分の養育費の未払分`, 18);
+      h.tx(`ただし、債権者、債務者間の子${d.childrenNames}についての令和${ry}年${c.month}月分の養育費の未払分`, 24);
     } else {
-      h.tx(`ただし、債権者、債務者間の子${d.childrenNames}についての令和${ry}年${c.month}月分の１か月２万円の法定養育費の未払分（支払期毎月末日・最初の月につき日割計算）`, 18);
+      h.tx(`ただし、債権者、債務者間の子${d.childrenNames}についての令和${ry}年${c.month}月分の１か月２万円の法定養育費の未払分（支払期毎月末日・最初の月につき日割計算）`, 24);
     }
   });
+  
+  // 遅延損害金
+  if (d.delayTotal > 0) {
+    h.sp(0.3);
+    h.tx(`イ　遅延損害金　金${fmt(d.delayTotal)}円`, 12);
+    h.tx(`上記アの各未払金に対する各支払期日の翌日から本命令申立日（令和${d.appReiwa}年${d.appM}月${d.appD}日）までの${d.delayRateText}の割合による遅延損害金`, 18);
+  }
   h.sp(0.5);
 
   h.tx('（２）確定期限が到来していない各定期金債権', 6);
@@ -2114,7 +2221,12 @@ function buildDoc3(h, d){
   h.tx(`資格証明書交付手数料　金${fmt(d.certFee)}円`, 18);
   h.tx(`連絡用郵便切手代　金${fmt(d.postage)}円`, 18);
   h.sp(0.5);
-  h.tx('（２）確定期限が到来していない各定期金債権', 6);
+  
+  h.tx('（２）申立日の翌日以降の遅延損害金', 6);
+  h.tx(`上記２（１）アの各未払金に対する令和${d.nextDayRy}年${d.nextDayM}月${d.nextDayD}日（申立日の翌日）から各支払済みまで、年${d.delayRateVal}％の割合による遅延損害金`, 12);
+  h.sp(0.5);
+
+  h.tx('（３）確定期限が到来していない各定期金債権', 6);
   h.tx('上記２（２）の債権', 12);
 }
 
@@ -2126,23 +2238,27 @@ function buildDoc4(h, d){
 
   docTitle('差 押 債 権 目 録');
 
-  // １ 確定期限到来済
+  // １ 確定期限到来済（元金＋申立日までの遅延損害金＋執行費用）
   tx(`１　金${fmt(d.claimTotal)}円（担保権・被担保債権・請求債権目録記載の３（１））`);
   sp(0.5);
 
-  // ２ 未到来
+  // ２ 申立日翌日以降の遅延損害金
+  tx(`２　上記１の執行費用等を除く未払養育費元金に対する令和${d.nextDayRy}年${d.nextDayM}月${d.nextDayD}日から支払済みまで年${d.delayRateVal}％の割合による遅延損害金（担保権・被担保債権・請求債権目録記載の３（２））`);
+  sp(0.5);
+
+  // ３ 未到来
   if(d.futureClaims.length === 0){
-    tx('２　（将来分の定期金債権の情報が入力されていません）');
+    tx('３　（将来分の定期金債権の情報が入力されていません）');
   } else if(d.futureClaims.length === 1){
     const fc = d.futureClaims[0];
     if(d.isYes){
       var pdText = (fc.payDay === '末日') ? '毎月末日限り' : ('毎月' + fc.payDay + '日限り');
-      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
+      tx(`３　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、${pdText}金${fmt(fc.monthly)}円ずつ（担保権・被担保債権・請求債権目録記載の３（３））`);
     } else {
-      tx(`２　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（２））`);
+      tx(`３　令和${fc.fsReiwaY}年${fc.fsM}月から債権者、債務者間の子${fc.endText}まで、毎月末日限り金２万円ずつ（担保権・被担保債権・請求債権目録記載の３（３））`);
     }
   } else {
-    tx('２　下記のとおり（担保権・被担保債権・請求債権目録記載の３（２））');
+    tx('３　下記のとおり（担保権・被担保債権・請求債権目録記載の３（３））');
     d.futureClaims.forEach((fc, i) => {
       const sym = kigo(i);
       if(d.isYes){
@@ -2155,7 +2271,7 @@ function buildDoc4(h, d){
   }
   sp(1);
 
-  tx('　債務者が第三債務者から支給される下記債権にして、まずは本命令送達時に既に支払期にあるもの（未払分）のうち支払期の古い順から、次いで本命令送達日以降支払期が到来するものから、頭書１及び２の金額に満つるまで。ただし、頭書２の金額については、その確定期限の到来後に支払期が到来する下記債権に限る。');
+  tx('　債務者が第三債務者から支給される下記債権にして、まずは本命令送達時に既に支払期にあるもの（未払分）のうち支払期の古い順から、次いで本命令送達日以降支払期が到来するものから、頭書１から３の金額に満つるまで。ただし、頭書３の金額については、その確定期限の到来後に支払期が到来する下記債権に限る。');
   sp(0.5);
   txC('記');
   sp(0.5);
@@ -2288,4 +2404,3 @@ async function generate(format){
 </script>
 </body>
 </html>
-}
