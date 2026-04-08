@@ -108,12 +108,12 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 .record-example strong { color: var(--ink); }
 
 /* save btn */
-.save-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 2px solid var(--light); border-radius: 12px; background: var(--white); font-size: 13px; font-weight: 700; color: var(--mid); cursor: pointer; transition: all .2s; }
+.save-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 2px solid var(--light); border-radius: 50px; background: var(--white); font-size: 13px; font-weight: 700; color: var(--mid); cursor: pointer; transition: all .2s; }
 .save-btn:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
 
 /* submit */
 .submit-area { background: var(--secondary-light); border: 2px solid var(--secondary); border-radius: var(--r); padding: 32px 36px; text-align: center; }
-.btn-gen { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 18px 28px; border-radius: 16px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; background: var(--secondary); color: #fff; transition: all .2s; box-shadow: 0 4px 16px rgba(108,184,169,.3); }
+.btn-gen { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 18px 28px; border-radius: 50px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; background: var(--secondary); color: #fff; transition: all .2s; box-shadow: 0 4px 16px rgba(108,184,169,.3); }
 .btn-gen:hover { background: var(--secondary-dark); transform: translateY(-2px); }
 .btn-gen:disabled { background: var(--light); color: var(--mid); cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -130,20 +130,57 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
 .step1-btn.selected-ok { border-color: var(--secondary); background: var(--secondary-light); box-shadow: 0 0 0 2px var(--secondary); }
 .step1-btn.selected-ng { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 2px var(--primary); }
 
+/* ▼▼▼ 執行費用等の丸み追加 ▼▼▼ */
 .cost-box { background: #faf8f6; border: 2px solid var(--light); border-radius: var(--r); padding: 20px 24px; margin-top: 12px; }
 .cost-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cost-table td { padding: 10px 12px; vertical-align: middle; }
 .cost-table td:last-child { text-align: right; }
-.cost-table input { width: 140px; padding: 8px 12px; text-align: right; }
+.cost-table input { 
+  width: 140px; 
+  padding: 8px 12px; 
+  text-align: right; 
+  border: 2px solid var(--light); 
+  border-radius: 12px; 
+  font-size: 14px; 
+  font-family: inherit; 
+  background: #fff; 
+  transition: all .2s; 
+}
+.cost-table input:focus { 
+  outline: none; 
+  border-color: var(--secondary); 
+  box-shadow: 0 0 0 4px var(--secondary-light); 
+}
 .cost-total-row td { font-weight: 700; color: var(--ink); border-top: 2px dashed var(--light); padding-top: 16px; font-size: 16px; }
 
 .children-container, .claims-container, .future-container { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
 .child-card { background: #fff; border: 2px solid var(--light); border-radius: var(--r); padding: 20px 24px; position: relative; }
-.btn-remove-child { background: var(--white); border: 2px solid var(--light); border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 700; color: var(--mid); cursor: pointer; }
-.btn-add-child { display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px dashed #d1c8c5; border-radius: 16px; padding: 14px 20px; font-size: 14px; font-weight: 700; color: var(--mid); cursor: pointer; width: 100%; margin-top: 8px; background: none; }
+.btn-remove-child { background: var(--white); border: 2px solid var(--light); border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 700; color: var(--mid); cursor: pointer; transition: all .2s;}
+.btn-remove-child:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+/* ▼▼▼ 追加系ボタンの共通化（丸み追加） ▼▼▼ */
+.btn-add-child, .btn-add-claim, .btn-add-deposit { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px; 
+  border: 2px dashed #d1c8c5; 
+  border-radius: 16px; 
+  padding: 14px 20px; 
+  font-size: 14px; 
+  font-weight: 700; 
+  color: var(--mid); 
+  cursor: pointer; 
+  width: 100%; 
+  margin-top: 8px; 
+  background: none; 
+  transition: all .2s; 
+}
+.btn-add-child:hover, .btn-add-claim:hover, .btn-add-deposit:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
+.btn-add-child:disabled, .btn-add-claim:disabled, .btn-add-deposit:disabled { opacity: 0.4; cursor: not-allowed; }
+
 .claim-row { display: flex; align-items: flex-end; gap: 12px; background: #faf8f6; border: 2px solid var(--light); border-radius: 16px; padding: 16px 20px; }
 
-/* ▼▼▼ 削除ボタンの見栄え修正 ▼▼▼ */
 .btn-remove-claim {
   border: 2px solid var(--light);
   border-radius: 12px;
@@ -159,7 +196,9 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all .2s;
 }
+.btn-remove-claim:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
 
 @media (max-width: 768px) {
   .layout { flex-direction: column; }
@@ -506,7 +545,7 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
         <label class="choice-card"><input type="radio" name="deposit" value="known" onchange="onDepositChange()"><div>ア：預貯金は次のとおりである（残高0円でも記入）</div></label>
         <div id="deposit_known_detail" class="detail-area hidden">
           <div id="deposit_accounts_container"></div>
-          <button type="button" onclick="addDepositAccount()" style="margin-top:10px;padding:10px 20px;border:2px dashed #d1c8c5;border-radius:12px;background:none;font-weight:700;color:var(--mid);cursor:pointer;width:100%;">＋ 口座を追加する</button>
+          <button type="button" class="btn-add-deposit" onclick="addDepositAccount()">＋ 口座を追加する</button>
         </div>
         <div id="ev_deposit_known" class="ev-group hidden">
           <label class="ev-item"><input type="checkbox" id="ev_deposit_known_a" value="預貯金通帳の写し又は取引明細書等">預貯金通帳の写し又は取引明細書等</label>
@@ -532,7 +571,7 @@ body { font-family: 'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Noto Sans J
           <div class="fg">
             <label>調査できなかった理由</label>
             <textarea id="deposit_reason"></textarea>
-            <div class="record-example"><strong>記載例：</strong><br>婚姻当時から債務者が管理しており、口座の情報を知ることはできなかった。婚姻当時に生活費を入れていた口座は、離婚時に解約した。</div>
+            <div class="record-example"><strong>記載例：</strong><br>婚姻当時から債務者が管理しており、口座の情報を知ることはできなかった。婚姻当時に共同して使っていた口座は、離婚時に解約した。</div>
           </div>
         </div>
       </div>
